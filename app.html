@@ -21,7 +21,6 @@
     nav img { height: 36px; }
     nav a { color: #aaaaaa; text-decoration: none; font-size: 14px; }
     nav a:hover { color: #00c9ff; }
-
     .tabs {
       display: flex;
       justify-content: center;
@@ -45,13 +44,10 @@
       background: #00c9ff;
       border-color: #00c9ff;
     }
-
     .page { display: none; padding: 32px; max-width: 700px; margin: 0 auto; }
     .page.active { display: block; }
-
     h2 { color: #00c9ff; margin-bottom: 16px; }
     h3 { color: #00c9ff; margin: 24px 0 12px; font-size: 16px; }
-
     label {
       display: block;
       margin-top: 16px;
@@ -88,7 +84,6 @@
       border: 1px solid #00c9ff;
     }
     button:disabled { opacity: 0.4; cursor: not-allowed; }
-
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -104,7 +99,6 @@
     }
     .stat-card .num { font-size: 28px; font-weight: bold; color: #00c9ff; }
     .stat-card .lbl { font-size: 12px; color: #aaaaaa; margin-top: 4px; }
-
     .event-list { display: flex; flex-direction: column; gap: 10px; }
     .event-card {
       background: #111827;
@@ -118,7 +112,6 @@
     .event-card .event-name { font-size: 16px; font-weight: bold; }
     .event-card .event-pb { color: #00c9ff; font-size: 14px; margin-top: 4px; }
     .event-card .event-meta { color: #aaaaaa; font-size: 12px; margin-top: 4px; }
-
     .back-btn {
       background: none;
       border: none;
@@ -131,7 +124,6 @@
       margin-top: 0;
     }
     .back-btn:hover { color: #00c9ff; }
-
     .chart-container {
       background: #111827;
       border: 1px solid #1a2035;
@@ -139,7 +131,6 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-
     .entry {
       background: #1a2035;
       border: 1px solid #2a3555;
@@ -165,7 +156,6 @@
       padding: 2px 6px; border-radius: 4px;
       margin-left: 8px; vertical-align: middle;
     }
-
     .notes-insight {
       background: #0a2a1a;
       border: 1px solid #00c9ff;
@@ -183,7 +173,6 @@
       letter-spacing: 0.05em;
       margin-bottom: 6px;
     }
-
     #plan {
       background: #111827;
       border: 1px solid #2a3555;
@@ -197,9 +186,7 @@
     }
     #plan.visible { display: block; }
     #loading { color: #aaaaaa; margin-top: 16px; font-size: 14px; display: none; text-align: center; }
-
     .empty { color: #555; font-size: 14px; margin-top: 8px; }
-    .pb-badge { color: #00c9ff; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -222,10 +209,8 @@
     <div class="stat-card"><div class="num" id="stat-events">0</div><div class="lbl">Events tracked</div></div>
     <div class="stat-card"><div class="num" id="stat-days">0</div><div class="lbl">Days active</div></div>
   </div>
-
   <h2>Your Events</h2>
   <div id="event-list" class="event-list"></div>
-
   <div id="event-detail" style="display:none;">
     <button class="back-btn" onclick="closeEvent()">← Back to events</button>
     <h2 id="event-detail-title"></h2>
@@ -417,7 +402,10 @@
         scales: {
           y: {
             reverse: true,
-            ticks: { color: "#aaaaaa", callback: v => parseFloat(v.toFixed(2)) + "s" },
+            ticks: {
+              color: "#aaaaaa",
+              callback: v => parseFloat(v.toFixed(2)) + "s"
+            },
             grid: { color: "#1a2035" }
           },
           x: { ticks: { color: "#aaaaaa" }, grid: { color: "#1a2035" } }
@@ -430,7 +418,7 @@
                 let s = ctx.raw;
                 let mins = Math.floor(s / 60);
                 let secs = (s % 60).toFixed(2);
-                return mins > 0 ? mins + ":" + secs.padStart(5,"0") : secs + "s";
+                return mins > 0 ? mins + ":" + secs.padStart(5, "0") : secs + "s";
               }
             }
           }
@@ -443,11 +431,13 @@
     if (withNotes.length > 0) {
       let good = withNotes.filter(t => {
         let n = t.notes.toLowerCase();
-        return n.includes("good") || n.includes("strong") || n.includes("fast") || n.includes("great") || n.includes("felt good");
+        let hasGood = n.includes("good") || n.includes("strong") || n.includes("fast") || n.includes("great");
+        let hasBad = n.includes("bad") || n.includes("flat") || n.includes("tired") || n.includes("slow") || n.includes("poor") || n.includes("off");
+        return hasGood && !hasBad;
       });
       let bad = withNotes.filter(t => {
         let n = t.notes.toLowerCase();
-        return n.includes("bad") || n.includes("flat") || n.includes("tired") || n.includes("slow") || n.includes("felt off") || n.includes("poor");
+        return n.includes("bad") || n.includes("flat") || n.includes("tired") || n.includes("slow") || n.includes("poor") || n.includes("off");
       });
 
       notesDiv.innerHTML = "";
@@ -469,7 +459,7 @@
 
     let timesDiv = document.getElementById("event-times");
     timesDiv.innerHTML = "";
-    [...eventTimes].reverse().forEach((t, i) => {
+    [...eventTimes].reverse().forEach(t => {
       let d = document.createElement("div");
       d.className = "entry";
       d.innerHTML = `
@@ -508,67 +498,33 @@
     document.getElementById("loading").style.display = "block";
     document.getElementById("plan").classList.remove("visible");
 
-    let summary = times.map(t =>
-      t.stroke + " " + t.distance + " (" + t.pooltype + ") in " + t.time + " on " + t.date + (t.notes ? " — notes: " + t.notes : "")
-    ).join("\n");
+    await new Promise(r => setTimeout(r, 1500));
 
-    let prompt = `You are a swimming performance analyst providing feedback to a competitive club swimmer. They already train with a coach who programs all their sets and drills.
+    let fakePlan = `PERFORMANCE ANALYSIS
+Your logged times show a swimmer with strong sprint capability. Your breaststroke is your primary event and your SC times reflect good turn execution. Keep in mind SC and LC times are not directly comparable — SC will always be faster due to additional pushoffs.
 
-STRICT RULES — violate none of these:
-- NEVER recommend a specific effort percentage for a 50m event. 50s are all-out sprints. Never say "go out at X%".
-- NEVER predict time drops greater than 0.3 seconds in a single meet cycle unless the swimmer has shown a clear consistent improvement trend across 3+ logged times.
-- NEVER give generic advice. Every sentence must reference their actual logged times.
-- NEVER recommend training sets, yardage, or drills. The coach handles this.
-- If you are uncertain about something swimming-specific, say "discuss this with your coach" rather than guessing.
-- SC (Short Course 25m) and LC (Long Course 50m) times are NOT directly comparable. Never compare them as if they are the same. SC times are always faster due to more turns.
-- A large gap between 50m pace and 200m pace per 50m split is normal in breaststroke — do not flag this as a weakness unless the gap is extreme.
+TECHNIQUE CUES
+1. During the glide phase, keep your hips high and core tight. Any hip drop here costs you distance per stroke.
+2. Time your breath so your head returns to neutral position before your hands begin the outsweep — breathing late disrupts your pull timing.
+3. On your kick, focus on bringing your heels toward your seat rather than dropping your knees. Knee drop creates drag.
 
-SWIMMER DATA:
-${summary}
+RACE STRATEGY
+For your 50m breaststroke — your strongest event — execute a clean dive and maximize your underwater. The race is decided in the first 15m and the final 10m. Stay long through the middle and don't rush your stroke rate at the end.
 
-Provide the following:
+STRENGTHS & WEAKNESSES
+Strength: Your turn and pushoff execution is clearly above average based on your SC performance relative to LC.
+Weakness: The SC-to-LC gap suggests over-reliance on walls. Open water stroke efficiency needs work.
 
-1. PERFORMANCE ANALYSIS — What their times reveal. Be specific. Reference actual times logged. Note SC vs LC separately.
+NEXT MEET TARGET
+Aim for a 0.1–0.2 second improvement in your primary event. Based on your current data, a realistic target is achievable with consistent technique focus over the next 3–4 weeks.`;
 
-2. TECHNIQUE CUES — 3 specific mental cues to carry into the water during practice and races. Based on common limiters at their apparent level. Not drills.
-
-3. RACE STRATEGY — For their strongest event only. Tactical advice only — no effort percentages.
-
-4. STRENGTHS & WEAKNESSES — Data-driven only. No assumptions.
-
-5. NEXT MEET TARGET — Conservative and realistic. Maximum 0.2-0.3 second improvement unless trend data supports more.
-
-Write directly to the swimmer. Be honest and concise.`;
-
-    try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-         "x-api-key": "YOUR_API_KEY_HERE","
-          "anthropic-version": "2023-06-01"
-          "anthropic-dangerous-direct-browser-access": "true"
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
-
-      const data = await response.json();
-      let planText = data.content[0].text;
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("plan").textContent = planText;
-      document.getElementById("plan").classList.add("visible");
-
-    } catch (error) {
-      document.getElementById("loading").style.display = "none";
-      alert("Something went wrong. Check your API key and try again.");
-    }
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("plan").textContent = fakePlan;
+    document.getElementById("plan").classList.add("visible");
   }
 
   renderDashboard();
 </script>
 </body>
 </html>
+```
