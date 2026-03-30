@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Swim Edge — Your AI Swimming Coach</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://tally.so/widgets/embed.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0a0f1e;
+      color: white;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      border-bottom: 1px solid #1a2035;
+    }
+    nav img { height: 40px; }
+    nav button {
+      padding: 10px 24px;
+      background: #00c9ff;
+      color: #0a0f1e;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .hero {
+      text-align: center;
+      padding: 100px 20px 80px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: 52px;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: #00c9ff; }
+    .hero p {
+      font-size: 18px;
+      color: #aaaaaa;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 14px 32px;
+      background: #00c9ff;
+      color: #0a0f1e;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      padding: 14px 32px;
+      background: transparent;
+      color: #00c9ff;
+      border: 1px solid #00c9ff;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .problem {
+      background: #0d1424;
+      padding: 80px 20px;
+      text-align: center;
+    }
+    .problem h2 {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .problem h2 span { color: #00c9ff; }
+    .problem p {
+      font-size: 17px;
+      color: #aaaaaa;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .features {
+      padding: 80px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .features h2 {
+      font-size: 32px;
+      margin-bottom: 50px;
+    }
+    .features h2 span { color: #00c9ff; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      text-align: left;
+    }
+    .feature-card {
+      background: #111827;
+      border: 1px solid #1a2035;
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .feature-card .icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+    .feature-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #00c9ff;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: #aaaaaa;
+      line-height: 1.6;
+    }
+    .pricing {
+      background: #0d1424;
+      padding: 80px 20px;
+      text-align: center;
+    }
+    .pricing h2 {
+      font-size: 32px;
+      margin-bottom: 50px;
+    }
+    .pricing h2 span { color: #00c9ff; }
+    .pricing-grid {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .pricing-card {
+      background: #111827;
+      border: 1px solid #1a2035;
+      border-radius: 10px;
+      padding: 32px;
+      width: 260px;
+      text-align: left;
+    }
+    .pricing-card.featured { border-color: #00c9ff; }
+    .pricing-card .badge {
+      background: #00c9ff;
+      color: #0a0f1e;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    .pricing-card h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .pricing-card .price {
+      font-size: 36px;
+      font-weight: bold;
+      color: #00c9ff;
+      margin-bottom: 4px;
+    }
+    .pricing-card .price span {
+      font-size: 14px;
+      color: #aaaaaa;
+      font-weight: normal;
+    }
+    .pricing-card p {
+      font-size: 13px;
+      color: #aaaaaa;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .pricing-card button {
+      width: 100%;
+      padding: 12px;
+      background: #00c9ff;
+      color: #0a0f1e;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .pricing-card.basic button {
+      background: transparent;
+      color: #00c9ff;
+      border: 1px solid #00c9ff;
+    }
+    footer {
+      border-top: 1px solid #1a2035;
+      text-align: center;
+      padding: 30px;
+      color: #555;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <img src="1774790155177_image.png" alt="Swim Edge">
+    <button data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+  </nav>
+
+  <section class="hero">
+    <h1>The coaching feedback <span>every swimmer deserves</span></h1>
+    <p>Most club coaches manage 50+ athletes. Individualized feedback is impossible. Swim Edge gives every swimmer a personalized AI training plan — reviewed by a real coach — that evolves as you improve.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Get Early Access</button>
+      <button class="btn-secondary" onclick="window.location.href='app.html'">Open Dashboard</button>
+    </div>
+  </section>
+
+  <section class="problem">
+    <h2>Your coach has <span>50 other swimmers</span> to worry about.</h2>
+    <p>At most competitive clubs, personalized feedback simply doesn't exist. You train hard, compete, and guess at what to fix. Swim Edge changes that — giving you data-driven analysis and a monthly training focus tailored specifically to your times, your stroke, and your goals.</p>
+  </section>
+
+  <section class="features" id="features">
+    <h2>Everything you need to <span>swim faster</span></h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Time tracking</h3>
+        <p>Log every race result. Track your progress across all strokes and distances in one place.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🤖</div>
+        <h3>AI training plans</h3>
+        <p>Our AI analyzes your times every month and generates a focused training plan built around your weaknesses.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">✅</div>
+        <h3>Coach verified</h3>
+        <p>Every plan is reviewed and signed off by a credentialed coach before it reaches you. Not just AI — AI plus expertise.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📈</div>
+        <h3>Personal bests</h3>
+        <p>See your fastest time per event automatically tracked. Watch the numbers drop as the plan works.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing">
+    <h2>Simple, <span>honest pricing</span></h2>
+    <div class="pricing-grid">
+      <div class="pricing-card basic">
+        <h3>Swimmer</h3>
+        <div class="price">$7.99<span>/month</span></div>
+        <p>For individual competitive swimmers who want personalized feedback without the private coach price tag.</p>
+        <button data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="badge">MOST POPULAR</div>
+        <h3>Club</h3>
+        <div class="price">$49.99<span>/month</span></div>
+        <p>Unlimited swimmers. One subscription for your entire roster. Give every athlete on your team a personalized plan.</p>
+        <button data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Swim Edge. Built in Ontario, Canada.
+  </footer>
+
+</body>
+</html>

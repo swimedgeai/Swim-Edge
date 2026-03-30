@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Swim Edge — Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0a0f1e;
+      color: white;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      border-bottom: 1px solid #1a2035;
+    }
+    nav img { height: 36px; }
+    nav a { color: #aaaaaa; text-decoration: none; font-size: 14px; }
+    nav a:hover { color: #00c9ff; }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      padding: 20px 32px;
+      gap: 8px;
+    }
+    .tab {
+      padding: 10px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      color: #aaaaaa;
+      border-radius: 50px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .tab:hover { color: #00c9ff; border-color: #1a2035; background: #111827; }
+    .tab.active {
+      color: #0a0f1e;
+      background: #00c9ff;
+      border-color: #00c9ff;
+    }
+
+    .page { display: none; padding: 32px; max-width: 700px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    h2 { color: #00c9ff; margin-bottom: 16px; }
+    h3 { color: #00c9ff; margin: 24px 0 12px; font-size: 16px; }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #aaaaaa;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      background: #1a2035;
+      border: 1px solid #2a3555;
+      border-radius: 6px;
+      color: white;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    textarea { height: 80px; resize: vertical; }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #00c9ff;
+      color: #0a0f1e;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: transparent;
+      color: #00c9ff;
+      border: 1px solid #00c9ff;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #111827;
+      border: 1px solid #1a2035;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .num { font-size: 28px; font-weight: bold; color: #00c9ff; }
+    .stat-card .lbl { font-size: 12px; color: #aaaaaa; margin-top: 4px; }
+
+    .event-list { display: flex; flex-direction: column; gap: 10px; }
+    .event-card {
+      background: #111827;
+      border: 1px solid #1a2035;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .event-card:hover { border-color: #00c9ff; }
+    .event-card .event-name { font-size: 16px; font-weight: bold; }
+    .event-card .event-pb { color: #00c9ff; font-size: 14px; margin-top: 4px; }
+    .event-card .event-meta { color: #aaaaaa; font-size: 12px; margin-top: 4px; }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #aaaaaa;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      margin: 0 0 20px;
+      width: auto;
+      margin-top: 0;
+    }
+    .back-btn:hover { color: #00c9ff; }
+
+    .chart-container {
+      background: #111827;
+      border: 1px solid #1a2035;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .entry {
+      background: #1a2035;
+      border: 1px solid #2a3555;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .entry .time-val { font-size: 18px; font-weight: bold; color: #00c9ff; }
+    .entry .entry-meta { font-size: 12px; color: #aaaaaa; margin-top: 4px; }
+    .entry .entry-notes { font-size: 13px; color: #dddddd; margin-top: 6px; font-style: italic; }
+    .entry .delete {
+      background: none; border: none; color: #555;
+      cursor: pointer; font-size: 14px; margin-top: 0;
+      width: auto; padding: 0 4px; flex-shrink: 0;
+    }
+    .entry .delete:hover { color: #ff4444; }
+    .pb-tag {
+      background: #00c9ff; color: #0a0f1e;
+      font-size: 10px; font-weight: bold;
+      padding: 2px 6px; border-radius: 4px;
+      margin-left: 8px; vertical-align: middle;
+    }
+
+    .notes-insight {
+      background: #0a2a1a;
+      border: 1px solid #00c9ff;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .notes-insight .insight-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #00c9ff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    #plan {
+      background: #111827;
+      border: 1px solid #2a3555;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 16px;
+      font-size: 15px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      display: none;
+    }
+    #plan.visible { display: block; }
+    #loading { color: #aaaaaa; margin-top: 16px; font-size: 14px; display: none; text-align: center; }
+
+    .empty { color: #555; font-size: 14px; margin-top: 8px; }
+    .pb-badge { color: #00c9ff; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <img src="1774790155177_image.png" alt="Swim Edge">
+  <a href="index.html">← Back to home</a>
+</nav>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+  <div class="tab" onclick="showTab('log')">Log Time</div>
+  <div class="tab" onclick="showTab('plan')">Training Plan</div>
+</div>
+
+<div id="tab-dashboard" class="page active">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="num" id="stat-total">0</div><div class="lbl">Times logged</div></div>
+    <div class="stat-card"><div class="num" id="stat-pbs">0</div><div class="lbl">Personal bests</div></div>
+    <div class="stat-card"><div class="num" id="stat-events">0</div><div class="lbl">Events tracked</div></div>
+    <div class="stat-card"><div class="num" id="stat-days">0</div><div class="lbl">Days active</div></div>
+  </div>
+
+  <h2>Your Events</h2>
+  <div id="event-list" class="event-list"></div>
+
+  <div id="event-detail" style="display:none;">
+    <button class="back-btn" onclick="closeEvent()">← Back to events</button>
+    <h2 id="event-detail-title"></h2>
+    <div class="chart-container">
+      <canvas id="progressChart" height="200"></canvas>
+    </div>
+    <div id="notes-insights"></div>
+    <h3>All Times</h3>
+    <div id="event-times"></div>
+  </div>
+</div>
+
+<div id="tab-log" class="page">
+  <h2>Log a Time</h2>
+  <form onsubmit="submitTime(); return false;">
+    <label>Stroke</label>
+    <select id="stroke">
+      <option value="">-- Select stroke --</option>
+      <option>Breaststroke</option>
+      <option>Freestyle</option>
+      <option>Backstroke</option>
+      <option>Butterfly</option>
+      <option>Individual Medley</option>
+    </select>
+    <label>Distance</label>
+    <select id="distance">
+      <option value="">-- Select distance --</option>
+      <option>50m</option><option>100m</option><option>200m</option>
+      <option>400m</option><option>800m</option><option>1500m</option>
+    </select>
+    <label>Pool Type</label>
+    <select id="pooltype">
+      <option value="">-- Select pool --</option>
+      <option>Short Course (25m)</option>
+      <option>Long Course (50m)</option>
+    </select>
+    <label>Time (e.g. 32.83 or 1:13.84)</label>
+    <input id="time" type="text" placeholder="e.g. 32.83">
+    <label>Date</label>
+    <input id="date" type="date">
+    <label>Notes — what felt good or bad? (used for insights)</label>
+    <textarea id="notes" placeholder="e.g. strong turns, felt flat on back half, good underwater"></textarea>
+    <button type="submit">Log Time</button>
+  </form>
+</div>
+
+<div id="tab-plan" class="page">
+  <h2>Training Plan</h2>
+  <p style="color:#aaaaaa; font-size:14px; margin-bottom:20px;">Based on all your logged times. Log at least 3 times across different events for the best analysis.</p>
+  <button onclick="getPlan()">Generate My Plan</button>
+  <div id="loading">Analyzing your performance...</div>
+  <div id="plan"></div>
+</div>
+
+<script>
+  let times = JSON.parse(localStorage.getItem("swimedge_times") || "[]");
+  let currentChart = null;
+
+  function save() { localStorage.setItem("swimedge_times", JSON.stringify(times)); }
+
+  function formatEventName(key) {
+    let match = key.match(/^(.+?) (\d+m) \((Short Course \(25m\)|Long Course \(50m\))\)$/);
+    if (!match) return key;
+    let stroke = match[1];
+    let distance = match[2];
+    let pool = match[3].includes("Short") ? "SC" : "LC";
+    return distance + " " + stroke + " · " + pool;
+  }
+
+  function showTab(name) {
+    document.querySelectorAll(".tab").forEach((t, i) => {
+      t.classList.toggle("active", ["dashboard","log","plan"][i] === name);
+    });
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("tab-" + name).classList.add("active");
+    if (name === "dashboard") renderDashboard();
+  }
+
+  function timeToSeconds(t) {
+    if (t.includes(":")) {
+      let parts = t.split(":");
+      return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+    }
+    return parseFloat(t);
+  }
+
+  function submitTime() {
+    let stroke = document.getElementById("stroke").value;
+    let distance = document.getElementById("distance").value;
+    let pooltype = document.getElementById("pooltype").value;
+    let time = document.getElementById("time").value;
+    let date = document.getElementById("date").value;
+    let notes = document.getElementById("notes").value;
+
+    if (!stroke || !distance || !pooltype || !time || !date) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    let key = stroke + " " + distance + " (" + pooltype + ")";
+    let existing = times.filter(t => t.stroke + " " + t.distance + " (" + t.pooltype + ")" === key);
+    let isPB = existing.length === 0 || timeToSeconds(time) < Math.min(...existing.map(t => timeToSeconds(t.time)));
+
+    times.push({ stroke, distance, pooltype, time, date, notes, isPB });
+    save();
+    renderDashboard();
+
+    document.getElementById("stroke").value = "";
+    document.getElementById("distance").value = "";
+    document.getElementById("pooltype").value = "";
+    document.getElementById("time").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("notes").value = "";
+
+    if (isPB) alert("New personal best!");
+    showTab("dashboard");
+  }
+
+  function renderDashboard() {
+    let bests = {};
+    let events = {};
+    times.forEach(t => {
+      let key = t.stroke + " " + t.distance + " (" + t.pooltype + ")";
+      if (!events[key]) events[key] = [];
+      events[key].push(t);
+      if (!bests[key] || timeToSeconds(t.time) < timeToSeconds(bests[key].time)) bests[key] = t;
+    });
+
+    document.getElementById("stat-total").textContent = times.length;
+    document.getElementById("stat-pbs").textContent = Object.keys(bests).length;
+    document.getElementById("stat-events").textContent = Object.keys(events).length;
+    if (times.length > 0) {
+      let dates = times.map(t => new Date(t.date));
+      let diff = Math.floor((new Date() - new Date(Math.min(...dates))) / 86400000);
+      document.getElementById("stat-days").textContent = diff;
+    }
+
+    let list = document.getElementById("event-list");
+    if (Object.keys(events).length === 0) {
+      list.innerHTML = '<p class="empty">No times logged yet. Go to Log Time to get started.</p>';
+      return;
+    }
+
+    list.innerHTML = "";
+    Object.keys(events).forEach(key => {
+      let pb = bests[key];
+      let count = events[key].length;
+      let card = document.createElement("div");
+      card.className = "event-card";
+      card.innerHTML = `
+        <div class="event-name">${formatEventName(key)}</div>
+        <div class="event-pb">PB: ${pb.time}</div>
+        <div class="event-meta">${count} time${count > 1 ? "s" : ""} logged · Last: ${events[key][events[key].length-1].date}</div>
+      `;
+      card.onclick = () => openEvent(key);
+      list.appendChild(card);
+    });
+  }
+
+  function openEvent(key) {
+    document.getElementById("event-list").style.display = "none";
+    document.querySelector(".stats-grid").style.display = "none";
+    document.querySelector("#tab-dashboard h2").style.display = "none";
+    document.getElementById("event-detail").style.display = "block";
+    document.getElementById("event-detail-title").textContent = formatEventName(key);
+
+    let eventTimes = times.filter(t => t.stroke + " " + t.distance + " (" + t.pooltype + ")" === key)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (currentChart) currentChart.destroy();
+    let ctx = document.getElementById("progressChart").getContext("2d");
+    currentChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: eventTimes.map(t => t.date),
+        datasets: [{
+          label: formatEventName(key),
+          data: eventTimes.map(t => timeToSeconds(t.time)),
+          borderColor: "#00c9ff",
+          backgroundColor: "rgba(0,201,255,0.1)",
+          pointBackgroundColor: eventTimes.map(t => t.isPB ? "#00c9ff" : "#aaaaaa"),
+          pointRadius: 6,
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            reverse: true,
+            ticks: { color: "#aaaaaa", callback: v => parseFloat(v.toFixed(2)) + "s" },
+            grid: { color: "#1a2035" }
+          },
+          x: { ticks: { color: "#aaaaaa" }, grid: { color: "#1a2035" } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                let s = ctx.raw;
+                let mins = Math.floor(s / 60);
+                let secs = (s % 60).toFixed(2);
+                return mins > 0 ? mins + ":" + secs.padStart(5,"0") : secs + "s";
+              }
+            }
+          }
+        }
+      }
+    });
+
+    let notesDiv = document.getElementById("notes-insights");
+    let withNotes = eventTimes.filter(t => t.notes && t.notes.trim() !== "");
+    if (withNotes.length > 0) {
+      let good = withNotes.filter(t => {
+        let n = t.notes.toLowerCase();
+        return n.includes("good") || n.includes("strong") || n.includes("fast") || n.includes("great") || n.includes("felt good");
+      });
+      let bad = withNotes.filter(t => {
+        let n = t.notes.toLowerCase();
+        return n.includes("bad") || n.includes("flat") || n.includes("tired") || n.includes("slow") || n.includes("felt off") || n.includes("poor");
+      });
+
+      notesDiv.innerHTML = "";
+      if (good.length > 0) {
+        let d = document.createElement("div");
+        d.className = "notes-insight";
+        d.innerHTML = `<div class="insight-label">What's been working</div>${good.map(t => `"${t.notes}" <span style="color:#555;font-size:11px;">(${t.date})</span>`).join("<br>")}`;
+        notesDiv.appendChild(d);
+      }
+      if (bad.length > 0) {
+        let d = document.createElement("div");
+        d.className = "notes-insight";
+        d.innerHTML = `<div class="insight-label">What to work on</div>${bad.map(t => `"${t.notes}" <span style="color:#555;font-size:11px;">(${t.date})</span>`).join("<br>")}`;
+        notesDiv.appendChild(d);
+      }
+    } else {
+      notesDiv.innerHTML = '<p class="empty" style="margin-bottom:16px;">Add notes when logging times to see insights here.</p>';
+    }
+
+    let timesDiv = document.getElementById("event-times");
+    timesDiv.innerHTML = "";
+    [...eventTimes].reverse().forEach((t, i) => {
+      let d = document.createElement("div");
+      d.className = "entry";
+      d.innerHTML = `
+        <div>
+          <span class="time-val">${t.time}</span>${t.isPB ? '<span class="pb-tag">PB</span>' : ''}
+          <div class="entry-meta">${t.date}</div>
+          ${t.notes ? `<div class="entry-notes">${t.notes}</div>` : ''}
+        </div>
+        <button class="delete" onclick="deleteTime('${t.date}','${t.time}')">✕</button>
+      `;
+      timesDiv.appendChild(d);
+    });
+  }
+
+  function closeEvent() {
+    document.getElementById("event-list").style.display = "flex";
+    document.querySelector(".stats-grid").style.display = "grid";
+    document.querySelector("#tab-dashboard h2").style.display = "block";
+    document.getElementById("event-detail").style.display = "none";
+    if (currentChart) { currentChart.destroy(); currentChart = null; }
+  }
+
+  function deleteTime(date, time) {
+    if (confirm("Delete this time?")) {
+      let idx = times.findIndex(t => t.date === date && t.time === time);
+      if (idx > -1) { times.splice(idx, 1); save(); renderDashboard(); closeEvent(); }
+    }
+  }
+
+  async function getPlan() {
+    if (times.length === 0) {
+      alert("Log at least one time before generating a plan.");
+      return;
+    }
+
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("plan").classList.remove("visible");
+
+    let summary = times.map(t =>
+      t.stroke + " " + t.distance + " (" + t.pooltype + ") in " + t.time + " on " + t.date + (t.notes ? " — notes: " + t.notes : "")
+    ).join("\n");
+
+    let prompt = `You are a swimming performance analyst providing feedback to a competitive club swimmer. They already train with a coach who programs all their sets and drills.
+
+STRICT RULES — violate none of these:
+- NEVER recommend a specific effort percentage for a 50m event. 50s are all-out sprints. Never say "go out at X%".
+- NEVER predict time drops greater than 0.3 seconds in a single meet cycle unless the swimmer has shown a clear consistent improvement trend across 3+ logged times.
+- NEVER give generic advice. Every sentence must reference their actual logged times.
+- NEVER recommend training sets, yardage, or drills. The coach handles this.
+- If you are uncertain about something swimming-specific, say "discuss this with your coach" rather than guessing.
+- SC (Short Course 25m) and LC (Long Course 50m) times are NOT directly comparable. Never compare them as if they are the same. SC times are always faster due to more turns.
+- A large gap between 50m pace and 200m pace per 50m split is normal in breaststroke — do not flag this as a weakness unless the gap is extreme.
+
+SWIMMER DATA:
+${summary}
+
+Provide the following:
+
+1. PERFORMANCE ANALYSIS — What their times reveal. Be specific. Reference actual times logged. Note SC vs LC separately.
+
+2. TECHNIQUE CUES — 3 specific mental cues to carry into the water during practice and races. Based on common limiters at their apparent level. Not drills.
+
+3. RACE STRATEGY — For their strongest event only. Tactical advice only — no effort percentages.
+
+4. STRENGTHS & WEAKNESSES — Data-driven only. No assumptions.
+
+5. NEXT MEET TARGET — Conservative and realistic. Maximum 0.2-0.3 second improvement unless trend data supports more.
+
+Write directly to the swimmer. Be honest and concise.`;
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+         "x-api-key": "YOUR_API_KEY_HERE","
+          "anthropic-version": "2023-06-01"
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      let planText = data.content[0].text;
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("plan").textContent = planText;
+      document.getElementById("plan").classList.add("visible");
+
+    } catch (error) {
+      document.getElementById("loading").style.display = "none";
+      alert("Something went wrong. Check your API key and try again.");
+    }
+  }
+
+  renderDashboard();
+</script>
+</body>
+</html>
