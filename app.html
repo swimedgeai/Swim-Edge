@@ -1,530 +1,1125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Swim Edge — Dashboard</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
+    :root {
+      --black: #080808;
+      --white: #f5f3ef;
+      --accent: #c8f65d;
+      --accent-dim: rgba(200, 246, 93, 0.12);
+      --accent-border: rgba(200, 246, 93, 0.25);
+      --gray: #111111;
+      --gray-mid: #1a1a1a;
+      --gray-deep: #141414;
+      --gray-text: #888;
+      --gray-line: rgba(255,255,255,0.06);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0a0f1e;
-      color: white;
-    }
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 32px;
-      border-bottom: 1px solid #1a2035;
-    }
-    nav img { height: 36px; }
-    nav a { color: #aaaaaa; text-decoration: none; font-size: 14px; }
-    nav a:hover { color: #00c9ff; }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      padding: 20px 32px;
-      gap: 8px;
-    }
-    .tab {
-      padding: 10px 24px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      color: #aaaaaa;
-      border-radius: 50px;
-      border: 1px solid transparent;
-      transition: all 0.2s;
-      letter-spacing: 0.03em;
-    }
-    .tab:hover { color: #00c9ff; border-color: #1a2035; background: #111827; }
-    .tab.active {
-      color: #0a0f1e;
-      background: #00c9ff;
-      border-color: #00c9ff;
-    }
-    .page { display: none; padding: 32px; max-width: 700px; margin: 0 auto; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: var(--font-body); overflow-x: hidden; min-height: 100vh; }
+    * { cursor: none; }
+    #cursor { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+    #cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(200,246,93,0.4); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: all 0.08s ease; }
+ 
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gray-line); backdrop-filter: blur(12px); background: rgba(8,8,8,0.8); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -0.02em; text-decoration: none; color: var(--white); }
+    .nav-logo img { height: 28px; }
+    .nav-home-btn { padding: 10px 22px; background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.15); border-radius: 100px; font-family: var(--font-body); font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+    .nav-home-btn:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.04); }
+ 
+    .tabs-wrapper { padding-top: 88px; background: var(--black); position: sticky; top: 68px; z-index: 90; border-bottom: 1px solid var(--gray-line); }
+    .tabs { display: flex; padding: 0 48px; overflow-x: auto; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { padding: 18px 28px; cursor: pointer; font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gray-text); border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .tab:hover { color: var(--white); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+ 
+    .page { display: none; padding: 48px; max-width: 960px; margin: 0 auto; }
     .page.active { display: block; }
-    h2 { color: #00c9ff; margin-bottom: 16px; }
-    h3 { color: #00c9ff; margin: 24px 0 12px; font-size: 16px; }
-    label {
-      display: block;
-      margin-top: 16px;
-      font-size: 14px;
-      color: #aaaaaa;
+    .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .page-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 40px; }
+ 
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--gray-line); border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
+    .stat-card { background: var(--gray); padding: 32px 28px; transition: background 0.3s; }
+    .stat-card:hover { background: #161616; }
+    .stat-card .num { font-family: var(--font-display); font-size: 42px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+    .stat-card .lbl { font-size: 12px; color: var(--gray-text); }
+ 
+    .event-list { display: flex; flex-direction: column; gap: 1px; background: var(--gray-line); border-radius: 16px; overflow: hidden; }
+    .event-card { background: var(--gray); padding: 24px 28px; cursor: pointer; transition: background 0.2s; display: flex; justify-content: space-between; align-items: center; }
+    .event-card:hover { background: #161616; }
+    .event-card::after { content: '→'; color: var(--gray-text); font-size: 16px; transition: all 0.2s; }
+    .event-card:hover::after { color: var(--accent); transform: translateX(4px); }
+    .event-name { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .event-pb { color: var(--accent); font-size: 14px; font-weight: 500; }
+    .event-meta { color: var(--gray-text); font-size: 12px; margin-top: 4px; }
+ 
+    .back-btn { background: none; border: none; color: var(--gray-text); cursor: pointer; font-family: var(--font-body); font-size: 14px; padding: 0; margin: 0 0 32px; width: auto; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .back-btn:hover { color: var(--white); }
+    .detail-title { font-family: var(--font-display); font-size: 32px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 32px; }
+    .chart-container { background: var(--gray); border: 1px solid var(--gray-line); border-radius: 16px; padding: 28px; margin-bottom: 24px; }
+    .insights-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--gray-line); border-radius: 12px; overflow: hidden; margin-bottom: 32px; }
+    .insight-box { background: var(--gray); padding: 20px; }
+    .insight-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .insight-text { font-size: 13px; color: var(--gray-text); line-height: 1.7; }
+ 
+    .entries { display: flex; flex-direction: column; gap: 1px; background: var(--gray-line); border-radius: 12px; overflow: hidden; }
+    .entry { background: var(--gray-mid); padding: 16px 20px; display: flex; justify-content: space-between; align-items: flex-start; transition: background 0.2s; }
+    .entry:hover { background: #1a1a1a; }
+    .time-val { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+    .pb-tag { background: var(--accent); color: var(--black); font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 100px; margin-left: 8px; vertical-align: middle; }
+    .entry-meta { font-size: 12px; color: var(--gray-text); margin-top: 4px; }
+    .entry-notes { font-size: 13px; color: #bbb; margin-top: 6px; font-style: italic; line-height: 1.5; }
+    .delete-btn { background: none; border: none; color: #444; cursor: pointer; font-size: 16px; margin: 0; width: auto; padding: 0 4px; flex-shrink: 0; transition: color 0.2s; }
+    .delete-btn:hover { color: #ff4444; }
+ 
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-text); }
+    .form-group input, .form-group select, .form-group textarea { background: var(--gray); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--white); font-family: var(--font-body); font-size: 15px; padding: 14px 16px; transition: border-color 0.2s; width: 100%; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-border); }
+    .form-group textarea { height: 100px; resize: vertical; }
+    .form-group select option { background: #1a1a1a; }
+    .submit-btn { margin-top: 28px; padding: 16px 40px; background: var(--accent); color: var(--black); border: none; border-radius: 100px; font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; width: 100%; }
+    .submit-btn:hover { background: #d4ff66; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,246,93,0.2); }
+ 
+    .plan-output { background: var(--gray); border: 1px solid var(--accent-border); border-radius: 16px; padding: 32px; font-size: 15px; line-height: 1.8; white-space: pre-wrap; display: none; color: #ccc; }
+    .plan-output.visible { display: block; }
+    .loading-bar { color: var(--gray-text); font-size: 14px; display: none; text-align: center; padding: 32px 0; }
+    .loading-dots::after { content: '...'; animation: dots 1.2s steps(3,end) infinite; }
+    @keyframes dots { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+ 
+    /* STANDARDS */
+    .standards-controls { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; align-items: flex-end; }
+    .control-group { display: flex; flex-direction: column; gap: 6px; }
+    .control-group label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-text); }
+    .control-group select, .control-group input { background: var(--gray); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--white); font-family: var(--font-body); font-size: 14px; padding: 12px 16px; min-width: 160px; }
+    .control-group select:focus, .control-group input:focus { outline: none; border-color: var(--accent-border); }
+    .control-group select option { background: #1a1a1a; }
+ 
+    .standards-table-wrap { background: var(--gray-line); border-radius: 16px; overflow: hidden; }
+    .standards-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1.3fr 1.3fr; background: var(--gray-deep); padding: 14px 24px; gap: 8px; }
+    .standards-header span { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-text); }
+    .standard-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1.3fr 1.3fr; background: var(--gray); padding: 18px 24px; gap: 8px; align-items: center; border-top: 1px solid var(--gray-line); transition: background 0.2s; }
+    .standard-row:hover { background: #141414; }
+    .standard-event { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+    .standard-time { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--gray-text); }
+ 
+    .gap-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 100px; font-size: 12px; font-weight: 600; font-family: var(--font-display); }
+    .gap-achieved { background: rgba(200,246,93,0.15); color: var(--accent); border: 1px solid var(--accent-border); }
+    .gap-close { background: rgba(255,200,50,0.12); color: #ffc832; border: 1px solid rgba(255,200,50,0.25); }
+    .gap-far { background: rgba(255,255,255,0.05); color: var(--gray-text); border: 1px solid rgba(255,255,255,0.08); }
+ 
+    .ageup-banner { background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .ageup-icon { font-size: 20px; flex-shrink: 0; }
+    .ageup-text { color: var(--accent); font-weight: 500; font-size: 14px; }
+    .ageup-sub { color: var(--gray-text); font-size: 13px; margin-top: 2px; }
+ 
+    .empty-state { text-align: center; padding: 64px 0; color: var(--gray-text); }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+    .section-divider { border: none; border-top: 1px solid var(--gray-line); margin: 40px 0; }
+ 
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .tabs { padding: 0 20px; }
+      .page { padding: 24px 20px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .insights-row { grid-template-columns: 1fr; }
+      .standards-controls { flex-direction: column; }
+      .standards-header, .standard-row { grid-template-columns: 2fr 1fr 1fr; }
+      .standards-header span:nth-child(4), .standards-header span:nth-child(5),
+      .standard-row > *:nth-child(4), .standard-row > *:nth-child(5) { display: none; }
     }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      background: #1a2035;
-      border: 1px solid #2a3555;
-      border-radius: 6px;
-      color: white;
-      font-size: 15px;
-      box-sizing: border-box;
-    }
-    textarea { height: 80px; resize: vertical; }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #00c9ff;
-      color: #0a0f1e;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button.secondary {
-      background: transparent;
-      color: #00c9ff;
-      border: 1px solid #00c9ff;
-    }
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .stat-card {
-      background: #111827;
-      border: 1px solid #1a2035;
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-    }
-    .stat-card .num { font-size: 28px; font-weight: bold; color: #00c9ff; }
-    .stat-card .lbl { font-size: 12px; color: #aaaaaa; margin-top: 4px; }
-    .event-list { display: flex; flex-direction: column; gap: 10px; }
-    .event-card {
-      background: #111827;
-      border: 1px solid #1a2035;
-      border-radius: 8px;
-      padding: 16px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .event-card:hover { border-color: #00c9ff; }
-    .event-card .event-name { font-size: 16px; font-weight: bold; }
-    .event-card .event-pb { color: #00c9ff; font-size: 14px; margin-top: 4px; }
-    .event-card .event-meta { color: #aaaaaa; font-size: 12px; margin-top: 4px; }
-    .back-btn {
-      background: none;
-      border: none;
-      color: #aaaaaa;
-      cursor: pointer;
-      font-size: 14px;
-      padding: 0;
-      margin: 0 0 20px;
-      width: auto;
-      margin-top: 0;
-    }
-    .back-btn:hover { color: #00c9ff; }
-    .chart-container {
-      background: #111827;
-      border: 1px solid #1a2035;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .entry {
-      background: #1a2035;
-      border: 1px solid #2a3555;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .entry .time-val { font-size: 18px; font-weight: bold; color: #00c9ff; }
-    .entry .entry-meta { font-size: 12px; color: #aaaaaa; margin-top: 4px; }
-    .entry .entry-notes { font-size: 13px; color: #dddddd; margin-top: 6px; font-style: italic; }
-    .entry .delete {
-      background: none; border: none; color: #555;
-      cursor: pointer; font-size: 14px; margin-top: 0;
-      width: auto; padding: 0 4px; flex-shrink: 0;
-    }
-    .entry .delete:hover { color: #ff4444; }
-    .pb-tag {
-      background: #00c9ff; color: #0a0f1e;
-      font-size: 10px; font-weight: bold;
-      padding: 2px 6px; border-radius: 4px;
-      margin-left: 8px; vertical-align: middle;
-    }
-    .notes-insight {
-      background: #0a2a1a;
-      border: 1px solid #00c9ff;
-      border-radius: 6px;
-      padding: 14px;
-      margin-bottom: 8px;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .notes-insight .insight-label {
-      font-size: 11px;
-      font-weight: bold;
-      color: #00c9ff;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
-    }
-    #plan {
-      background: #111827;
-      border: 1px solid #2a3555;
-      border-radius: 6px;
-      padding: 16px;
-      margin-top: 16px;
-      font-size: 15px;
-      line-height: 1.8;
-      white-space: pre-wrap;
-      display: none;
-    }
-    #plan.visible { display: block; }
-    #loading { color: #aaaaaa; margin-top: 16px; font-size: 14px; display: none; text-align: center; }
-    .empty { color: #555; font-size: 14px; margin-top: 8px; }
   </style>
 </head>
 <body>
-
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+ 
 <nav>
-  <img src="1774790155177_image.png" alt="Swim Edge">
-  <a href="index.html">← Back to home</a>
+  <a href="index.html" class="nav-logo">
+    <img src="1774790155177_image.png" alt="Swim Edge">
+    Swim Edge
+  </a>
+  <a href="index.html" class="nav-home-btn">← Back to home</a>
 </nav>
-
-<div class="tabs">
-  <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
-  <div class="tab" onclick="showTab('log')">Log Time</div>
-  <div class="tab" onclick="showTab('plan')">Training Plan</div>
+ 
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+    <div class="tab" onclick="showTab('log')">Log Time</div>
+    <div class="tab" onclick="showTab('standards')">Ontario Standards</div>
+    <div class="tab" onclick="showTab('plan')">Training Plan</div>
+  </div>
 </div>
-
+ 
+<!-- DASHBOARD -->
 <div id="tab-dashboard" class="page active">
-  <div class="stats-grid">
-    <div class="stat-card"><div class="num" id="stat-total">0</div><div class="lbl">Times logged</div></div>
-    <div class="stat-card"><div class="num" id="stat-pbs">0</div><div class="lbl">Personal bests</div></div>
-    <div class="stat-card"><div class="num" id="stat-events">0</div><div class="lbl">Events tracked</div></div>
-    <div class="stat-card"><div class="num" id="stat-days">0</div><div class="lbl">Days active</div></div>
-  </div>
-  <h2>Your Events</h2>
-  <div id="event-list" class="event-list"></div>
-  <div id="event-detail" style="display:none;">
-    <button class="back-btn" onclick="closeEvent()">← Back to events</button>
-    <h2 id="event-detail-title"></h2>
-    <div class="chart-container">
-      <canvas id="progressChart" height="200"></canvas>
+  <div id="dashboard-main">
+    <div class="section-label">Overview</div>
+    <h1 class="page-title">Your Performance</h1>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num" id="stat-total">0</div><div class="lbl">Times logged</div></div>
+      <div class="stat-card"><div class="num" id="stat-pbs">0</div><div class="lbl">Events with PBs</div></div>
+      <div class="stat-card"><div class="num" id="stat-events">0</div><div class="lbl">Events tracked</div></div>
+      <div class="stat-card"><div class="num" id="stat-days">0</div><div class="lbl">Days active</div></div>
     </div>
+    <div class="section-label">Your Events</div>
+    <div id="event-list" class="event-list"></div>
+  </div>
+  <div id="event-detail" style="display:none;">
+    <button class="back-btn" onclick="closeEvent()">← All events</button>
+    <div class="detail-title" id="event-detail-title"></div>
+    <div class="chart-container"><canvas id="progressChart" height="180"></canvas></div>
     <div id="notes-insights"></div>
-    <h3>All Times</h3>
-    <div id="event-times"></div>
+    <hr class="section-divider">
+    <div class="section-label">All Times</div>
+    <div id="event-times" class="entries"></div>
   </div>
 </div>
-
+ 
+<!-- LOG TIME -->
 <div id="tab-log" class="page">
-  <h2>Log a Time</h2>
-  <form onsubmit="submitTime(); return false;">
-    <label>Stroke</label>
-    <select id="stroke">
-      <option value="">-- Select stroke --</option>
-      <option>Breaststroke</option>
-      <option>Freestyle</option>
-      <option>Backstroke</option>
-      <option>Butterfly</option>
-      <option>Individual Medley</option>
-    </select>
-    <label>Distance</label>
-    <select id="distance">
-      <option value="">-- Select distance --</option>
-      <option>50m</option><option>100m</option><option>200m</option>
-      <option>400m</option><option>800m</option><option>1500m</option>
-    </select>
-    <label>Pool Type</label>
-    <select id="pooltype">
-      <option value="">-- Select pool --</option>
-      <option>Short Course (25m)</option>
-      <option>Long Course (50m)</option>
-    </select>
-    <label>Time (e.g. 32.83 or 1:13.84)</label>
-    <input id="time" type="text" placeholder="e.g. 32.83">
-    <label>Date</label>
-    <input id="date" type="date">
-    <label>Notes — what felt good or bad? (used for insights)</label>
-    <textarea id="notes" placeholder="e.g. strong turns, felt flat on back half, good underwater"></textarea>
-    <button type="submit">Log Time</button>
-  </form>
+  <div class="section-label">Record</div>
+  <h1 class="page-title">Log a Time</h1>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Stroke</label>
+      <select id="stroke">
+        <option value="">Select stroke</option>
+        <option>Breaststroke</option><option>Freestyle</option>
+        <option>Backstroke</option><option>Butterfly</option>
+        <option>Individual Medley</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Distance</label>
+      <select id="distance">
+        <option value="">Select distance</option>
+        <option>50m</option><option>100m</option><option>200m</option>
+        <option>400m</option><option>800m</option><option>1500m</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Pool Type</label>
+      <select id="pooltype">
+        <option value="">Select pool</option>
+        <option>Short Course (25m)</option>
+        <option>Long Course (50m)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Time (e.g. 32.83 or 1:13.84)</label>
+      <input id="time" type="text" placeholder="32.83">
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input id="date" type="date">
+    </div>
+    <div class="form-group full">
+      <label>Notes — what felt good or bad?</label>
+      <textarea id="notes" placeholder="e.g. strong turns, felt flat on back half, good underwater..."></textarea>
+    </div>
+  </div>
+  <button class="submit-btn" onclick="submitTime()">Log Time</button>
 </div>
-
+ 
+<!-- ONTARIO STANDARDS -->
+<div id="tab-standards" class="page">
+  <div class="section-label">Qualifying</div>
+  <h1 class="page-title">Ontario Standards</h1>
+  <div id="ageup-banner" class="ageup-banner" style="display:none;">
+    <div class="ageup-icon">⚡</div>
+    <div>
+      <div class="ageup-text" id="ageup-text"></div>
+      <div class="ageup-sub" id="ageup-sub"></div>
+    </div>
+  </div>
+  <div class="standards-controls">
+    <div class="control-group">
+      <label>Gender</label>
+      <select id="std-gender" onchange="renderStandards()">
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Age Group</label>
+      <select id="std-age" onchange="renderStandards()">
+        <option value="11">11 &amp; Under</option>
+        <option value="12">12</option>
+        <option value="13">13 &amp; Under</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17 &amp; Over</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Course</label>
+      <select id="std-course" onchange="renderStandards()">
+        <option value="SC">Short Course (25m)</option>
+        <option value="LC">Long Course (50m)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Your Date of Birth</label>
+      <input type="date" id="std-dob" onchange="handleDOB()">
+    </div>
+  </div>
+  <div class="standards-table-wrap">
+    <div class="standards-header">
+      <span>Event</span>
+      <span>OSC</span>
+      <span>OAG</span>
+      <span>Gap to OSC</span>
+      <span>Gap to OAG</span>
+    </div>
+    <div id="standards-rows"></div>
+  </div>
+  <p style="font-size:12px;color:var(--gray-text);margin-top:20px;line-height:1.6;">
+    Official Swim Ontario qualifying standards (October / November 2025). Age determined as of June 1st of the competition year. Log your times in the Dashboard to see your personal gap calculations.
+  </p>
+</div>
+ 
+<!-- TRAINING PLAN -->
 <div id="tab-plan" class="page">
-  <h2>Training Plan</h2>
-  <p style="color:#aaaaaa; font-size:14px; margin-bottom:20px;">Based on all your logged times. Log at least 3 times across different events for the best analysis.</p>
-  <button onclick="getPlan()">Generate My Plan</button>
-  <div id="loading">Analyzing your performance...</div>
-  <div id="plan"></div>
+  <div class="section-label">AI Analysis</div>
+  <h1 class="page-title">Training Plan</h1>
+  <p style="color:var(--gray-text);font-size:15px;margin-bottom:32px;line-height:1.6;">Based on all your logged times and notes. Log at least 3 entries across different events for the best analysis.</p>
+  <button class="submit-btn" onclick="getPlan()">Generate My Plan</button>
+  <div class="loading-bar" id="loading">Analyzing your performance<span class="loading-dots"></span></div>
+  <div class="plan-output" id="plan"></div>
 </div>
-
+ 
 <script>
-  let times = JSON.parse(localStorage.getItem("swimedge_times") || "[]");
-  let currentChart = null;
-
-  function save() { localStorage.setItem("swimedge_times", JSON.stringify(times)); }
-
-  function formatEventName(key) {
-    let match = key.match(/^(.+?) (\d+m) \((Short Course \(25m\)|Long Course \(50m\))\)$/);
-    if (!match) return key;
-    let stroke = match[1];
-    let distance = match[2];
-    let pool = match[3].includes("Short") ? "SC" : "LC";
-    return distance + " " + stroke + " · " + pool;
-  }
-
-  function showTab(name) {
-    document.querySelectorAll(".tab").forEach((t, i) => {
-      t.classList.toggle("active", ["dashboard","log","plan"][i] === name);
-    });
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById("tab-" + name).classList.add("active");
-    if (name === "dashboard") renderDashboard();
-  }
-
-  function timeToSeconds(t) {
-    if (t.includes(":")) {
-      let parts = t.split(":");
-      return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
-    }
-    return parseFloat(t);
-  }
-
-  function submitTime() {
-    let stroke = document.getElementById("stroke").value;
-    let distance = document.getElementById("distance").value;
-    let pooltype = document.getElementById("pooltype").value;
-    let time = document.getElementById("time").value;
-    let date = document.getElementById("date").value;
-    let notes = document.getElementById("notes").value;
-
-    if (!stroke || !distance || !pooltype || !time || !date) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    let key = stroke + " " + distance + " (" + pooltype + ")";
-    let existing = times.filter(t => t.stroke + " " + t.distance + " (" + t.pooltype + ")" === key);
-    let isPB = existing.length === 0 || timeToSeconds(time) < Math.min(...existing.map(t => timeToSeconds(t.time)));
-
-    times.push({ stroke, distance, pooltype, time, date, notes, isPB });
-    save();
-    renderDashboard();
-
-    document.getElementById("stroke").value = "";
-    document.getElementById("distance").value = "";
-    document.getElementById("pooltype").value = "";
-    document.getElementById("time").value = "";
-    document.getElementById("date").value = "";
-    document.getElementById("notes").value = "";
-
-    if (isPB) alert("New personal best!");
-    showTab("dashboard");
-  }
-
-  function renderDashboard() {
-    let bests = {};
-    let events = {};
-    times.forEach(t => {
-      let key = t.stroke + " " + t.distance + " (" + t.pooltype + ")";
-      if (!events[key]) events[key] = [];
-      events[key].push(t);
-      if (!bests[key] || timeToSeconds(t.time) < timeToSeconds(bests[key].time)) bests[key] = t;
-    });
-
-    document.getElementById("stat-total").textContent = times.length;
-    document.getElementById("stat-pbs").textContent = Object.keys(bests).length;
-    document.getElementById("stat-events").textContent = Object.keys(events).length;
-    if (times.length > 0) {
-      let dates = times.map(t => new Date(t.date));
-      let diff = Math.floor((new Date() - new Date(Math.min(...dates))) / 86400000);
-      document.getElementById("stat-days").textContent = diff;
-    }
-
-    let list = document.getElementById("event-list");
-    if (Object.keys(events).length === 0) {
-      list.innerHTML = '<p class="empty">No times logged yet. Go to Log Time to get started.</p>';
-      return;
-    }
-
-    list.innerHTML = "";
-    Object.keys(events).forEach(key => {
-      let pb = bests[key];
-      let count = events[key].length;
-      let card = document.createElement("div");
-      card.className = "event-card";
-      card.innerHTML = `
-        <div class="event-name">${formatEventName(key)}</div>
-        <div class="event-pb">PB: ${pb.time}</div>
-        <div class="event-meta">${count} time${count > 1 ? "s" : ""} logged · Last: ${events[key][events[key].length-1].date}</div>
-      `;
-      card.onclick = () => openEvent(key);
-      list.appendChild(card);
-    });
-  }
-
-  function openEvent(key) {
-    document.getElementById("event-list").style.display = "none";
-    document.querySelector(".stats-grid").style.display = "none";
-    document.querySelector("#tab-dashboard h2").style.display = "none";
-    document.getElementById("event-detail").style.display = "block";
-    document.getElementById("event-detail-title").textContent = formatEventName(key);
-
-    let eventTimes = times.filter(t => t.stroke + " " + t.distance + " (" + t.pooltype + ")" === key)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    if (currentChart) currentChart.destroy();
-    let ctx = document.getElementById("progressChart").getContext("2d");
-    currentChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: eventTimes.map(t => t.date),
-        datasets: [{
-          label: formatEventName(key),
-          data: eventTimes.map(t => timeToSeconds(t.time)),
-          borderColor: "#00c9ff",
-          backgroundColor: "rgba(0,201,255,0.1)",
-          pointBackgroundColor: eventTimes.map(t => t.isPB ? "#00c9ff" : "#aaaaaa"),
-          pointRadius: 6,
-          tension: 0.3,
-          fill: true
-        }]
+// ── CURSOR ──────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-5+'px';cursor.style.top=my-5+'px';});
+function animateRing(){rx+=(mx-rx-18)*0.12;ry+=(my-ry-18)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing);}
+animateRing();
+ 
+// ── DATA ────────────────────────────────────────────────
+let times = JSON.parse(localStorage.getItem("swimedge_times")||"[]");
+let currentChart = null;
+function save(){localStorage.setItem("swimedge_times",JSON.stringify(times));}
+ 
+// ── OFFICIAL ONTARIO STANDARDS ──────────────────────────
+// Source: Swim Ontario tables dated Oct 31, 2025 (Males) & Nov 24, 2025 (Females)
+// Age groups: 11 (= 11 & Under), 12, 13 (= 13 & Under), 14, 15, 16, 17 (= 17 & Over)
+// Format: [OSC, OAG]
+const S = {
+  M: {
+    LC: {
+      11: {
+        "50 Freestyle":         ["0:32.07","0:32.87"],
+        "100 Freestyle":        ["1:10.76","1:12.53"],
+        "200 Freestyle":        ["2:36.16","2:40.06"],
+        "400 Freestyle":        ["5:24.83","5:32.95"],
+        "800 Freestyle":        ["11:11.68","11:28.47"],
+        "50 Backstroke":        ["0:38.50","0:39.46"],
+        "100 Backstroke":       ["1:22.25","1:24.31"],
+        "200 Backstroke":       ["2:54.17","2:58.52"],
+        "50 Breaststroke":      ["0:42.53","0:43.59"],
+        "100 Breaststroke":     ["1:33.16","1:35.49"],
+        "200 Breaststroke":     ["3:20.39","3:25.40"],
+        "50 Butterfly":         ["0:35.90","0:36.80"],
+        "100 Butterfly":        ["1:22.69","1:24.76"],
+        "200 Butterfly":        ["3:08.52","3:13.23"],
+        "200 Individual Medley":["2:56.51","3:00.92"],
+        "400 Individual Medley":["6:03.90","6:13.00"],
       },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            reverse: true,
-            ticks: {
-              color: "#aaaaaa",
-              callback: v => parseFloat(v.toFixed(2)) + "s"
-            },
-            grid: { color: "#1a2035" }
-          },
-          x: { ticks: { color: "#aaaaaa" }, grid: { color: "#1a2035" } }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => {
-                let s = ctx.raw;
-                let mins = Math.floor(s / 60);
-                let secs = (s % 60).toFixed(2);
-                return mins > 0 ? mins + ":" + secs.padStart(5, "0") : secs + "s";
-              }
-            }
-          }
-        }
-      }
-    });
-
-    let notesDiv = document.getElementById("notes-insights");
-    let withNotes = eventTimes.filter(t => t.notes && t.notes.trim() !== "");
-    if (withNotes.length > 0) {
-      let good = withNotes.filter(t => {
-        let n = t.notes.toLowerCase();
-        let hasGood = n.includes("good") || n.includes("strong") || n.includes("fast") || n.includes("great");
-        let hasBad = n.includes("bad") || n.includes("flat") || n.includes("tired") || n.includes("slow") || n.includes("poor") || n.includes("off");
-        return hasGood && !hasBad;
-      });
-      let bad = withNotes.filter(t => {
-        let n = t.notes.toLowerCase();
-        return n.includes("bad") || n.includes("flat") || n.includes("tired") || n.includes("slow") || n.includes("poor") || n.includes("off");
-      });
-
-      notesDiv.innerHTML = "";
-      if (good.length > 0) {
-        let d = document.createElement("div");
-        d.className = "notes-insight";
-        d.innerHTML = `<div class="insight-label">What's been working</div>${good.map(t => `"${t.notes}" <span style="color:#555;font-size:11px;">(${t.date})</span>`).join("<br>")}`;
-        notesDiv.appendChild(d);
-      }
-      if (bad.length > 0) {
-        let d = document.createElement("div");
-        d.className = "notes-insight";
-        d.innerHTML = `<div class="insight-label">What to work on</div>${bad.map(t => `"${t.notes}" <span style="color:#555;font-size:11px;">(${t.date})</span>`).join("<br>")}`;
-        notesDiv.appendChild(d);
-      }
+      12: {
+        "50 Freestyle":         ["0:29.37","0:30.10"],
+        "100 Freestyle":        ["1:04.25","1:05.88"],
+        "200 Freestyle":        ["2:21.60","2:25.14"],
+        "400 Freestyle":        ["4:57.66","5:05.10"],
+        "800 Freestyle":        ["10:17.17","10:32.60"],
+        "50 Backstroke":        ["0:34.90","0:35.77"],
+        "100 Backstroke":       ["1:15.43","1:17.32"],
+        "200 Backstroke":       ["2:43.64","2:47.73"],
+        "50 Breaststroke":      ["0:39.55","0:40.54"],
+        "100 Breaststroke":     ["1:25.33","1:27.46"],
+        "200 Breaststroke":     ["3:04.69","3:09.31"],
+        "50 Butterfly":         ["0:32.21","0:33.02"],
+        "100 Butterfly":        ["1:13.41","1:15.25"],
+        "200 Butterfly":        ["2:54.44","2:58.80"],
+        "200 Individual Medley":["2:40.31","2:44.32"],
+        "400 Individual Medley":["5:42.17","5:50.72"],
+      },
+      13: {
+        "50 Freestyle":         ["0:27.50","0:28.19"],
+        "100 Freestyle":        ["1:00.49","1:02.00"],
+        "200 Freestyle":        ["2:12.95","2:16.27"],
+        "400 Freestyle":        ["4:41.55","4:48.59"],
+        "800 Freestyle":        ["9:44.74","9:59.36"],
+        "1500 Freestyle":       ["18:46.76","19:14.93"],
+        "50 Backstroke":        ["0:32.15","0:32.95"],
+        "100 Backstroke":       ["1:09.33","1:11.06"],
+        "200 Backstroke":       ["2:29.69","2:33.43"],
+        "50 Breaststroke":      ["0:35.17","0:36.05"],
+        "100 Breaststroke":     ["1:18.25","1:20.21"],
+        "200 Breaststroke":     ["2:49.09","2:53.32"],
+        "50 Butterfly":         ["0:29.71","0:30.45"],
+        "100 Butterfly":        ["1:06.62","1:08.29"],
+        "200 Butterfly":        ["2:30.04","2:33.79"],
+        "200 Individual Medley":["2:29.19","2:32.92"],
+        "400 Individual Medley":["5:16.96","5:24.88"],
+      },
+      14: {
+        "50 Freestyle":         ["0:26.39","0:27.05"],
+        "100 Freestyle":        ["0:57.97","0:59.42"],
+        "200 Freestyle":        ["2:08.43","2:11.64"],
+        "400 Freestyle":        ["4:33.15","4:39.98"],
+        "800 Freestyle":        ["9:24.06","9:38.16"],
+        "1500 Freestyle":       ["18:15.29","18:42.67"],
+        "50 Backstroke":        ["0:30.61","0:31.38"],
+        "100 Backstroke":       ["1:06.26","1:07.92"],
+        "200 Backstroke":       ["2:26.11","2:29.76"],
+        "50 Breaststroke":      ["0:33.95","0:34.80"],
+        "100 Breaststroke":     ["1:15.18","1:17.06"],
+        "200 Breaststroke":     ["2:45.58","2:49.72"],
+        "50 Butterfly":         ["0:28.71","0:29.43"],
+        "100 Butterfly":        ["1:04.68","1:06.30"],
+        "200 Butterfly":        ["2:30.04","2:33.79"],
+        "200 Individual Medley":["2:25.05","2:28.68"],
+        "400 Individual Medley":["5:08.70","5:16.42"],
+      },
+      15: {
+        "50 Freestyle":         ["0:25.69","0:26.33"],
+        "100 Freestyle":        ["0:56.12","0:57.52"],
+        "200 Freestyle":        ["2:04.34","2:07.45"],
+        "400 Freestyle":        ["4:25.42","4:32.06"],
+        "800 Freestyle":        ["9:11.29","9:25.07"],
+        "1500 Freestyle":       ["17:53.51","18:20.35"],
+        "50 Backstroke":        ["0:29.50","0:30.24"],
+        "100 Backstroke":       ["1:04.15","1:05.75"],
+        "200 Backstroke":       ["2:20.95","2:24.47"],
+        "50 Breaststroke":      ["0:32.79","0:33.61"],
+        "100 Breaststroke":     ["1:11.94","1:13.74"],
+        "200 Breaststroke":     ["2:38.24","2:42.20"],
+        "50 Butterfly":         ["0:27.38","0:28.06"],
+        "100 Butterfly":        ["1:01.93","1:03.48"],
+        "200 Butterfly":        ["2:24.10","2:27.70"],
+        "200 Individual Medley":["2:21.10","2:24.63"],
+        "400 Individual Medley":["5:00.14","5:07.64"],
+      },
+      16: {
+        "50 Freestyle":         ["0:25.17","0:25.80"],
+        "100 Freestyle":        ["0:55.05","0:56.43"],
+        "200 Freestyle":        ["2:01.89","2:04.94"],
+        "400 Freestyle":        ["4:20.69","4:27.21"],
+        "800 Freestyle":        ["9:05.68","9:19.32"],
+        "1500 Freestyle":       ["17:27.68","17:53.87"],
+        "50 Backstroke":        ["0:28.90","0:29.62"],
+        "100 Backstroke":       ["1:02.50","1:04.06"],
+        "200 Backstroke":       ["2:18.68","2:22.15"],
+        "50 Breaststroke":      ["0:31.76","0:32.55"],
+        "100 Breaststroke":     ["1:10.83","1:12.60"],
+        "200 Breaststroke":     ["2:36.45","2:40.36"],
+        "50 Butterfly":         ["0:27.02","0:27.70"],
+        "100 Butterfly":        ["1:00.14","1:01.64"],
+        "200 Butterfly":        ["2:17.84","2:21.29"],
+        "200 Individual Medley":["2:18.00","2:20.95"],
+        "400 Individual Medley":["4:55.87","5:03.27"],
+      },
+      17: {
+        "50 Freestyle":         ["0:24.92","0:25.54"],
+        "100 Freestyle":        ["0:54.38","0:55.74"],
+        "200 Freestyle":        ["2:00.24","2:03.25"],
+        "400 Freestyle":        ["4:15.66","4:22.05"],
+        "800 Freestyle":        ["9:00.22","9:13.73"],
+        "1500 Freestyle":       ["17:17.20","17:43.13"],
+        "50 Backstroke":        ["0:28.36","0:29.07"],
+        "100 Backstroke":       ["1:01.87","1:03.42"],
+        "200 Backstroke":       ["2:17.29","2:20.72"],
+        "50 Breaststroke":      ["0:31.17","0:31.95"],
+        "100 Breaststroke":     ["1:09.96","1:11.71"],
+        "200 Breaststroke":     ["2:34.89","2:38.76"],
+        "50 Butterfly":         ["0:26.57","0:27.23"],
+        "100 Butterfly":        ["0:59.42","1:00.91"],
+        "200 Butterfly":        ["2:15.93","2:19.33"],
+        "200 Individual Medley":["2:14.95","2:18.32"],
+        "400 Individual Medley":["4:51.65","4:58.94"],
+      },
+    },
+    SC: {
+      11: {
+        "50 Freestyle":         ["0:31.44","0:32.23"],
+        "100 Freestyle":        ["1:09.37","1:11.10"],
+        "200 Freestyle":        ["2:33.10","2:36.93"],
+        "400 Freestyle":        ["5:18.46","5:26.42"],
+        "800 Freestyle":        ["10:58.05","11:14.97"],
+        "50 Backstroke":        ["0:37.75","0:38.69"],
+        "100 Backstroke":       ["1:20.64","1:22.66"],
+        "200 Backstroke":       ["2:50.75","2:55.02"],
+        "50 Breaststroke":      ["0:41.70","0:42.74"],
+        "100 Breaststroke":     ["1:31.33","1:33.61"],
+        "200 Breaststroke":     ["3:16.46","3:21.37"],
+        "50 Butterfly":         ["0:35.20","0:36.08"],
+        "100 Butterfly":        ["1:21.07","1:23.10"],
+        "200 Butterfly":        ["3:04.82","3:09.44"],
+        "200 Individual Medley":["2:53.05","2:57.38"],
+        "400 Individual Medley":["5:56.76","6:05.68"],
+      },
+      12: {
+        "50 Freestyle":         ["0:28.79","0:29.51"],
+        "100 Freestyle":        ["1:02.99","1:04.56"],
+        "200 Freestyle":        ["2:18.82","2:22.29"],
+        "400 Freestyle":        ["4:51.82","4:59.12"],
+        "800 Freestyle":        ["10:05.07","10:20.20"],
+        "50 Backstroke":        ["0:34.22","0:35.08"],
+        "100 Backstroke":       ["1:13.95","1:15.80"],
+        "200 Backstroke":       ["2:40.43","2:44.44"],
+        "50 Breaststroke":      ["0:38.77","0:39.74"],
+        "100 Breaststroke":     ["1:23.66","1:25.75"],
+        "200 Breaststroke":     ["3:01.07","3:05.60"],
+        "50 Butterfly":         ["0:31.58","0:32.37"],
+        "100 Butterfly":        ["1:11.97","1:13.77"],
+        "200 Butterfly":        ["2:51.02","2:55.30"],
+        "200 Individual Medley":["2:37.17","2:41.10"],
+        "400 Individual Medley":["5:35.46","5:43.85"],
+      },
+      13: {
+        "50 Freestyle":         ["0:26.96","0:27.63"],
+        "100 Freestyle":        ["0:59.30","1:00.78"],
+        "200 Freestyle":        ["2:10.34","2:13.60"],
+        "400 Freestyle":        ["4:36.00","4:42.93"],
+        "800 Freestyle":        ["9:33.27","9:47.60"],
+        "1500 Freestyle":       ["18:24.67","18:52.29"],
+        "50 Backstroke":        ["0:31.52","0:32.31"],
+        "100 Backstroke":       ["1:07.97","1:09.67"],
+        "200 Backstroke":       ["2:26.75","2:30.42"],
+        "50 Breaststroke":      ["0:34.48","0:35.34"],
+        "100 Breaststroke":     ["1:16.72","1:18.64"],
+        "200 Breaststroke":     ["2:45.77","2:49.91"],
+        "50 Butterfly":         ["0:29.13","0:29.86"],
+        "100 Butterfly":        ["1:05.31","1:06.94"],
+        "200 Butterfly":        ["2:27.10","2:30.78"],
+        "200 Individual Medley":["2:22.21","2:25.77"],
+        "400 Individual Medley":["5:10.75","5:18.52"],
+      },
+      14: {
+        "50 Freestyle":         ["0:25.87","0:26.52"],
+        "100 Freestyle":        ["0:56.83","0:58.25"],
+        "200 Freestyle":        ["2:05.91","2:09.06"],
+        "400 Freestyle":        ["4:27.79","4:34.48"],
+        "800 Freestyle":        ["9:13.00","9:26.83"],
+        "1500 Freestyle":       ["17:53.81","18:20.66"],
+        "50 Backstroke":        ["0:30.01","0:30.76"],
+        "100 Backstroke":       ["1:04.96","1:06.58"],
+        "200 Backstroke":       ["2:23.25","2:26.83"],
+        "50 Breaststroke":      ["0:33.28","0:34.11"],
+        "100 Breaststroke":     ["1:13.71","1:15.55"],
+        "200 Breaststroke":     ["2:42.33","2:46.39"],
+        "50 Butterfly":         ["0:28.15","0:28.85"],
+        "100 Butterfly":        ["1:03.41","1:05.00"],
+        "200 Butterfly":        ["2:21.27","2:30.78"],
+        "200 Individual Medley":["2:18.33","2:25.77"],
+        "400 Individual Medley":["5:02.65","5:10.22"],
+      },
+      15: {
+        "50 Freestyle":         ["0:25.19","0:25.82"],
+        "100 Freestyle":        ["0:55.02","0:56.40"],
+        "200 Freestyle":        ["2:01.90","2:04.95"],
+        "400 Freestyle":        ["4:20.22","4:26.73"],
+        "800 Freestyle":        ["9:00.48","9:13.99"],
+        "1500 Freestyle":       ["17:32.46","17:58.77"],
+        "50 Backstroke":        ["0:28.92","0:29.64"],
+        "100 Backstroke":       ["1:02.89","1:04.46"],
+        "200 Backstroke":       ["2:18.19","2:21.64"],
+        "50 Breaststroke":      ["0:32.15","0:32.95"],
+        "100 Breaststroke":     ["1:10.53","1:12.29"],
+        "200 Breaststroke":     ["2:35.14","2:39.02"],
+        "50 Butterfly":         ["0:26.84","0:27.51"],
+        "100 Butterfly":        ["1:00.72","1:02.24"],
+        "200 Butterfly":        ["2:21.27","2:24.80"],
+        "200 Individual Medley":["2:14.81","2:21.79"],
+        "400 Individual Medley":["4:54.25","5:01.61"],
+      },
+      16: {
+        "50 Freestyle":         ["0:24.68","0:25.30"],
+        "100 Freestyle":        ["0:53.97","0:55.32"],
+        "200 Freestyle":        ["1:59.50","2:02.49"],
+        "400 Freestyle":        ["4:15.58","4:21.97"],
+        "800 Freestyle":        ["8:54.98","9:08.35"],
+        "1500 Freestyle":       ["17:07.14","17:32.82"],
+        "50 Backstroke":        ["0:28.33","0:29.04"],
+        "100 Backstroke":       ["1:01.27","1:02.80"],
+        "200 Backstroke":       ["2:15.96","2:19.36"],
+        "50 Breaststroke":      ["0:31.14","0:31.92"],
+        "100 Breaststroke":     ["1:09.44","1:11.18"],
+        "200 Breaststroke":     ["2:33.38","2:37.21"],
+        "50 Butterfly":         ["0:26.49","0:27.15"],
+        "100 Butterfly":        ["0:58.96","1:00.43"],
+        "200 Butterfly":        ["2:15.14","2:18.52"],
+        "200 Individual Medley":["2:14.81","2:18.18"],
+        "400 Individual Medley":["4:50.07","4:57.32"],
+      },
+      17: {
+        "50 Freestyle":         ["0:24.43","0:25.04"],
+        "100 Freestyle":        ["0:53.31","0:54.64"],
+        "200 Freestyle":        ["1:57.88","2:00.83"],
+        "400 Freestyle":        ["4:10.65","4:16.92"],
+        "800 Freestyle":        ["8:49.63","9:02.87"],
+        "1500 Freestyle":       ["16:56.86","17:22.28"],
+        "50 Backstroke":        ["0:27.80","0:28.50"],
+        "100 Backstroke":       ["1:00.66","1:02.18"],
+        "200 Backstroke":       ["2:14.60","2:17.97"],
+        "50 Breaststroke":      ["0:30.56","0:31.32"],
+        "100 Breaststroke":     ["1:08.59","1:10.30"],
+        "200 Breaststroke":     ["2:31.85","2:35.65"],
+        "50 Butterfly":         ["0:26.05","0:26.70"],
+        "100 Butterfly":        ["0:58.25","0:59.71"],
+        "200 Butterfly":        ["2:13.26","2:16.59"],
+        "200 Individual Medley":["2:12.30","2:15.61"],
+        "400 Individual Medley":["4:45.93","4:53.08"],
+      },
+    },
+  },
+  F: {
+    LC: {
+      11: {
+        "50 Freestyle":         ["0:32.01","0:32.81"],
+        "100 Freestyle":        ["1:10.47","1:12.23"],
+        "200 Freestyle":        ["2:32.55","2:36.36"],
+        "400 Freestyle":        ["5:20.67","5:28.69"],
+        "800 Freestyle":        ["11:03.25","11:19.83"],
+        "50 Backstroke":        ["0:37.90","0:38.85"],
+        "100 Backstroke":       ["1:20.67","1:22.69"],
+        "200 Backstroke":       ["2:52.80","2:57.12"],
+        "50 Breaststroke":      ["0:42.84","0:43.91"],
+        "100 Breaststroke":     ["1:32.69","1:35.01"],
+        "200 Breaststroke":     ["3:17.99","3:22.94"],
+        "50 Butterfly":         ["0:35.56","0:36.45"],
+        "100 Butterfly":        ["1:21.21","1:23.24"],
+        "200 Butterfly":        ["3:17.65","3:22.59"],
+        "200 Individual Medley":["2:53.60","2:57.94"],
+        "400 Individual Medley":["6:07.64","6:16.83"],
+      },
+      12: {
+        "50 Freestyle":         ["0:30.46","0:31.22"],
+        "100 Freestyle":        ["1:06.89","1:08.56"],
+        "200 Freestyle":        ["2:27.02","2:30.70"],
+        "400 Freestyle":        ["5:09.00","5:16.73"],
+        "800 Freestyle":        ["10:37.67","10:53.61"],
+        "50 Backstroke":        ["0:35.93","0:36.83"],
+        "100 Backstroke":       ["1:17.54","1:19.48"],
+        "200 Backstroke":       ["2:47.09","2:51.27"],
+        "50 Breaststroke":      ["0:40.26","0:41.27"],
+        "100 Breaststroke":     ["1:28.15","1:30.35"],
+        "200 Breaststroke":     ["3:08.97","3:13.69"],
+        "50 Butterfly":         ["0:33.29","0:34.12"],
+        "100 Butterfly":        ["1:16.49","1:18.40"],
+        "200 Butterfly":        ["3:00.18","3:04.68"],
+        "200 Individual Medley":["2:47.34","2:51.52"],
+        "400 Individual Medley":["5:53.99","6:02.84"],
+      },
+      13: {
+        "50 Freestyle":         ["0:28.92","0:29.64"],
+        "100 Freestyle":        ["1:03.12","1:04.70"],
+        "200 Freestyle":        ["2:16.24","2:19.65"],
+        "400 Freestyle":        ["4:47.13","4:54.31"],
+        "800 Freestyle":        ["9:59.63","10:14.62"],
+        "1500 Freestyle":       ["19:22.99","19:52.06"],
+        "50 Backstroke":        ["0:33.40","0:34.24"],
+        "100 Backstroke":       ["1:11.98","1:13.78"],
+        "200 Backstroke":       ["2:36.55","2:40.46"],
+        "50 Breaststroke":      ["0:36.58","0:37.49"],
+        "100 Breaststroke":     ["1:20.88","1:22.90"],
+        "200 Breaststroke":     ["2:57.15","3:01.58"],
+        "50 Butterfly":         ["0:30.79","0:31.56"],
+        "100 Butterfly":        ["1:09.74","1:11.48"],
+        "200 Butterfly":        ["2:38.62","2:42.59"],
+        "200 Individual Medley":["2:36.69","2:40.61"],
+        "400 Individual Medley":["5:30.89","5:39.16"],
+      },
+      14: {
+        "50 Freestyle":         ["0:28.63","0:29.35"],
+        "100 Freestyle":        ["1:02.31","1:03.87"],
+        "200 Freestyle":        ["2:14.88","2:19.65"],
+        "400 Freestyle":        ["4:44.26","4:51.37"],
+        "800 Freestyle":        ["9:53.63","10:08.47"],
+        "1500 Freestyle":       ["19:11.36","19:40.14"],
+        "50 Backstroke":        ["0:32.76","0:33.58"],
+        "100 Backstroke":       ["1:11.26","1:13.04"],
+        "200 Backstroke":       ["2:34.43","2:38.29"],
+        "50 Breaststroke":      ["0:36.21","0:37.12"],
+        "100 Breaststroke":     ["1:20.07","1:22.07"],
+        "200 Breaststroke":     ["2:55.38","2:59.76"],
+        "50 Butterfly":         ["0:30.48","0:31.24"],
+        "100 Butterfly":        ["1:09.04","1:10.77"],
+        "200 Butterfly":        ["2:38.62","2:42.59"],
+        "200 Individual Medley":["2:34.61","2:38.48"],
+        "400 Individual Medley":["5:27.58","5:35.77"],
+      },
+      15: {
+        "50 Freestyle":         ["0:28.25","0:28.96"],
+        "100 Freestyle":        ["1:01.51","1:03.05"],
+        "200 Freestyle":        ["2:14.88","2:18.25"],
+        "400 Freestyle":        ["4:41.42","4:48.46"],
+        "800 Freestyle":        ["9:47.69","10:02.36"],
+        "1500 Freestyle":       ["18:59.85","19:23.35"],
+        "50 Backstroke":        ["0:32.14","0:32.94"],
+        "100 Backstroke":       ["1:10.22","1:11.98"],
+        "200 Backstroke":       ["2:32.29","2:36.10"],
+        "50 Breaststroke":      ["0:35.85","0:36.75"],
+        "100 Breaststroke":     ["1:19.27","1:21.25"],
+        "200 Breaststroke":     ["2:53.63","2:57.97"],
+        "50 Butterfly":         ["0:29.86","0:30.61"],
+        "100 Butterfly":        ["1:07.88","1:09.58"],
+        "200 Butterfly":        ["2:37.03","2:40.96"],
+        "200 Individual Medley":["2:33.06","2:36.89"],
+        "400 Individual Medley":["5:24.30","5:32.41"],
+      },
+      16: {
+        "50 Freestyle":         ["0:27.97","0:28.67"],
+        "100 Freestyle":        ["1:00.49","1:02.00"],
+        "200 Freestyle":        ["2:13.28","2:16.61"],
+        "400 Freestyle":        ["4:38.61","4:45.58"],
+        "800 Freestyle":        ["9:41.81","9:56.36"],
+        "1500 Freestyle":       ["18:48.45","19:16.66"],
+        "50 Backstroke":        ["0:31.78","0:32.57"],
+        "100 Backstroke":       ["1:08.79","1:10.51"],
+        "200 Backstroke":       ["2:30.05","2:33.80"],
+        "50 Breaststroke":      ["0:35.49","0:36.38"],
+        "100 Breaststroke":     ["1:18.48","1:20.44"],
+        "200 Breaststroke":     ["2:51.89","2:56.19"],
+        "50 Butterfly":         ["0:29.56","0:30.30"],
+        "100 Butterfly":        ["1:06.73","1:08.43"],
+        "200 Butterfly":        ["2:35.08","2:38.96"],
+        "200 Individual Medley":["2:30.69","2:34.46"],
+        "400 Individual Medley":["5:21.06","5:29.09"],
+      },
+      17: {
+        "50 Freestyle":         ["0:27.69","0:28.38"],
+        "100 Freestyle":        ["0:59.89","1:01.39"],
+        "200 Freestyle":        ["2:11.95","2:15.25"],
+        "400 Freestyle":        ["4:35.82","4:42.72"],
+        "800 Freestyle":        ["9:35.99","9:50.39"],
+        "1500 Freestyle":       ["18:37.17","19:05.10"],
+        "50 Backstroke":        ["0:31.46","0:32.25"],
+        "100 Backstroke":       ["1:07.99","1:09.69"],
+        "200 Backstroke":       ["2:28.55","2:32.26"],
+        "50 Breaststroke":      ["0:35.14","0:36.02"],
+        "100 Breaststroke":     ["1:17.70","1:19.64"],
+        "200 Breaststroke":     ["2:50.17","2:54.42"],
+        "50 Butterfly":         ["0:29.20","0:29.93"],
+        "100 Butterfly":        ["1:06.30","1:07.96"],
+        "200 Butterfly":        ["2:33.53","2:37.37"],
+        "200 Individual Medley":["2:29.13","2:32.91"],
+        "400 Individual Medley":["5:17.85","5:25.80"],
+      },
+    },
+    SC: {
+      11: {
+        "50 Freestyle":         ["0:31.38","0:32.16"],
+        "100 Freestyle":        ["1:09.09","1:10.82"],
+        "200 Freestyle":        ["2:29.56","2:33.30"],
+        "400 Freestyle":        ["5:14.38","5:22.24"],
+        "800 Freestyle":        ["10:50.25","11:06.51"],
+        "50 Backstroke":        ["0:37.16","0:38.09"],
+        "100 Backstroke":       ["1:19.09","1:21.07"],
+        "200 Backstroke":       ["2:49.41","2:53.65"],
+        "50 Breaststroke":      ["0:42.00","0:43.05"],
+        "100 Breaststroke":     ["1:30.87","1:33.14"],
+        "200 Breaststroke":     ["3:14.11","3:18.96"],
+        "50 Butterfly":         ["0:34.86","0:35.73"],
+        "100 Butterfly":        ["1:19.62","1:21.61"],
+        "200 Butterfly":        ["3:13.77","3:18.61"],
+        "200 Individual Medley":["2:50.20","2:54.46"],
+        "400 Individual Medley":["6:00.43","6:09.44"],
+      },
+      12: {
+        "50 Freestyle":         ["0:29.86","0:30.61"],
+        "100 Freestyle":        ["1:05.58","1:07.22"],
+        "200 Freestyle":        ["2:24.14","2:27.74"],
+        "400 Freestyle":        ["5:02.94","5:10.51"],
+        "800 Freestyle":        ["10:25.17","10:40.80"],
+        "50 Backstroke":        ["0:35.23","0:36.11"],
+        "100 Backstroke":       ["1:16.02","1:17.92"],
+        "200 Backstroke":       ["2:43.81","2:47.91"],
+        "50 Breaststroke":      ["0:39.47","0:40.46"],
+        "100 Breaststroke":     ["1:26.42","1:28.58"],
+        "200 Breaststroke":     ["3:05.26","3:09.89"],
+        "50 Butterfly":         ["0:32.64","0:33.46"],
+        "100 Butterfly":        ["1:14.99","1:16.86"],
+        "200 Butterfly":        ["2:56.65","3:01.07"],
+        "200 Individual Medley":["2:44.06","2:48.16"],
+        "400 Individual Medley":["5:47.05","5:55.73"],
+      },
+      13: {
+        "50 Freestyle":         ["0:28.35","0:29.06"],
+        "100 Freestyle":        ["1:01.88","1:03.43"],
+        "200 Freestyle":        ["2:13.57","2:18.29"],
+        "400 Freestyle":        ["4:41.50","4:48.54"],
+        "800 Freestyle":        ["9:47.87","10:02.57"],
+        "1500 Freestyle":       ["19:00.19","19:28.69"],
+        "50 Backstroke":        ["0:32.75","0:33.57"],
+        "100 Backstroke":       ["1:10.57","1:12.33"],
+        "200 Backstroke":       ["2:33.48","2:37.32"],
+        "50 Breaststroke":      ["0:35.86","0:36.76"],
+        "100 Breaststroke":     ["1:19.29","1:21.27"],
+        "200 Breaststroke":     ["2:53.68","2:58.02"],
+        "50 Butterfly":         ["0:30.19","0:30.94"],
+        "100 Butterfly":        ["1:08.37","1:10.08"],
+        "200 Butterfly":        ["2:37.08","2:41.01"],
+        "200 Individual Medley":["2:31.58","2:35.37"],
+        "400 Individual Medley":["5:24.40","5:32.51"],
+      },
+      14: {
+        "50 Freestyle":         ["0:28.07","0:28.77"],
+        "100 Freestyle":        ["1:01.09","1:02.62"],
+        "200 Freestyle":        ["2:13.57","2:16.91"],
+        "400 Freestyle":        ["4:38.69","4:45.66"],
+        "800 Freestyle":        ["9:41.99","9:56.54"],
+        "1500 Freestyle":       ["18:48.78","19:17.00"],
+        "50 Backstroke":        ["0:32.12","0:32.92"],
+        "100 Backstroke":       ["1:09.86","1:11.61"],
+        "200 Backstroke":       ["2:31.40","2:35.19"],
+        "50 Breaststroke":      ["0:35.50","0:36.39"],
+        "100 Breaststroke":     ["1:18.50","1:20.46"],
+        "200 Breaststroke":     ["2:51.94","2:56.24"],
+        "50 Butterfly":         ["0:29.88","0:30.63"],
+        "100 Butterfly":        ["1:07.69","1:09.38"],
+        "200 Butterfly":        ["2:35.51","2:39.40"],
+        "200 Individual Medley":["2:21.16","2:35.37"],
+        "400 Individual Medley":["5:21.16","5:29.19"],
+      },
+      15: {
+        "50 Freestyle":         ["0:27.70","0:28.39"],
+        "100 Freestyle":        ["1:00.30","1:01.81"],
+        "200 Freestyle":        ["2:12.24","2:15.55"],
+        "400 Freestyle":        ["4:35.90","4:42.80"],
+        "800 Freestyle":        ["9:36.17","9:50.57"],
+        "1500 Freestyle":       ["18:37.50","19:05.44"],
+        "50 Backstroke":        ["0:31.51","0:32.30"],
+        "100 Backstroke":       ["1:08.84","1:10.56"],
+        "200 Backstroke":       ["2:29.30","2:33.03"],
+        "50 Breaststroke":      ["0:35.15","0:36.03"],
+        "100 Breaststroke":     ["1:17.72","1:19.66"],
+        "200 Breaststroke":     ["2:50.23","2:54.49"],
+        "50 Butterfly":         ["0:29.27","0:30.00"],
+        "100 Butterfly":        ["1:06.55","1:08.21"],
+        "200 Butterfly":        ["2:33.95","2:37.80"],
+        "200 Individual Medley":["2:27.74","2:33.81"],
+        "400 Individual Medley":["5:17.94","5:25.89"],
+      },
+      16: {
+        "50 Freestyle":         ["0:27.42","0:28.11"],
+        "100 Freestyle":        ["0:59.30","1:00.78"],
+        "200 Freestyle":        ["2:10.67","2:13.94"],
+        "400 Freestyle":        ["4:33.15","4:39.98"],
+        "800 Freestyle":        ["9:30.40","9:44.66"],
+        "1500 Freestyle":       ["18:26.32","18:53.98"],
+        "50 Backstroke":        ["0:31.16","0:31.94"],
+        "100 Backstroke":       ["1:07.44","1:09.13"],
+        "200 Backstroke":       ["2:27.11","2:30.79"],
+        "50 Breaststroke":      ["0:34.79","0:35.66"],
+        "100 Breaststroke":     ["1:16.94","1:18.85"],
+        "200 Breaststroke":     ["2:48.52","2:52.73"],
+        "50 Butterfly":         ["0:28.98","0:29.70"],
+        "100 Butterfly":        ["1:05.74","1:07.38"],
+        "200 Butterfly":        ["2:32.04","2:35.84"],
+        "200 Individual Medley":["2:27.74","2:31.43"],
+        "400 Individual Medley":["5:14.76","5:22.63"],
+      },
+      17: {
+        "50 Freestyle":         ["0:27.15","0:27.83"],
+        "100 Freestyle":        ["0:58.72","1:00.19"],
+        "200 Freestyle":        ["2:09.36","2:12.59"],
+        "400 Freestyle":        ["4:30.41","4:37.17"],
+        "800 Freestyle":        ["9:24.70","9:38.82"],
+        "1500 Freestyle":       ["18:15.26","18:42.64"],
+        "50 Backstroke":        ["0:30.84","0:31.61"],
+        "100 Backstroke":       ["1:06.66","1:08.33"],
+        "200 Backstroke":       ["2:25.64","2:29.28"],
+        "50 Breaststroke":      ["0:34.45","0:35.31"],
+        "100 Breaststroke":     ["1:16.18","1:18.08"],
+        "200 Breaststroke":     ["2:46.83","2:51.00"],
+        "50 Butterfly":         ["0:28.63","0:29.35"],
+        "100 Butterfly":        ["1:05.00","1:06.63"],
+        "200 Butterfly":        ["2:30.52","2:34.28"],
+        "200 Individual Medley":["2:26.25","2:29.91"],
+        "400 Individual Medley":["5:11.82","5:19.41"],
+      },
+    },
+  },
+};
+ 
+function parseTime(t) {
+  t = String(t).trim().replace(/^0:/,"");
+  if (t.includes(":")) { const p=t.split(":"); return parseFloat(p[0])*60+parseFloat(p[1]); }
+  return parseFloat(t);
+}
+ 
+function daysUntilJune1() {
+  const now = new Date();
+  let june1 = new Date(now.getFullYear(), 5, 1);
+  if (now >= june1) june1 = new Date(now.getFullYear()+1, 5, 1);
+  return Math.ceil((june1-now)/86400000);
+}
+ 
+function getOntarioAge(dob) {
+  const birth = new Date(dob);
+  const now = new Date();
+  const june1 = new Date(now.getFullYear(), 5, 1);
+  let age = june1.getFullYear()-birth.getFullYear();
+  if (june1 < new Date(june1.getFullYear(), birth.getMonth(), birth.getDate())) age--;
+  return age;
+}
+ 
+function ageToKey(age) {
+  if (age <= 11) return 11;
+  if (age === 12) return 12;
+  if (age <= 13) return 13;
+  if (age === 14) return 14;
+  if (age === 15) return 15;
+  if (age === 16) return 16;
+  return 17;
+}
+ 
+function handleDOB() {
+  const dob = document.getElementById("std-dob").value;
+  if (!dob) return;
+  localStorage.setItem("swimedge_dob", dob);
+  const age = getOntarioAge(dob);
+  const key = ageToKey(age);
+  const ageSelect = document.getElementById("std-age");
+  ageSelect.value = String(key);
+ 
+  // Age-up banner
+  const banner = document.getElementById("ageup-banner");
+  const nextKey = key < 17 ? ageToKey(age+1) : null;
+  if (nextKey && nextKey !== key) {
+    const days = daysUntilJune1();
+    const labels = {11:"11 & Under",12:"12",13:"13 & Under",14:"14",15:"15",16:"16",17:"17 & Over"};
+    document.getElementById("ageup-text").textContent = `Age-up: You move to the ${labels[nextKey]} age group on June 1`;
+    document.getElementById("ageup-sub").textContent = `${days} day${days!==1?"s":""} away — standards will change. Check the next age group now.`;
+    banner.style.display = "flex";
+  } else {
+    banner.style.display = "none";
+  }
+  renderStandards();
+}
+ 
+function getBestSec(eventName, course) {
+  // Convert standard event name "50 Breaststroke" → log key "Breaststroke 50m (Short Course (25m))"
+  const parts = eventName.split(" ");
+  let dist, stroke;
+  if (parts[0] === "200" && parts[1] === "Individual") {
+    dist="200m"; stroke="Individual Medley";
+  } else if (parts[0] === "400" && parts[1] === "Individual") {
+    dist="400m"; stroke="Individual Medley";
+  } else {
+    dist = parts[0]+"m";
+    stroke = parts.slice(1).join(" ");
+  }
+  const pool = course==="SC" ? "Short Course (25m)" : "Long Course (50m)";
+  const key = `${stroke} ${dist} (${pool})`;
+  const evts = times.filter(t => `${t.stroke} ${t.distance} (${t.pooltype})`===key);
+  if (!evts.length) return null;
+  return Math.min(...evts.map(t=>parseTime(t.time)));
+}
+ 
+function renderStandards() {
+  const gender = document.getElementById("std-gender").value;
+  const ageKey = parseInt(document.getElementById("std-age").value);
+  const course = document.getElementById("std-course").value;
+  const block = S[gender]?.[course]?.[ageKey];
+  const container = document.getElementById("standards-rows");
+  if (!block) { container.innerHTML='<div style="padding:32px;color:var(--gray-text);text-align:center;">No data for this selection.</div>'; return; }
+ 
+  container.innerHTML = "";
+  Object.entries(block).forEach(([evt,[osc,oag]])=>{
+    const oscSec = parseTime(osc);
+    const oagSec = parseTime(oag);
+    const best = getBestSec(evt, course);
+ 
+    let oscPill, oagPill;
+    if (best===null) {
+      oscPill = '<span class="gap-pill gap-far">—</span>';
+      oagPill = '<span class="gap-pill gap-far">—</span>';
     } else {
-      notesDiv.innerHTML = '<p class="empty" style="margin-bottom:16px;">Add notes when logging times to see insights here.</p>';
+      const dOsc = best - oscSec;
+      const dOag = best - oagSec;
+      oscPill = dOsc<=0 ? '<span class="gap-pill gap-achieved">✓ Hit</span>'
+        : `<span class="gap-pill ${dOsc<2?"gap-close":"gap-far"}">+${dOsc.toFixed(2)}s</span>`;
+      oagPill = dOag<=0 ? '<span class="gap-pill gap-achieved">✓ Hit</span>'
+        : `<span class="gap-pill ${dOag<2?"gap-close":"gap-far"}">+${dOag.toFixed(2)}s</span>`;
     }
-
-    let timesDiv = document.getElementById("event-times");
-    timesDiv.innerHTML = "";
-    [...eventTimes].reverse().forEach(t => {
-      let d = document.createElement("div");
-      d.className = "entry";
-      d.innerHTML = `
-        <div>
-          <span class="time-val">${t.time}</span>${t.isPB ? '<span class="pb-tag">PB</span>' : ''}
-          <div class="entry-meta">${t.date}</div>
-          ${t.notes ? `<div class="entry-notes">${t.notes}</div>` : ''}
-        </div>
-        <button class="delete" onclick="deleteTime('${t.date}','${t.time}')">✕</button>
-      `;
-      timesDiv.appendChild(d);
-    });
+ 
+    const row = document.createElement("div");
+    row.className = "standard-row";
+    row.innerHTML = `
+      <div class="standard-event">${evt}</div>
+      <div class="standard-time">${osc}</div>
+      <div class="standard-time">${oag}</div>
+      <div>${oscPill}</div>
+      <div>${oagPill}</div>`;
+    container.appendChild(row);
+  });
+}
+ 
+// ── DASHBOARD ───────────────────────────────────────────
+function formatEventName(key) {
+  const m = key.match(/^(.+?) (\d+m) \((Short Course \(25m\)|Long Course \(50m\))\)$/);
+  if (!m) return key;
+  return m[2]+" "+m[1]+" · "+(m[3].includes("Short")?"SC":"LC");
+}
+ 
+function showTab(name) {
+  const names=["dashboard","log","standards","plan"];
+  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",names[i]===name));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("tab-"+name).classList.add("active");
+  if (name==="dashboard") renderDashboard();
+  if (name==="standards") {
+    const dob = localStorage.getItem("swimedge_dob");
+    if (dob) { document.getElementById("std-dob").value=dob; handleDOB(); }
+    else renderStandards();
   }
-
-  function closeEvent() {
-    document.getElementById("event-list").style.display = "flex";
-    document.querySelector(".stats-grid").style.display = "grid";
-    document.querySelector("#tab-dashboard h2").style.display = "block";
-    document.getElementById("event-detail").style.display = "none";
-    if (currentChart) { currentChart.destroy(); currentChart = null; }
+}
+ 
+function timeToSec(t) {
+  if (t.includes(":")) { const p=t.split(":"); return parseFloat(p[0])*60+parseFloat(p[1]); }
+  return parseFloat(t);
+}
+ 
+function submitTime() {
+  const stroke=document.getElementById("stroke").value;
+  const distance=document.getElementById("distance").value;
+  const pooltype=document.getElementById("pooltype").value;
+  const time=document.getElementById("time").value;
+  const date=document.getElementById("date").value;
+  const notes=document.getElementById("notes").value;
+  if (!stroke||!distance||!pooltype||!time||!date){alert("Fill in all required fields.");return;}
+  const key=`${stroke} ${distance} (${pooltype})`;
+  const existing=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key);
+  const isPB=existing.length===0||timeToSec(time)<Math.min(...existing.map(t=>timeToSec(t.time)));
+  times.push({stroke,distance,pooltype,time,date,notes,isPB});
+  save();
+  ["stroke","distance","pooltype","time","date","notes"].forEach(id=>document.getElementById(id).value="");
+  if (isPB) alert("🎉 New personal best!");
+  showTab("dashboard");
+}
+ 
+function renderDashboard() {
+  const bests={}, events={};
+  times.forEach(t=>{
+    const key=`${t.stroke} ${t.distance} (${t.pooltype})`;
+    if (!events[key]) events[key]=[];
+    events[key].push(t);
+    if (!bests[key]||timeToSec(t.time)<timeToSec(bests[key].time)) bests[key]=t;
+  });
+  document.getElementById("stat-total").textContent=times.length;
+  document.getElementById("stat-pbs").textContent=Object.keys(bests).length;
+  document.getElementById("stat-events").textContent=Object.keys(events).length;
+  if (times.length>0) {
+    const dates=times.map(t=>new Date(t.date));
+    document.getElementById("stat-days").textContent=Math.ceil((new Date()-new Date(Math.min(...dates)))/86400000);
+  } else document.getElementById("stat-days").textContent="0";
+ 
+  const list=document.getElementById("event-list");
+  if (!Object.keys(events).length) {
+    list.innerHTML='<div class="empty-state"><div class="empty-icon">🏊</div><p>No times logged yet.<br>Head to Log Time to get started.</p></div>';
+    return;
   }
-
-  function deleteTime(date, time) {
-    if (confirm("Delete this time?")) {
-      let idx = times.findIndex(t => t.date === date && t.time === time);
-      if (idx > -1) { times.splice(idx, 1); save(); renderDashboard(); closeEvent(); }
+  list.innerHTML="";
+  Object.keys(events).forEach(key=>{
+    const pb=bests[key], count=events[key].length;
+    const card=document.createElement("div");
+    card.className="event-card";
+    card.innerHTML=`<div><div class="event-name">${formatEventName(key)}</div><div class="event-pb">PB: ${pb.time}</div><div class="event-meta">${count} time${count>1?"s":""} logged · Last: ${events[key][events[key].length-1].date}</div></div>`;
+    card.onclick=()=>openEvent(key);
+    list.appendChild(card);
+  });
+}
+ 
+function openEvent(key) {
+  document.getElementById("dashboard-main").style.display="none";
+  document.getElementById("event-detail").style.display="block";
+  document.getElementById("event-detail-title").textContent=formatEventName(key);
+  const evtTimes=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if (currentChart) currentChart.destroy();
+  const ctx=document.getElementById("progressChart").getContext("2d");
+  currentChart=new Chart(ctx,{
+    type:"line",
+    data:{
+      labels:evtTimes.map(t=>t.date),
+      datasets:[{label:formatEventName(key),data:evtTimes.map(t=>timeToSec(t.time)),borderColor:"#c8f65d",backgroundColor:"rgba(200,246,93,0.06)",pointBackgroundColor:evtTimes.map(t=>t.isPB?"#c8f65d":"#555"),pointRadius:6,tension:0.35,fill:true}]
+    },
+    options:{
+      responsive:true,
+      scales:{
+        y:{reverse:true,ticks:{color:"#888",callback:v=>v.toFixed(2)+"s"},grid:{color:"rgba(255,255,255,0.04)"}},
+        x:{ticks:{color:"#888"},grid:{color:"rgba(255,255,255,0.04)"}}
+      },
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const s=ctx.raw,m=Math.floor(s/60),sec=(s%60).toFixed(2);return m>0?m+":"+sec.padStart(5,"0"):sec+"s";}}}}
     }
+  });
+ 
+  const notesDiv=document.getElementById("notes-insights");
+  const withNotes=evtTimes.filter(t=>t.notes&&t.notes.trim());
+  if (withNotes.length>0) {
+    const good=withNotes.filter(t=>{const n=t.notes.toLowerCase();return (n.includes("good")||n.includes("strong")||n.includes("fast")||n.includes("great"))&&!n.includes("bad")&&!n.includes("slow")&&!n.includes("flat");});
+    const bad=withNotes.filter(t=>{const n=t.notes.toLowerCase();return n.includes("bad")||n.includes("flat")||n.includes("tired")||n.includes("slow")||n.includes("poor")||n.includes("off");});
+    notesDiv.innerHTML=`<div class="insights-row"><div class="insight-box"><div class="insight-label">What's been working</div><div class="insight-text">${good.length?good.map(t=>`"${t.notes}" <span style="color:#444;font-size:11px;">(${t.date})</span>`).join("<br>"):'<span style="color:var(--gray-text)">Nothing flagged as positive yet.</span>'}</div></div><div class="insight-box"><div class="insight-label">What to work on</div><div class="insight-text">${bad.length?bad.map(t=>`"${t.notes}" <span style="color:#444;font-size:11px;">(${t.date})</span>`).join("<br>"):'<span style="color:var(--gray-text)">Nothing flagged as negative yet.</span>'}</div></div></div>`;
+  } else {
+    notesDiv.innerHTML='<p style="color:var(--gray-text);font-size:14px;margin-bottom:24px;">Add notes when logging times to see pattern insights here.</p>';
   }
-
-  async function getPlan() {
-    if (times.length === 0) {
-      alert("Log at least one time before generating a plan.");
-      return;
-    }
-
-    document.getElementById("loading").style.display = "block";
-    document.getElementById("plan").classList.remove("visible");
-
-    await new Promise(r => setTimeout(r, 1500));
-
-    let fakePlan = `PERFORMANCE ANALYSIS
-Your logged times show a swimmer with strong sprint capability. Your breaststroke is your primary event and your SC times reflect good turn execution. Keep in mind SC and LC times are not directly comparable — SC will always be faster due to additional pushoffs.
-
-TECHNIQUE CUES
-1. During the glide phase, keep your hips high and core tight. Any hip drop here costs you distance per stroke.
-2. Time your breath so your head returns to neutral position before your hands begin the outsweep — breathing late disrupts your pull timing.
-3. On your kick, focus on bringing your heels toward your seat rather than dropping your knees. Knee drop creates drag.
-
-RACE STRATEGY
-For your 50m breaststroke — your strongest event — execute a clean dive and maximize your underwater. The race is decided in the first 15m and the final 10m. Stay long through the middle and don't rush your stroke rate at the end.
-
-STRENGTHS & WEAKNESSES
-Strength: Your turn and pushoff execution is clearly above average based on your SC performance relative to LC.
-Weakness: The SC-to-LC gap suggests over-reliance on walls. Open water stroke efficiency needs work.
-
-NEXT MEET TARGET
-Aim for a 0.1–0.2 second improvement in your primary event. Based on your current data, a realistic target is achievable with consistent technique focus over the next 3–4 weeks.`;
-
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("plan").textContent = fakePlan;
-    document.getElementById("plan").classList.add("visible");
-  }
-
+ 
+  const timesDiv=document.getElementById("event-times");
+  timesDiv.innerHTML="";
+  [...evtTimes].reverse().forEach(t=>{
+    const d=document.createElement("div");
+    d.className="entry";
+    d.innerHTML=`<div><span class="time-val">${t.time}</span>${t.isPB?'<span class="pb-tag">PB</span>':''}<div class="entry-meta">${t.date}</div>${t.notes?`<div class="entry-notes">${t.notes}</div>`:''}</div><button class="delete-btn" onclick="deleteTime('${t.date}','${t.time}')">✕</button>`;
+    timesDiv.appendChild(d);
+  });
+}
+ 
+function closeEvent() {
+  document.getElementById("dashboard-main").style.display="block";
+  document.getElementById("event-detail").style.display="none";
+  if (currentChart){currentChart.destroy();currentChart=null;}
   renderDashboard();
+}
+ 
+function deleteTime(date,time) {
+  if (confirm("Delete this time?")) {
+    const idx=times.findIndex(t=>t.date===date&&t.time===time);
+    if (idx>-1){times.splice(idx,1);save();closeEvent();}
+  }
+}
+ 
+async function getPlan() {
+  if (!times.length){alert("Log at least one time before generating a plan.");return;}
+  document.getElementById("loading").style.display="block";
+  const planEl=document.getElementById("plan");
+  planEl.classList.remove("visible");
+  await new Promise(r=>setTimeout(r,1400));
+  const fakePlan=`PERFORMANCE ANALYSIS\nYour logged times show a swimmer with strong sprint capability. Your breaststroke is your primary event and your SC times reflect good turn execution. Keep in mind SC and LC times are not directly comparable — SC will always be faster due to additional pushoffs.\n\nTECHNIQUE CUES\n1. During the glide phase, keep your hips high and core tight. Any hip drop here costs you distance per stroke.\n2. Time your breath so your head returns to neutral before your hands begin the outsweep — breathing late disrupts pull timing.\n3. On your kick, bring your heels toward your seat rather than dropping your knees. Knee drop creates drag.\n\nRACE STRATEGY\nFor your 50m breaststroke — execute a clean dive and maximize your underwater. The race is decided in the first 15m and the final 10m. Stay long through the middle and don't rush stroke rate at the end.\n\nSTRENGTHS & WEAKNESSES\nStrength: Your turn and pushoff execution is clearly above average based on SC performance relative to LC.\nWeakness: The SC-to-LC gap suggests over-reliance on walls. Open water stroke efficiency needs work.\n\nNEXT MEET TARGET\nAim for 0.1–0.2 second improvement in your primary event. Based on current data, achievable with consistent technique focus over the next 3–4 weeks.`;
+  document.getElementById("loading").style.display="none";
+  planEl.textContent=fakePlan;
+  planEl.classList.add("visible");
+}
+ 
+renderDashboard();
 </script>
 </body>
 </html>
-```
+
+ 
