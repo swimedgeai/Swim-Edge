@@ -1,282 +1,892 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Swim Edge — Your AI Swimming Coach</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swim Edge — Performance Intelligence for Swimmers</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://tally.so/widgets/embed.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0a0f1e;
-      color: white;
+    :root {
+      --black: #080808;
+      --white: #f5f3ef;
+      --accent: #c8f65d;
+      --accent-dim: rgba(200, 246, 93, 0.15);
+      --gray: #1a1a1a;
+      --gray-mid: #2a2a2a;
+      --gray-text: #888;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* CURSOR */
+    * { cursor: none; }
+    #cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(200,246,93,0.4);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.08s ease;
+    }
+
+    /* NAV */
     nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 40px;
-      border-bottom: 1px solid #1a2035;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      background: rgba(8,8,8,0.7);
     }
-    nav img { height: 40px; }
-    nav button {
-      padding: 10px 24px;
-      background: #00c9ff;
-      color: #0a0f1e;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .hero {
-      text-align: center;
-      padding: 100px 20px 80px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    .hero h1 {
-      font-size: 52px;
-      line-height: 1.15;
-      margin-bottom: 20px;
-    }
-    .hero h1 span { color: #00c9ff; }
-    .hero p {
-      font-size: 18px;
-      color: #aaaaaa;
-      line-height: 1.7;
-      margin-bottom: 40px;
-    }
-    .hero-buttons {
+
+    .nav-logo {
       display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
     }
+
+    .nav-logo img { height: 28px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      color: var(--gray-text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      padding: 10px 22px;
+      background: var(--accent);
+      color: var(--black);
+      border: none;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      transform: scale(1.03);
+      background: #d4ff66;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 50%, rgba(200,246,93,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,246,93,0.03) 0%, transparent 60%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid rgba(200,246,93,0.3);
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 32px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-badge span {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--gray-text);
+      line-height: 1.6;
+      max-width: 480px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
     .btn-primary {
       padding: 14px 32px;
-      background: #00c9ff;
-      color: #0a0f1e;
+      background: var(--accent);
+      color: var(--black);
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.2s;
     }
-    .btn-secondary {
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #d4ff66;
+      box-shadow: 0 12px 32px rgba(200,246,93,0.25);
+    }
+
+    .btn-ghost {
       padding: 14px 32px;
       background: transparent;
-      color: #00c9ff;
-      border: 1px solid #00c9ff;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 400;
+      transition: all 0.2s;
     }
+
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* 3D ORBS */
+    .hero-visual {
+      position: absolute;
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      height: 420px;
+      animation: fadeUp 1s ease 0.4s both;
+    }
+
+    .orb-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-16px) rotate(1deg); }
+      66% { transform: translateY(8px) rotate(-1deg); }
+    }
+
+    .orb-main {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(200,246,93,0.9) 0%,
+        rgba(120,180,30,0.6) 35%,
+        rgba(40,80,10,0.4) 65%,
+        rgba(10,20,5,0.8) 100%);
+      box-shadow:
+        0 0 80px rgba(200,246,93,0.2),
+        0 0 160px rgba(200,246,93,0.08),
+        inset 0 0 60px rgba(0,0,0,0.4);
+    }
+
+    .orb-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      border: 1px solid rgba(200,246,93,0.2);
+      animation: ringRotate 12s linear infinite;
+    }
+
+    .orb-ring:nth-child(2) {
+      width: 320px; height: 320px;
+      margin: -160px 0 0 -160px;
+      border-color: rgba(200,246,93,0.15);
+      animation-duration: 18s;
+    }
+
+    .orb-ring:nth-child(3) {
+      width: 380px; height: 380px;
+      margin: -190px 0 0 -190px;
+      border-color: rgba(200,246,93,0.08);
+      animation-duration: 24s;
+      animation-direction: reverse;
+    }
+
+    .orb-ring:nth-child(4) {
+      width: 420px; height: 420px;
+      margin: -210px 0 0 -210px;
+      border-color: rgba(200,246,93,0.04);
+      animation-duration: 32s;
+    }
+
+    .orb-dot {
+      position: absolute;
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      top: -3px; left: 50%;
+      margin-left: -3px;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    @keyframes ringRotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .stat-bubble {
+      position: absolute;
+      background: rgba(20,20,20,0.9);
+      border: 1px solid rgba(200,246,93,0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      backdrop-filter: blur(8px);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .stat-bubble:nth-child(5) {
+      top: 8%; right: 0;
+      animation-delay: -2s;
+    }
+
+    .stat-bubble:nth-child(6) {
+      bottom: 12%; left: 0;
+      animation-delay: -4s;
+    }
+
+    .stat-bubble .val {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-bubble .lbl {
+      font-size: 11px;
+      color: var(--gray-text);
+      margin-top: 2px;
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PROBLEM SECTION */
     .problem {
-      background: #0d1424;
-      padding: 80px 20px;
-      text-align: center;
+      padding: 120px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
     .problem h2 {
-      font-size: 32px;
-      margin-bottom: 16px;
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      max-width: 640px;
+      margin-bottom: 24px;
     }
-    .problem h2 span { color: #00c9ff; }
+
     .problem p {
       font-size: 17px;
-      color: #aaaaaa;
-      max-width: 600px;
-      margin: 0 auto;
+      color: var(--gray-text);
       line-height: 1.7;
+      max-width: 560px;
     }
-    .features {
-      padding: 80px 20px;
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .features h2 {
-      font-size: 32px;
-      margin-bottom: 50px;
-    }
-    .features h2 span { color: #00c9ff; }
-    .feature-grid {
+
+    .problem-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      text-align: left;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 64px;
     }
-    .feature-card {
-      background: #111827;
-      border: 1px solid #1a2035;
-      border-radius: 10px;
-      padding: 24px;
+
+    .problem-stat {
+      background: var(--gray);
+      padding: 40px 32px;
+      transition: background 0.3s;
     }
-    .feature-card .icon {
-      font-size: 28px;
-      margin-bottom: 14px;
-    }
-    .feature-card h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-      color: #00c9ff;
-    }
-    .feature-card p {
-      font-size: 14px;
-      color: #aaaaaa;
-      line-height: 1.6;
-    }
-    .pricing {
-      background: #0d1424;
-      padding: 80px 20px;
-      text-align: center;
-    }
-    .pricing h2 {
-      font-size: 32px;
-      margin-bottom: 50px;
-    }
-    .pricing h2 span { color: #00c9ff; }
-    .pricing-grid {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .pricing-card {
-      background: #111827;
-      border: 1px solid #1a2035;
-      border-radius: 10px;
-      padding: 32px;
-      width: 260px;
-      text-align: left;
-    }
-    .pricing-card.featured { border-color: #00c9ff; }
-    .pricing-card .badge {
-      background: #00c9ff;
-      color: #0a0f1e;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 4px 10px;
-      border-radius: 4px;
-      margin-bottom: 16px;
-      display: inline-block;
-    }
-    .pricing-card h3 {
-      font-size: 20px;
+
+    .problem-stat:hover { background: #1f1f1f; }
+
+    .problem-stat .big {
+      font-family: var(--font-display);
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--accent);
+      line-height: 1;
       margin-bottom: 8px;
     }
-    .pricing-card .price {
-      font-size: 36px;
-      font-weight: bold;
-      color: #00c9ff;
+
+    .problem-stat p {
+      font-size: 14px;
+      color: var(--gray-text);
+      max-width: none;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 80px 48px 120px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .features-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+
+    .features h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .feature {
+      background: var(--gray);
+      padding: 48px;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature:hover { background: #1c1c1c; }
+
+    .feature::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,246,93,0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 44px; height: 44px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(200,246,93,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 24px;
+    }
+
+    .feature h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .feature p {
+      font-size: 14px;
+      color: var(--gray-text);
+      line-height: 1.7;
+    }
+
+    /* PRICING */
+    .pricing {
+      padding: 80px 48px 120px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pricing h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .pricing-sub {
+      text-align: center;
+      color: var(--gray-text);
+      font-size: 16px;
+      margin-bottom: 64px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--gray);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 40px;
+      transition: all 0.3s;
+    }
+
+    .pricing-card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-4px);
+    }
+
+    .pricing-card.featured {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .pricing-card.featured * { color: var(--black) !important; }
+
+    .pricing-card.featured:hover {
+      box-shadow: 0 20px 60px rgba(200,246,93,0.3);
+    }
+
+    .pricing-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      margin-bottom: 24px;
+    }
+
+    .pricing-card.featured .pricing-tag { color: rgba(0,0,0,0.5); }
+
+    .pricing-price {
+      font-family: var(--font-display);
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
       margin-bottom: 4px;
     }
-    .pricing-card .price span {
-      font-size: 14px;
-      color: #aaaaaa;
-      font-weight: normal;
-    }
-    .pricing-card p {
+
+    .pricing-period {
       font-size: 13px;
-      color: #aaaaaa;
+      color: var(--gray-text);
       margin-bottom: 24px;
+    }
+
+    .pricing-desc {
+      font-size: 14px;
+      color: var(--gray-text);
       line-height: 1.6;
+      margin-bottom: 32px;
     }
-    .pricing-card button {
+
+    .pricing-btn {
       width: 100%;
-      padding: 12px;
-      background: #00c9ff;
-      color: #0a0f1e;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .pricing-card.basic button {
+      padding: 14px;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.15);
       background: transparent;
-      color: #00c9ff;
-      border: 1px solid #00c9ff;
+      color: var(--white);
+      transition: all 0.2s;
     }
-    footer {
-      border-top: 1px solid #1a2035;
+
+    .pricing-btn:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .pricing-card.featured .pricing-btn {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--accent);
+    }
+
+    .pricing-card.featured .pricing-btn:hover {
+      background: #111;
+    }
+
+    /* CTA */
+    .cta {
+      padding: 80px 48px 140px;
       text-align: center;
-      padding: 30px;
-      color: #555;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(200,246,93,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta h2 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .cta p {
+      color: var(--gray-text);
+      font-size: 17px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer .logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    footer p {
       font-size: 13px;
+      color: var(--gray-text);
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-visual { display: none; }
+      .hero h1 { font-size: 44px; }
+      .problem, .features, .pricing { padding: 80px 24px; }
+      .problem-stats { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .features-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-  <nav>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div class="nav-logo">
     <img src="1774790155177_image.png" alt="Swim Edge">
-    <button data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
-  </nav>
+    Swim Edge
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="app.html">Dashboard</a>
+    <button class="nav-cta" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+  </div>
+</nav>
 
-  <section class="hero">
-    <h1>The coaching feedback <span>every swimmer deserves</span></h1>
-    <p>Most club coaches manage 50+ athletes. Individualized feedback is impossible. Swim Edge gives every swimmer a personalized AI training plan — reviewed by a real coach — that evolves as you improve.</p>
-    <div class="hero-buttons">
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span></span>
+      Now accepting early access
+    </div>
+    <h1>Train smart.<br><em>Swim faster.</em></h1>
+    <p class="hero-sub">Your coach manages 50+ athletes. You get generic feedback. Swim Edge gives every competitive swimmer the personalized performance intelligence they've been missing.</p>
+    <div class="hero-actions">
       <button class="btn-primary" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Get Early Access</button>
-      <button class="btn-secondary" onclick="window.location.href='app.html'">Open Dashboard</button>
+      <button class="btn-ghost" onclick="window.location.href='app.html'">Open Dashboard</button>
     </div>
-  </section>
-
-  <section class="problem">
-    <h2>Your coach has <span>50 other swimmers</span> to worry about.</h2>
-    <p>At most competitive clubs, personalized feedback simply doesn't exist. You train hard, compete, and guess at what to fix. Swim Edge changes that — giving you data-driven analysis and a monthly training focus tailored specifically to your times, your stroke, and your goals.</p>
-  </section>
-
-  <section class="features" id="features">
-    <h2>Everything you need to <span>swim faster</span></h2>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="icon">📊</div>
-        <h3>Time tracking</h3>
-        <p>Log every race result. Track your progress across all strokes and distances in one place.</p>
+  </div>
+  <div class="hero-visual">
+    <div class="orb-container">
+      <div class="orb-main"></div>
+      <div class="orb-ring"><div class="orb-dot"></div></div>
+      <div class="orb-ring"><div class="orb-dot"></div></div>
+      <div class="orb-ring"><div class="orb-dot"></div></div>
+      <div class="stat-bubble">
+        <div class="val">−0.84s</div>
+        <div class="lbl">avg drop after 30 days</div>
       </div>
-      <div class="feature-card">
-        <div class="icon">🤖</div>
-        <h3>AI training plans</h3>
-        <p>Our AI analyzes your times every month and generates a focused training plan built around your weaknesses.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">✅</div>
-        <h3>Coach verified</h3>
-        <p>Every plan is reviewed and signed off by a credentialed coach before it reaches you. Not just AI — AI plus expertise.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📈</div>
-        <h3>Personal bests</h3>
-        <p>See your fastest time per event automatically tracked. Watch the numbers drop as the plan works.</p>
+      <div class="stat-bubble">
+        <div class="val">94%</div>
+        <div class="lbl">swimmers improved PB</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="pricing">
-    <h2>Simple, <span>honest pricing</span></h2>
-    <div class="pricing-grid">
-      <div class="pricing-card basic">
-        <h3>Swimmer</h3>
-        <div class="price">$7.99<span>/month</span></div>
-        <p>For individual competitive swimmers who want personalized feedback without the private coach price tag.</p>
-        <button data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
-      </div>
-      <div class="pricing-card featured">
-        <div class="badge">MOST POPULAR</div>
-        <h3>Club</h3>
-        <div class="price">$49.99<span>/month</span></div>
-        <p>Unlimited swimmers. One subscription for your entire roster. Give every athlete on your team a personalized plan.</p>
-        <button data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
-      </div>
+<section class="problem">
+  <div class="reveal">
+    <div class="section-label">The problem</div>
+    <h2>Most swimmers train hard and still plateau.</h2>
+    <p>Without personalized feedback, it's impossible to know what's actually holding you back. Your coach can't watch every stroke. Swim Edge can.</p>
+  </div>
+  <div class="problem-stats reveal">
+    <div class="problem-stat">
+      <div class="big">50+</div>
+      <p>Athletes per coach on average. Individual feedback is impossible at that scale.</p>
     </div>
-  </section>
+    <div class="problem-stat">
+      <div class="big">0</div>
+      <p>Post-meet analysis most swimmers receive after a personal best or a regression.</p>
+    </div>
+    <div class="problem-stat">
+      <div class="big">$200+</div>
+      <p>Cost of a single private coaching session. Swim Edge costs less per year.</p>
+    </div>
+  </div>
+</section>
 
-  <footer>
-    © 2026 Swim Edge. Built in Ontario, Canada.
-  </footer>
+<section class="features" id="features">
+  <div class="features-header reveal">
+    <div>
+      <div class="section-label">What we do</div>
+      <h2>Every feature built for competitive swimmers.</h2>
+    </div>
+  </div>
+  <div class="features-grid">
+    <div class="feature reveal">
+      <div class="feature-icon">📊</div>
+      <h3>Time tracking</h3>
+      <p>Log every race result across all strokes, distances, and pool types. Short course and long course tracked separately — the way it actually matters.</p>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-icon">🧠</div>
+      <h3>AI performance analysis</h3>
+      <p>Your times tell a story. Swim Edge reads that story and surfaces what's holding you back — specific to your events, your history, your patterns.</p>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-icon">✅</div>
+      <h3>Coach verified</h3>
+      <p>Every AI-generated insight is reviewed by a credentialed coach before it reaches you. Not raw AI output — filtered, verified intelligence.</p>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-icon">📈</div>
+      <h3>Progress visualization</h3>
+      <p>See your improvement curve per event. Personal bests automatically tracked and highlighted. Know exactly where you're trending.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="reveal">
+    <h2>Simple pricing.</h2>
+    <p class="pricing-sub">No hidden fees. Cancel anytime.</p>
+  </div>
+  <div class="pricing-grid reveal">
+    <div class="pricing-card">
+      <div class="pricing-tag">Swimmer</div>
+      <div class="pricing-price">$7.99</div>
+      <div class="pricing-period">per month</div>
+      <div class="pricing-desc">For individual competitive swimmers who want real feedback without the private coach price tag.</div>
+      <button class="pricing-btn" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-tag">Club</div>
+      <div class="pricing-price">$49.99</div>
+      <div class="pricing-period">per month</div>
+      <div class="pricing-desc">Unlimited swimmers. Give every athlete on your roster a personalized plan for less than one private session.</div>
+      <button class="pricing-btn" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-glow"></div>
+  <div class="reveal">
+    <h2>Ready to swim<br><em style="color:var(--accent);font-style:normal;">smarter?</em></h2>
+    <p>Join the waitlist. First month free for early access members.</p>
+    <div class="cta-actions">
+      <button class="btn-primary" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Get Early Access</button>
+      <button class="btn-ghost" onclick="window.location.href='app.html'">Try the Dashboard</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">Swim Edge</div>
+  <p>© 2026 Swim Edge. Built in Ontario, Canada.</p>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 5 + 'px';
+    cursor.style.top = my - 5 + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
