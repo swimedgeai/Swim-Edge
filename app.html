@@ -132,7 +132,7 @@
  
 <nav>
   <a href="index.html" class="nav-logo">
-    <img src="1774790155177_image.png" alt="Swim Edge">Swim Edge
+    <img src="logo.png" alt="Swim Edge">Swim Edge
   </a>
   <div class="nav-right">
     <div class="sync-status">
@@ -311,7 +311,7 @@ const S={M:{LC:{11:{"50 Freestyle":["0:32.07","0:32.87"],"100 Freestyle":["1:10.
 function parseTime(t){t=String(t).trim().replace(/^0:/,"");if(t.includes(":")){const p=t.split(":");return parseFloat(p[0])*60+parseFloat(p[1]);}return parseFloat(t);}
 function timeToSec(t){return parseTime(t);}
  
-function daysUntilJune1(){const now=new Date();let j=new Date(now.getFullYear(),5,1);if(now>=j)j=new Date(now.getFullYear()+1,5,1);return Math.ceil((j-now)/86400000);}
+if(times.length>0){const dates=times.map(t=>new Date(t.date));const earliest=new Date(Math.min(...dates));const today=new Date();today.setHours(0,0,0,0);earliest.setHours(0,0,0,0);document.getElementById("stat-days").textContent=Math.floor((today-earliest)/86400000)+1;}
 function getOntarioAge(dob){const birth=new Date(dob),now=new Date(),j=new Date(now.getFullYear(),5,1);let age=j.getFullYear()-birth.getFullYear();if(j<new Date(j.getFullYear(),birth.getMonth(),birth.getDate()))age--;return age;}
 function ageToKey(age){if(age<=11)return 11;if(age===12)return 12;if(age<=13)return 13;if(age===14)return 14;if(age===15)return 15;if(age===16)return 16;return 17;}
  
