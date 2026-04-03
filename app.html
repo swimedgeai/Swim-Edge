@@ -16,14 +16,17 @@
       --gray-text: #888; --gray-line: rgba(255,255,255,0.06);
       --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
     }
-    *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
     body{background:var(--black);color:var(--white);font-family:var(--font-body);overflow-x:hidden;min-height:100vh;}
     *{cursor:none;}
     #cursor{width:10px;height:10px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:difference;}
     #cursor-ring{width:36px;height:36px;border:1px solid rgba(200,246,93,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all 0.08s ease;}
+ 
+    /* NAV */
     nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gray-line);backdrop-filter:blur(12px);background:rgba(8,8,8,0.8);}
     .nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-0.02em;text-decoration:none;color:var(--white);}
-    .nav-logo img{height:28px;}
+    .nav-logo img{height:28px;width:28px;object-fit:contain;flex-shrink:0;}
     .nav-right{display:flex;align-items:center;gap:16px;}
     .nav-home-btn{padding:10px 22px;background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.15);border-radius:100px;font-family:var(--font-body);font-size:13px;font-weight:500;text-decoration:none;transition:all 0.2s;}
     .nav-home-btn:hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.04);}
@@ -33,16 +36,47 @@
     .sync-dot.syncing{background:#ffc832;animation:pulse 1s infinite;}
     .sync-dot.error{background:#ff4444;}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+ 
+    /* TABS */
     .tabs-wrapper{padding-top:88px;background:var(--black);position:sticky;top:68px;z-index:90;border-bottom:1px solid var(--gray-line);}
     .tabs{display:flex;padding:0 48px;overflow-x:auto;}
     .tabs::-webkit-scrollbar{display:none;}
     .tab{padding:18px 28px;cursor:pointer;font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--gray-text);border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
     .tab:hover{color:var(--white);}
     .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+ 
+    /* PAGES */
     .page{display:none;padding:48px;max-width:960px;margin:0 auto;}
     .page.active{display:block;}
     .section-label{font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
     .page-title{font-family:var(--font-display);font-size:36px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:40px;}
+ 
+    /* FORM */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .form-group{display:flex;flex-direction:column;gap:8px;}
+    .form-group.full{grid-column:1/-1;}
+    .form-group label{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-text);}
+    .form-group input,.form-group select,.form-group textarea{background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--white);font-family:var(--font-body);font-size:15px;padding:14px 16px;transition:border-color 0.2s;width:100%;}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent-border);}
+    .form-group textarea{height:100px;resize:vertical;}
+    .form-group select option{background:#1a1a1a;}
+    .submit-btn{margin-top:28px;padding:16px 40px;background:var(--accent);color:var(--black);border:none;border-radius:100px;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;width:100%;}
+    .submit-btn:hover{background:#d4ff66;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,246,93,0.2);}
+    .submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+ 
+    /* SPLITS */
+    .splits-section{display:none;margin-top:0;}
+    .splits-section.visible{display:block;}
+    .splits-grid{display:grid;gap:12px;}
+    .split-row{display:flex;align-items:center;gap:12px;}
+    .split-label{font-size:12px;color:var(--gray-text);width:80px;flex-shrink:0;font-weight:500;}
+    .split-input{background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--white);font-family:var(--font-body);font-size:15px;padding:12px 16px;flex:1;transition:border-color 0.2s;}
+    .split-input:focus{outline:none;border-color:var(--accent-border);}
+    .split-total{font-size:13px;color:var(--gray-text);margin-top:8px;}
+    .split-total span{color:var(--accent);font-weight:600;}
+    .split-warning{font-size:12px;color:#ffc832;margin-top:4px;display:none;}
+ 
+    /* DASHBOARD */
     .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gray-line);border-radius:16px;overflow:hidden;margin-bottom:48px;}
     .stat-card{background:var(--gray);padding:32px 28px;transition:background 0.3s;}
     .stat-card:hover{background:#161616;}
@@ -71,27 +105,17 @@
     .pb-tag{background:var(--accent);color:var(--black);font-size:9px;font-weight:700;letter-spacing:0.08em;padding:2px 7px;border-radius:100px;margin-left:8px;vertical-align:middle;}
     .entry-meta{font-size:12px;color:var(--gray-text);margin-top:4px;}
     .entry-notes{font-size:13px;color:#bbb;margin-top:6px;font-style:italic;line-height:1.5;}
+    .entry-splits{font-size:12px;color:var(--gray-text);margin-top:4px;font-family:var(--font-display);}
     .delete-btn{background:none;border:none;color:#444;cursor:pointer;font-size:16px;margin:0;width:auto;padding:0 4px;flex-shrink:0;transition:color 0.2s;}
     .delete-btn:hover{color:#ff4444;}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-    .form-group{display:flex;flex-direction:column;gap:8px;}
-    .form-group.full{grid-column:1/-1;}
-    .form-group label{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-text);}
-    .form-group input,.form-group select,.form-group textarea{background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--white);font-family:var(--font-body);font-size:15px;padding:14px 16px;transition:border-color 0.2s;width:100%;}
-    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent-border);}
-    .form-group textarea{height:100px;resize:vertical;}
-    .form-group select option{background:#1a1a1a;}
-    .submit-btn{margin-top:28px;padding:16px 40px;background:var(--accent);color:var(--black);border:none;border-radius:100px;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;width:100%;}
-    .submit-btn:hover{background:#d4ff66;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,246,93,0.2);}
-    .submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-    .plan-output{background:var(--gray);border:1px solid var(--accent-border);border-radius:16px;padding:32px;font-size:15px;line-height:1.8;white-space:pre-wrap;display:none;color:#ccc;}
-    .plan-output.visible{display:block;}
-    .loading-bar{color:var(--gray-text);font-size:14px;display:none;text-align:center;padding:32px 0;}
-    .loading-dots::after{content:'...';animation:dots 1.2s steps(3,end) infinite;}
-    @keyframes dots{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
+    .section-divider{border:none;border-top:1px solid var(--gray-line);margin:40px 0;}
     .page-loader{display:flex;align-items:center;justify-content:center;padding:80px 0;flex-direction:column;gap:16px;color:var(--gray-text);font-size:14px;}
     .spinner{width:32px;height:32px;border:2px solid rgba(200,246,93,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg)}}
+    .empty-state{text-align:center;padding:64px 0;color:var(--gray-text);}
+    .empty-state .empty-icon{font-size:40px;margin-bottom:16px;opacity:0.4;}
+ 
+    /* STANDARDS */
     .standards-controls{display:flex;gap:16px;margin-bottom:40px;flex-wrap:wrap;align-items:flex-end;}
     .control-group{display:flex;flex-direction:column;gap:6px;}
     .control-group label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-text);}
@@ -105,7 +129,7 @@
     .standard-row:hover{background:#141414;}
     .standard-event{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:-0.01em;}
     .standard-time{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--gray-text);}
-    .gap-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600;font-family:var(--font-display);}
+    .gap-pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600;font-family:var(--font-display);}
     .gap-achieved{background:rgba(200,246,93,0.15);color:var(--accent);border:1px solid var(--accent-border);}
     .gap-close{background:rgba(255,200,50,0.12);color:#ffc832;border:1px solid rgba(255,200,50,0.25);}
     .gap-far{background:rgba(255,255,255,0.05);color:var(--gray-text);border:1px solid rgba(255,255,255,0.08);}
@@ -113,13 +137,45 @@
     .ageup-icon{font-size:20px;flex-shrink:0;}
     .ageup-text{color:var(--accent);font-weight:500;font-size:14px;}
     .ageup-sub{color:var(--gray-text);font-size:13px;margin-top:2px;}
-    .empty-state{text-align:center;padding:64px 0;color:var(--gray-text);}
-    .empty-state .empty-icon{font-size:40px;margin-bottom:16px;opacity:0.4;}
-    .section-divider{border:none;border-top:1px solid var(--gray-line);margin:40px 0;}
+ 
+    /* TRAINING PLAN */
+    .plan-context-card{background:var(--gray);border:1px solid var(--gray-line);border-radius:16px;padding:28px;margin-bottom:32px;}
+    .plan-context-title{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-text);margin-bottom:20px;}
+    .modes-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:32px;}
+    .mode-btn{background:var(--gray);border:1px solid var(--gray-line);border-radius:12px;padding:20px 12px;cursor:pointer;transition:all 0.2s;text-align:center;}
+    .mode-btn:hover{background:#161616;border-color:rgba(255,255,255,0.15);}
+    .mode-btn.active{background:var(--accent-dim);border-color:var(--accent-border);}
+    .mode-icon{font-size:22px;margin-bottom:8px;}
+    .mode-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--gray-text);line-height:1.3;}
+    .mode-btn.active .mode-label{color:var(--accent);}
+    .generate-btn{width:100%;padding:16px;background:var(--accent);color:var(--black);border:none;border-radius:100px;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;margin-bottom:24px;}
+    .generate-btn:hover{background:#d4ff66;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,246,93,0.2);}
+    .generate-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+    .loading-bar{color:var(--gray-text);font-size:14px;display:none;text-align:center;padding:32px 0;}
+    .loading-dots::after{content:'...';animation:dots 1.2s steps(3,end) infinite;}
+    @keyframes dots{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
+    .plan-output{display:none;}
+    .plan-output.visible{display:block;}
+    .plan-output-card{background:var(--gray);border:1px solid var(--accent-border);border-radius:16px;padding:32px;margin-bottom:16px;}
+    .plan-output-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--gray-line);}
+    .plan-output-title{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-0.02em;}
+    .plan-output-meta{font-size:12px;color:var(--gray-text);margin-top:4px;}
+    .plan-mode-tag{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);flex-shrink:0;}
+    .plan-section{margin-bottom:24px;}
+    .plan-section-title{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+    .plan-section p{font-size:15px;color:#ccc;line-height:1.8;}
+    .plan-items{display:flex;flex-direction:column;gap:10px;}
+    .plan-item{background:var(--gray-mid);border-radius:10px;padding:14px 16px;font-size:14px;color:#ccc;line-height:1.6;border-left:2px solid var(--accent-border);}
+    .plan-item strong{color:var(--white);font-weight:600;}
+    .highlight-box{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:12px;padding:16px 20px;margin-top:8px;}
+    .highlight-box .h-label{font-size:11px;color:var(--gray-text);margin-bottom:4px;}
+    .highlight-box .h-val{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--accent);}
+ 
     @media(max-width:768px){
       nav{padding:16px 20px;}.tabs{padding:0 20px;}.page{padding:24px 20px;}
       .stats-grid{grid-template-columns:1fr 1fr;}.form-grid{grid-template-columns:1fr;}
       .insights-row{grid-template-columns:1fr;}.standards-controls{flex-direction:column;}
+      .modes-grid{grid-template-columns:repeat(3,1fr);}
       .standards-header,.standard-row{grid-template-columns:2fr 1fr 1fr;}
       .standards-header span:nth-child(4),.standards-header span:nth-child(5),
       .standard-row>*:nth-child(4),.standard-row>*:nth-child(5){display:none;}
@@ -145,15 +201,66 @@
  
 <div class="tabs-wrapper">
   <div class="tabs">
-    <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
-    <div class="tab" onclick="showTab('log')">Log Time</div>
+    <div class="tab active" onclick="showTab('log')">Log Time</div>
+    <div class="tab" onclick="showTab('times')">My Times</div>
     <div class="tab" onclick="showTab('standards')">Ontario Standards</div>
     <div class="tab" onclick="showTab('plan')">Training Plan</div>
   </div>
 </div>
  
-<div id="tab-dashboard" class="page active">
-  <div id="dashboard-main">
+<!-- LOG TIME -->
+<div id="tab-log" class="page active">
+  <div class="section-label">Record</div>
+  <h1 class="page-title">Log a Time</h1>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Stroke</label>
+      <select id="stroke" onchange="updateSplits()">
+        <option value="">Select stroke</option>
+        <option>Breaststroke</option><option>Freestyle</option>
+        <option>Backstroke</option><option>Butterfly</option><option>Individual Medley</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Distance</label>
+      <select id="distance" onchange="updateSplits()">
+        <option value="">Select distance</option>
+        <option>50m</option><option>100m</option><option>200m</option>
+        <option>400m</option><option>800m</option><option>1500m</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Pool Type</label>
+      <select id="pooltype">
+        <option value="">Select pool</option>
+        <option>Short Course (25m)</option><option>Long Course (50m)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Final Time (e.g. 32.83 or 1:13.84)</label>
+      <input id="time" type="text" placeholder="32.83">
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input id="date" type="date">
+    </div>
+    <div class="form-group full splits-section" id="splits-section">
+      <label>50m Splits</label>
+      <div class="splits-grid" id="splits-grid"></div>
+      <div class="split-total" id="split-total" style="display:none;">Splits total: <span id="split-total-val">—</span></div>
+      <div class="split-warning" id="split-warning">⚠ Splits don't match final time</div>
+    </div>
+    <div class="form-group full">
+      <label>Notes — what felt good or bad?</label>
+      <textarea id="notes" placeholder="e.g. strong turns, felt flat on back half, good underwater..."></textarea>
+    </div>
+  </div>
+  <button class="submit-btn" id="log-btn" onclick="submitTime()">Log Time</button>
+</div>
+ 
+<!-- MY TIMES -->
+<div id="tab-times" class="page">
+  <div id="times-main">
     <div class="section-label">Overview</div>
     <h1 class="page-title">Your Performance</h1>
     <div class="stats-grid">
@@ -178,49 +285,7 @@
   </div>
 </div>
  
-<div id="tab-log" class="page">
-  <div class="section-label">Record</div>
-  <h1 class="page-title">Log a Time</h1>
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Stroke</label>
-      <select id="stroke">
-        <option value="">Select stroke</option>
-        <option>Breaststroke</option><option>Freestyle</option>
-        <option>Backstroke</option><option>Butterfly</option><option>Individual Medley</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Distance</label>
-      <select id="distance">
-        <option value="">Select distance</option>
-        <option>50m</option><option>100m</option><option>200m</option>
-        <option>400m</option><option>800m</option><option>1500m</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Pool Type</label>
-      <select id="pooltype">
-        <option value="">Select pool</option>
-        <option>Short Course (25m)</option><option>Long Course (50m)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Time (e.g. 32.83 or 1:13.84)</label>
-      <input id="time" type="text" placeholder="32.83">
-    </div>
-    <div class="form-group">
-      <label>Date</label>
-      <input id="date" type="date">
-    </div>
-    <div class="form-group full">
-      <label>Notes — what felt good or bad?</label>
-      <textarea id="notes" placeholder="e.g. strong turns, felt flat on back half, good underwater..."></textarea>
-    </div>
-  </div>
-  <button class="submit-btn" id="log-btn" onclick="submitTime()">Log Time</button>
-</div>
- 
+<!-- ONTARIO STANDARDS -->
 <div id="tab-standards" class="page">
   <div class="section-label">Qualifying</div>
   <h1 class="page-title">Ontario Standards</h1>
@@ -259,13 +324,74 @@
   <p style="font-size:12px;color:var(--gray-text);margin-top:20px;line-height:1.6;">Official Swim Ontario qualifying standards (Oct/Nov 2025). Age determined as of June 1st.</p>
 </div>
  
+<!-- TRAINING PLAN -->
 <div id="tab-plan" class="page">
   <div class="section-label">AI Analysis</div>
   <h1 class="page-title">Training Plan</h1>
-  <p style="color:var(--gray-text);font-size:15px;margin-bottom:32px;line-height:1.6;">Based on all your logged times and notes. Log at least 3 entries across different events for the best analysis.</p>
-  <button class="submit-btn" onclick="getPlan()">Generate My Plan</button>
-  <div class="loading-bar" id="loading">Analyzing your performance<span class="loading-dots"></span></div>
-  <div class="plan-output" id="plan"></div>
+ 
+  <div class="plan-context-card">
+    <div class="plan-context-title">Your context</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Primary Event</label>
+        <select id="plan-event">
+          <option value="">Select event</option>
+          <option>50m Breaststroke SC</option><option>100m Breaststroke SC</option><option>200m Breaststroke SC</option>
+          <option>50m Breaststroke LC</option><option>100m Breaststroke LC</option><option>200m Breaststroke LC</option>
+          <option>50m Freestyle SC</option><option>100m Freestyle SC</option><option>200m Freestyle SC</option>
+          <option>50m Freestyle LC</option><option>100m Freestyle LC</option><option>200m Freestyle LC</option>
+          <option>50m Backstroke SC</option><option>100m Backstroke SC</option><option>200m Backstroke SC</option>
+          <option>50m Butterfly SC</option><option>100m Butterfly SC</option><option>200m Butterfly SC</option>
+          <option>200m IM SC</option><option>400m IM SC</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Goal Time</label>
+        <input type="text" id="plan-goal" placeholder="e.g. 31.50">
+      </div>
+      <div class="form-group">
+        <label>Next Meet Date</label>
+        <input type="date" id="plan-meet">
+      </div>
+      <div class="form-group">
+        <label>Training Load (sessions/week)</label>
+        <select id="plan-load">
+          <option value="">Select</option>
+          <option value="4">4 sessions</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          <option value="10">10</option><option value="11">11+</option>
+        </select>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="section-label" style="margin-bottom:16px;">Select a focus area</div>
+  <div class="modes-grid">
+    <div class="mode-btn" id="mode-splits" onclick="setMode('splits')">
+      <div class="mode-icon">📊</div>
+      <div class="mode-label">Splits Analysis</div>
+    </div>
+    <div class="mode-btn" id="mode-technique" onclick="setMode('technique')">
+      <div class="mode-icon">🏊</div>
+      <div class="mode-label">Swim Technique</div>
+    </div>
+    <div class="mode-btn" id="mode-dryland" onclick="setMode('dryland')">
+      <div class="mode-icon">💪</div>
+      <div class="mode-label">Dryland</div>
+    </div>
+    <div class="mode-btn" id="mode-rehab" onclick="setMode('rehab')">
+      <div class="mode-icon">🩺</div>
+      <div class="mode-label">Rehab & Recovery</div>
+    </div>
+    <div class="mode-btn" id="mode-race" onclick="setMode('race')">
+      <div class="mode-icon">🏁</div>
+      <div class="mode-label">Pre-Race Plan</div>
+    </div>
+  </div>
+ 
+  <button class="generate-btn" id="plan-gen-btn" onclick="generatePlan()">Generate Plan</button>
+  <div class="loading-bar" id="plan-loading">Building your plan<span class="loading-dots"></span></div>
+  <div class="plan-output" id="plan-output"></div>
 </div>
  
 <script>
@@ -273,27 +399,18 @@
 const SUPABASE_URL="https://bmafvoaevhiqwfagexiz.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtYWZ2b2FldmhpcXdmYWdleGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzAwODIsImV4cCI6MjA5MDYwNjA4Mn0.QuXQuc4K_WPFdixxD9kE75_MSDMZZ970PjjE_KGBRgQ";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
- 
-function getUserId(){
-  let uid=localStorage.getItem("swimedge_uid");
-  if(!uid){uid="user_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("swimedge_uid",uid);}
-  return uid;
-}
+function getUserId(){let uid=localStorage.getItem("swimedge_uid");if(!uid){uid="user_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("swimedge_uid",uid);}return uid;}
 const USER_ID=getUserId();
-let times=[];
-let currentChart=null;
+let times=[],currentChart=null,selectedMode='';
  
-function setSyncStatus(state,label){
-  document.getElementById("sync-dot").className="sync-dot "+state;
-  document.getElementById("sync-label").textContent=label;
-}
+function setSyncStatus(state,label){document.getElementById("sync-dot").className="sync-dot "+state;document.getElementById("sync-label").textContent=label;}
  
 async function loadTimes(){
   setSyncStatus("syncing","Loading...");
   try{
     const{data,error}=await db.from("swim_times").select("*").eq("user_id",USER_ID).order("date",{ascending:true});
     if(error)throw error;
-    times=data.map(r=>({id:r.id,stroke:r.stroke,distance:r.distance,pooltype:r.pooltype,time:r.time,date:r.date,notes:r.notes||"",isPB:r.is_pb}));
+    times=data.map(r=>({id:r.id,stroke:r.stroke,distance:r.distance,pooltype:r.pooltype,time:r.time,date:r.date,notes:r.notes||"",isPB:r.is_pb,splits:r.splits||""}));
     setSyncStatus("synced","Synced");
   }catch(e){console.error(e);setSyncStatus("error","Offline");}
 }
@@ -305,13 +422,164 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style
 function animateRing(){rx+=(mx-rx-18)*0.12;ry+=(my-ry-18)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing);}
 animateRing();
  
-// ── STANDARDS DATA ───────────────────────────────────
-const S={M:{LC:{11:{"50 Freestyle":["0:32.07","0:32.87"],"100 Freestyle":["1:10.76","1:12.53"],"200 Freestyle":["2:36.16","2:40.06"],"400 Freestyle":["5:24.83","5:32.95"],"800 Freestyle":["11:11.68","11:28.47"],"50 Backstroke":["0:38.50","0:39.46"],"100 Backstroke":["1:22.25","1:24.31"],"200 Backstroke":["2:54.17","2:58.52"],"50 Breaststroke":["0:42.53","0:43.59"],"100 Breaststroke":["1:33.16","1:35.49"],"200 Breaststroke":["3:20.39","3:25.40"],"50 Butterfly":["0:35.90","0:36.80"],"100 Butterfly":["1:22.69","1:24.76"],"200 Butterfly":["3:08.52","3:13.23"],"200 Individual Medley":["2:56.51","3:00.92"],"400 Individual Medley":["6:03.90","6:13.00"]},12:{"50 Freestyle":["0:29.37","0:30.10"],"100 Freestyle":["1:04.25","1:05.88"],"200 Freestyle":["2:21.60","2:25.14"],"400 Freestyle":["4:57.66","5:05.10"],"800 Freestyle":["10:17.17","10:32.60"],"50 Backstroke":["0:34.90","0:35.77"],"100 Backstroke":["1:15.43","1:17.32"],"200 Backstroke":["2:43.64","2:47.73"],"50 Breaststroke":["0:39.55","0:40.54"],"100 Breaststroke":["1:25.33","1:27.46"],"200 Breaststroke":["3:04.69","3:09.31"],"50 Butterfly":["0:32.21","0:33.02"],"100 Butterfly":["1:13.41","1:15.25"],"200 Butterfly":["2:54.44","2:58.80"],"200 Individual Medley":["2:40.31","2:44.32"],"400 Individual Medley":["5:42.17","5:50.72"]},13:{"50 Freestyle":["0:27.50","0:28.19"],"100 Freestyle":["1:00.49","1:02.00"],"200 Freestyle":["2:12.95","2:16.27"],"400 Freestyle":["4:41.55","4:48.59"],"800 Freestyle":["9:44.74","9:59.36"],"1500 Freestyle":["18:46.76","19:14.93"],"50 Backstroke":["0:32.15","0:32.95"],"100 Backstroke":["1:09.33","1:11.06"],"200 Backstroke":["2:29.69","2:33.43"],"50 Breaststroke":["0:35.17","0:36.05"],"100 Breaststroke":["1:18.25","1:20.21"],"200 Breaststroke":["2:49.09","2:53.32"],"50 Butterfly":["0:29.71","0:30.45"],"100 Butterfly":["1:06.62","1:08.29"],"200 Butterfly":["2:30.04","2:33.79"],"200 Individual Medley":["2:29.19","2:32.92"],"400 Individual Medley":["5:16.96","5:24.88"]},14:{"50 Freestyle":["0:26.39","0:27.05"],"100 Freestyle":["0:57.97","0:59.42"],"200 Freestyle":["2:08.43","2:11.64"],"400 Freestyle":["4:33.15","4:39.98"],"800 Freestyle":["9:24.06","9:38.16"],"1500 Freestyle":["18:15.29","18:42.67"],"50 Backstroke":["0:30.61","0:31.38"],"100 Backstroke":["1:06.26","1:07.92"],"200 Backstroke":["2:26.11","2:29.76"],"50 Breaststroke":["0:33.95","0:34.80"],"100 Breaststroke":["1:15.18","1:17.06"],"200 Breaststroke":["2:45.58","2:49.72"],"50 Butterfly":["0:28.71","0:29.43"],"100 Butterfly":["1:04.68","1:06.30"],"200 Butterfly":["2:30.04","2:33.79"],"200 Individual Medley":["2:25.05","2:28.68"],"400 Individual Medley":["5:08.70","5:16.42"]},15:{"50 Freestyle":["0:25.69","0:26.33"],"100 Freestyle":["0:56.12","0:57.52"],"200 Freestyle":["2:04.34","2:07.45"],"400 Freestyle":["4:25.42","4:32.06"],"800 Freestyle":["9:11.29","9:25.07"],"1500 Freestyle":["17:53.51","18:20.35"],"50 Backstroke":["0:29.50","0:30.24"],"100 Backstroke":["1:04.15","1:05.75"],"200 Backstroke":["2:20.95","2:24.47"],"50 Breaststroke":["0:32.79","0:33.61"],"100 Breaststroke":["1:11.94","1:13.74"],"200 Breaststroke":["2:38.24","2:42.20"],"50 Butterfly":["0:27.38","0:28.06"],"100 Butterfly":["1:01.93","1:03.48"],"200 Butterfly":["2:24.10","2:27.70"],"200 Individual Medley":["2:21.10","2:24.63"],"400 Individual Medley":["5:00.14","5:07.64"]},16:{"50 Freestyle":["0:25.17","0:25.80"],"100 Freestyle":["0:55.05","0:56.43"],"200 Freestyle":["2:01.89","2:04.94"],"400 Freestyle":["4:20.69","4:27.21"],"800 Freestyle":["9:05.68","9:19.32"],"1500 Freestyle":["17:27.68","17:53.87"],"50 Backstroke":["0:28.90","0:29.62"],"100 Backstroke":["1:02.50","1:04.06"],"200 Backstroke":["2:18.68","2:22.15"],"50 Breaststroke":["0:31.76","0:32.55"],"100 Breaststroke":["1:10.83","1:12.60"],"200 Breaststroke":["2:36.45","2:40.36"],"50 Butterfly":["0:27.02","0:27.70"],"100 Butterfly":["1:00.14","1:01.64"],"200 Butterfly":["2:17.84","2:21.29"],"200 Individual Medley":["2:18.00","2:20.95"],"400 Individual Medley":["4:55.87","5:03.27"]},17:{"50 Freestyle":["0:24.92","0:25.54"],"100 Freestyle":["0:54.38","0:55.74"],"200 Freestyle":["2:00.24","2:03.25"],"400 Freestyle":["4:15.66","4:22.05"],"800 Freestyle":["9:00.22","9:13.73"],"1500 Freestyle":["17:17.20","17:43.13"],"50 Backstroke":["0:28.36","0:29.07"],"100 Backstroke":["1:01.87","1:03.42"],"200 Backstroke":["2:17.29","2:20.72"],"50 Breaststroke":["0:31.17","0:31.95"],"100 Breaststroke":["1:09.96","1:11.71"],"200 Breaststroke":["2:34.89","2:38.76"],"50 Butterfly":["0:26.57","0:27.23"],"100 Butterfly":["0:59.42","1:00.91"],"200 Butterfly":["2:15.93","2:19.33"],"200 Individual Medley":["2:14.95","2:18.32"],"400 Individual Medley":["4:51.65","4:58.94"]}},SC:{11:{"50 Freestyle":["0:31.44","0:32.23"],"100 Freestyle":["1:09.37","1:11.10"],"200 Freestyle":["2:33.10","2:36.93"],"400 Freestyle":["5:18.46","5:26.42"],"800 Freestyle":["10:58.05","11:14.97"],"50 Backstroke":["0:37.75","0:38.69"],"100 Backstroke":["1:20.64","1:22.66"],"200 Backstroke":["2:50.75","2:55.02"],"50 Breaststroke":["0:41.70","0:42.74"],"100 Breaststroke":["1:31.33","1:33.61"],"200 Breaststroke":["3:16.46","3:21.37"],"50 Butterfly":["0:35.20","0:36.08"],"100 Butterfly":["1:21.07","1:23.10"],"200 Butterfly":["3:04.82","3:09.44"],"200 Individual Medley":["2:53.05","2:57.38"],"400 Individual Medley":["5:56.76","6:05.68"]},12:{"50 Freestyle":["0:28.79","0:29.51"],"100 Freestyle":["1:02.99","1:04.56"],"200 Freestyle":["2:18.82","2:22.29"],"400 Freestyle":["4:51.82","4:59.12"],"800 Freestyle":["10:05.07","10:20.20"],"50 Backstroke":["0:34.22","0:35.08"],"100 Backstroke":["1:13.95","1:15.80"],"200 Backstroke":["2:40.43","2:44.44"],"50 Breaststroke":["0:38.77","0:39.74"],"100 Breaststroke":["1:23.66","1:25.75"],"200 Breaststroke":["3:01.07","3:05.60"],"50 Butterfly":["0:31.58","0:32.37"],"100 Butterfly":["1:11.97","1:13.77"],"200 Butterfly":["2:51.02","2:55.30"],"200 Individual Medley":["2:37.17","2:41.10"],"400 Individual Medley":["5:35.46","5:43.85"]},13:{"50 Freestyle":["0:26.96","0:27.63"],"100 Freestyle":["0:59.30","1:00.78"],"200 Freestyle":["2:10.34","2:13.60"],"400 Freestyle":["4:36.00","4:42.93"],"800 Freestyle":["9:33.27","9:47.60"],"1500 Freestyle":["18:24.67","18:52.29"],"50 Backstroke":["0:31.52","0:32.31"],"100 Backstroke":["1:07.97","1:09.67"],"200 Backstroke":["2:26.75","2:30.42"],"50 Breaststroke":["0:34.48","0:35.34"],"100 Breaststroke":["1:16.72","1:18.64"],"200 Breaststroke":["2:45.77","2:49.91"],"50 Butterfly":["0:29.13","0:29.86"],"100 Butterfly":["1:05.31","1:06.94"],"200 Butterfly":["2:27.10","2:30.78"],"200 Individual Medley":["2:22.21","2:25.77"],"400 Individual Medley":["5:10.75","5:18.52"]},14:{"50 Freestyle":["0:25.87","0:26.52"],"100 Freestyle":["0:56.83","0:58.25"],"200 Freestyle":["2:05.91","2:09.06"],"400 Freestyle":["4:27.79","4:34.48"],"800 Freestyle":["9:13.00","9:26.83"],"1500 Freestyle":["17:53.81","18:20.66"],"50 Backstroke":["0:30.01","0:30.76"],"100 Backstroke":["1:04.96","1:06.58"],"200 Backstroke":["2:23.25","2:26.83"],"50 Breaststroke":["0:33.28","0:34.11"],"100 Breaststroke":["1:13.71","1:15.55"],"200 Breaststroke":["2:42.33","2:46.39"],"50 Butterfly":["0:28.15","0:28.85"],"100 Butterfly":["1:03.41","1:05.00"],"200 Butterfly":["2:21.27","2:30.78"],"200 Individual Medley":["2:18.33","2:25.77"],"400 Individual Medley":["5:02.65","5:10.22"]},15:{"50 Freestyle":["0:25.19","0:25.82"],"100 Freestyle":["0:55.02","0:56.40"],"200 Freestyle":["2:01.90","2:04.95"],"400 Freestyle":["4:20.22","4:26.73"],"800 Freestyle":["9:00.48","9:13.99"],"1500 Freestyle":["17:32.46","17:58.77"],"50 Backstroke":["0:28.92","0:29.64"],"100 Backstroke":["1:02.89","1:04.46"],"200 Backstroke":["2:18.19","2:21.64"],"50 Breaststroke":["0:32.15","0:32.95"],"100 Breaststroke":["1:10.53","1:12.29"],"200 Breaststroke":["2:35.14","2:39.02"],"50 Butterfly":["0:26.84","0:27.51"],"100 Butterfly":["1:00.72","1:02.24"],"200 Butterfly":["2:21.27","2:24.80"],"200 Individual Medley":["2:14.81","2:21.79"],"400 Individual Medley":["4:54.25","5:01.61"]},16:{"50 Freestyle":["0:24.68","0:25.30"],"100 Freestyle":["0:53.97","0:55.32"],"200 Freestyle":["1:59.50","2:02.49"],"400 Freestyle":["4:15.58","4:21.97"],"800 Freestyle":["8:54.98","9:08.35"],"1500 Freestyle":["17:07.14","17:32.82"],"50 Backstroke":["0:28.33","0:29.04"],"100 Backstroke":["1:01.27","1:02.80"],"200 Backstroke":["2:15.96","2:19.36"],"50 Breaststroke":["0:31.14","0:31.92"],"100 Breaststroke":["1:09.44","1:11.18"],"200 Breaststroke":["2:33.38","2:37.21"],"50 Butterfly":["0:26.49","0:27.15"],"100 Butterfly":["0:58.96","1:00.43"],"200 Butterfly":["2:15.14","2:18.52"],"200 Individual Medley":["2:14.81","2:18.18"],"400 Individual Medley":["4:50.07","4:57.32"]},17:{"50 Freestyle":["0:24.43","0:25.04"],"100 Freestyle":["0:53.31","0:54.64"],"200 Freestyle":["1:57.88","2:00.83"],"400 Freestyle":["4:10.65","4:16.92"],"800 Freestyle":["8:49.63","9:02.87"],"1500 Freestyle":["16:56.86","17:22.28"],"50 Backstroke":["0:27.80","0:28.50"],"100 Backstroke":["1:00.66","1:02.18"],"200 Backstroke":["2:14.60","2:17.97"],"50 Breaststroke":["0:30.56","0:31.32"],"100 Breaststroke":["1:08.59","1:10.30"],"200 Breaststroke":["2:31.85","2:35.65"],"50 Butterfly":["0:26.05","0:26.70"],"100 Butterfly":["0:58.25","0:59.71"],"200 Butterfly":["2:13.26","2:16.59"],"200 Individual Medley":["2:12.30","2:15.61"],"400 Individual Medley":["4:45.93","4:53.08"]}}},F:{LC:{11:{"50 Freestyle":["0:32.01","0:32.81"],"100 Freestyle":["1:10.47","1:12.23"],"200 Freestyle":["2:32.55","2:36.36"],"400 Freestyle":["5:20.67","5:28.69"],"800 Freestyle":["11:03.25","11:19.83"],"50 Backstroke":["0:37.90","0:38.85"],"100 Backstroke":["1:20.67","1:22.69"],"200 Backstroke":["2:52.80","2:57.12"],"50 Breaststroke":["0:42.84","0:43.91"],"100 Breaststroke":["1:32.69","1:35.01"],"200 Breaststroke":["3:17.99","3:22.94"],"50 Butterfly":["0:35.56","0:36.45"],"100 Butterfly":["1:21.21","1:23.24"],"200 Butterfly":["3:17.65","3:22.59"],"200 Individual Medley":["2:53.60","2:57.94"],"400 Individual Medley":["6:07.64","6:16.83"]},12:{"50 Freestyle":["0:30.46","0:31.22"],"100 Freestyle":["1:06.89","1:08.56"],"200 Freestyle":["2:27.02","2:30.70"],"400 Freestyle":["5:09.00","5:16.73"],"800 Freestyle":["10:37.67","10:53.61"],"50 Backstroke":["0:35.93","0:36.83"],"100 Backstroke":["1:17.54","1:19.48"],"200 Backstroke":["2:47.09","2:51.27"],"50 Breaststroke":["0:40.26","0:41.27"],"100 Breaststroke":["1:28.15","1:30.35"],"200 Breaststroke":["3:08.97","3:13.69"],"50 Butterfly":["0:33.29","0:34.12"],"100 Butterfly":["1:16.49","1:18.40"],"200 Butterfly":["3:00.18","3:04.68"],"200 Individual Medley":["2:47.34","2:51.52"],"400 Individual Medley":["5:53.99","6:02.84"]},13:{"50 Freestyle":["0:28.92","0:29.64"],"100 Freestyle":["1:03.12","1:04.70"],"200 Freestyle":["2:16.24","2:19.65"],"400 Freestyle":["4:47.13","4:54.31"],"800 Freestyle":["9:59.63","10:14.62"],"1500 Freestyle":["19:22.99","19:52.06"],"50 Backstroke":["0:33.40","0:34.24"],"100 Backstroke":["1:11.98","1:13.78"],"200 Backstroke":["2:36.55","2:40.46"],"50 Breaststroke":["0:36.58","0:37.49"],"100 Breaststroke":["1:20.88","1:22.90"],"200 Breaststroke":["2:57.15","3:01.58"],"50 Butterfly":["0:30.79","0:31.56"],"100 Butterfly":["1:09.74","1:11.48"],"200 Butterfly":["2:38.62","2:42.59"],"200 Individual Medley":["2:36.69","2:40.61"],"400 Individual Medley":["5:30.89","5:39.16"]},14:{"50 Freestyle":["0:28.63","0:29.35"],"100 Freestyle":["1:02.31","1:03.87"],"200 Freestyle":["2:14.88","2:19.65"],"400 Freestyle":["4:44.26","4:51.37"],"800 Freestyle":["9:53.63","10:08.47"],"1500 Freestyle":["19:11.36","19:40.14"],"50 Backstroke":["0:32.76","0:33.58"],"100 Backstroke":["1:11.26","1:13.04"],"200 Backstroke":["2:34.43","2:38.29"],"50 Breaststroke":["0:36.21","0:37.12"],"100 Breaststroke":["1:20.07","1:22.07"],"200 Breaststroke":["2:55.38","2:59.76"],"50 Butterfly":["0:30.48","0:31.24"],"100 Butterfly":["1:09.04","1:10.77"],"200 Butterfly":["2:38.62","2:42.59"],"200 Individual Medley":["2:34.61","2:38.48"],"400 Individual Medley":["5:27.58","5:35.77"]},15:{"50 Freestyle":["0:28.25","0:28.96"],"100 Freestyle":["1:01.51","1:03.05"],"200 Freestyle":["2:14.88","2:18.25"],"400 Freestyle":["4:41.42","4:48.46"],"800 Freestyle":["9:47.69","10:02.36"],"1500 Freestyle":["18:59.85","19:23.35"],"50 Backstroke":["0:32.14","0:32.94"],"100 Backstroke":["1:10.22","1:11.98"],"200 Backstroke":["2:32.29","2:36.10"],"50 Breaststroke":["0:35.85","0:36.75"],"100 Breaststroke":["1:19.27","1:21.25"],"200 Breaststroke":["2:53.63","2:57.97"],"50 Butterfly":["0:29.86","0:30.61"],"100 Butterfly":["1:07.88","1:09.58"],"200 Butterfly":["2:37.03","2:40.96"],"200 Individual Medley":["2:33.06","2:36.89"],"400 Individual Medley":["5:24.30","5:32.41"]},16:{"50 Freestyle":["0:27.97","0:28.67"],"100 Freestyle":["1:00.49","1:02.00"],"200 Freestyle":["2:13.28","2:16.61"],"400 Freestyle":["4:38.61","4:45.58"],"800 Freestyle":["9:41.81","9:56.36"],"1500 Freestyle":["18:48.45","19:16.66"],"50 Backstroke":["0:31.78","0:32.57"],"100 Backstroke":["1:08.79","1:10.51"],"200 Backstroke":["2:30.05","2:33.80"],"50 Breaststroke":["0:35.49","0:36.38"],"100 Breaststroke":["1:18.48","1:20.44"],"200 Breaststroke":["2:51.89","2:56.19"],"50 Butterfly":["0:29.56","0:30.30"],"100 Butterfly":["1:06.73","1:08.43"],"200 Butterfly":["2:35.08","2:38.96"],"200 Individual Medley":["2:30.69","2:34.46"],"400 Individual Medley":["5:21.06","5:29.09"]},17:{"50 Freestyle":["0:27.69","0:28.38"],"100 Freestyle":["0:59.89","1:01.39"],"200 Freestyle":["2:11.95","2:15.25"],"400 Freestyle":["4:35.82","4:42.72"],"800 Freestyle":["9:35.99","9:50.39"],"1500 Freestyle":["18:37.17","19:05.10"],"50 Backstroke":["0:31.46","0:32.25"],"100 Backstroke":["1:07.99","1:09.69"],"200 Backstroke":["2:28.55","2:32.26"],"50 Breaststroke":["0:35.14","0:36.02"],"100 Breaststroke":["1:17.70","1:19.64"],"200 Breaststroke":["2:50.17","2:54.42"],"50 Butterfly":["0:29.20","0:29.93"],"100 Butterfly":["1:06.30","1:07.96"],"200 Butterfly":["2:33.53","2:37.37"],"200 Individual Medley":["2:29.13","2:32.91"],"400 Individual Medley":["5:17.85","5:25.80"]}},SC:{11:{"50 Freestyle":["0:31.38","0:32.16"],"100 Freestyle":["1:09.09","1:10.82"],"200 Freestyle":["2:29.56","2:33.30"],"400 Freestyle":["5:14.38","5:22.24"],"800 Freestyle":["10:50.25","11:06.51"],"50 Backstroke":["0:37.16","0:38.09"],"100 Backstroke":["1:19.09","1:21.07"],"200 Backstroke":["2:49.41","2:53.65"],"50 Breaststroke":["0:42.00","0:43.05"],"100 Breaststroke":["1:30.87","1:33.14"],"200 Breaststroke":["3:14.11","3:18.96"],"50 Butterfly":["0:34.86","0:35.73"],"100 Butterfly":["1:19.62","1:21.61"],"200 Butterfly":["3:13.77","3:18.61"],"200 Individual Medley":["2:50.20","2:54.46"],"400 Individual Medley":["6:00.43","6:09.44"]},12:{"50 Freestyle":["0:29.86","0:30.61"],"100 Freestyle":["1:05.58","1:07.22"],"200 Freestyle":["2:24.14","2:27.74"],"400 Freestyle":["5:02.94","5:10.51"],"800 Freestyle":["10:25.17","10:40.80"],"50 Backstroke":["0:35.23","0:36.11"],"100 Backstroke":["1:16.02","1:17.92"],"200 Backstroke":["2:43.81","2:47.91"],"50 Breaststroke":["0:39.47","0:40.46"],"100 Breaststroke":["1:26.42","1:28.58"],"200 Breaststroke":["3:05.26","3:09.89"],"50 Butterfly":["0:32.64","0:33.46"],"100 Butterfly":["1:14.99","1:16.86"],"200 Butterfly":["2:56.65","3:01.07"],"200 Individual Medley":["2:44.06","2:48.16"],"400 Individual Medley":["5:47.05","5:55.73"]},13:{"50 Freestyle":["0:28.35","0:29.06"],"100 Freestyle":["1:01.88","1:03.43"],"200 Freestyle":["2:13.57","2:18.29"],"400 Freestyle":["4:41.50","4:48.54"],"800 Freestyle":["9:47.87","10:02.57"],"1500 Freestyle":["19:00.19","19:28.69"],"50 Backstroke":["0:32.75","0:33.57"],"100 Backstroke":["1:10.57","1:12.33"],"200 Backstroke":["2:33.48","2:37.32"],"50 Breaststroke":["0:35.86","0:36.76"],"100 Breaststroke":["1:19.29","1:21.27"],"200 Breaststroke":["2:53.68","2:58.02"],"50 Butterfly":["0:30.19","0:30.94"],"100 Butterfly":["1:08.37","1:10.08"],"200 Butterfly":["2:37.08","2:41.01"],"200 Individual Medley":["2:31.58","2:35.37"],"400 Individual Medley":["5:24.40","5:32.51"]},14:{"50 Freestyle":["0:28.07","0:28.77"],"100 Freestyle":["1:01.09","1:02.62"],"200 Freestyle":["2:13.57","2:16.91"],"400 Freestyle":["4:38.69","4:45.66"],"800 Freestyle":["9:41.99","9:56.54"],"1500 Freestyle":["18:48.78","19:17.00"],"50 Backstroke":["0:32.12","0:32.92"],"100 Backstroke":["1:09.86","1:11.61"],"200 Backstroke":["2:31.40","2:35.19"],"50 Breaststroke":["0:35.50","0:36.39"],"100 Breaststroke":["1:18.50","1:20.46"],"200 Breaststroke":["2:51.94","2:56.24"],"50 Butterfly":["0:29.88","0:30.63"],"100 Butterfly":["1:07.69","1:09.38"],"200 Butterfly":["2:35.51","2:39.40"],"200 Individual Medley":["2:21.16","2:35.37"],"400 Individual Medley":["5:21.16","5:29.19"]},15:{"50 Freestyle":["0:27.70","0:28.39"],"100 Freestyle":["1:00.30","1:01.81"],"200 Freestyle":["2:12.24","2:15.55"],"400 Freestyle":["4:35.90","4:42.80"],"800 Freestyle":["9:36.17","9:50.57"],"1500 Freestyle":["18:37.50","19:05.44"],"50 Backstroke":["0:31.51","0:32.30"],"100 Backstroke":["1:08.84","1:10.56"],"200 Backstroke":["2:29.30","2:33.03"],"50 Breaststroke":["0:35.15","0:36.03"],"100 Breaststroke":["1:17.72","1:19.66"],"200 Breaststroke":["2:50.23","2:54.49"],"50 Butterfly":["0:29.27","0:30.00"],"100 Butterfly":["1:06.55","1:08.21"],"200 Butterfly":["2:33.95","2:37.80"],"200 Individual Medley":["2:27.74","2:33.81"],"400 Individual Medley":["5:17.94","5:25.89"]},16:{"50 Freestyle":["0:27.42","0:28.11"],"100 Freestyle":["0:59.30","1:00.78"],"200 Freestyle":["2:10.67","2:13.94"],"400 Freestyle":["4:33.15","4:39.98"],"800 Freestyle":["9:30.40","9:44.66"],"1500 Freestyle":["18:26.32","18:53.98"],"50 Backstroke":["0:31.16","0:31.94"],"100 Backstroke":["1:07.44","1:09.13"],"200 Backstroke":["2:27.11","2:30.79"],"50 Breaststroke":["0:34.79","0:35.66"],"100 Breaststroke":["1:16.94","1:18.85"],"200 Breaststroke":["2:48.52","2:52.73"],"50 Butterfly":["0:28.98","0:29.70"],"100 Butterfly":["1:05.74","1:07.38"],"200 Butterfly":["2:32.04","2:35.84"],"200 Individual Medley":["2:27.74","2:31.43"],"400 Individual Medley":["5:14.76","5:22.63"]},17:{"50 Freestyle":["0:27.15","0:27.83"],"100 Freestyle":["0:58.72","1:00.19"],"200 Freestyle":["2:09.36","2:12.59"],"400 Freestyle":["4:30.41","4:37.17"],"800 Freestyle":["9:24.70","9:38.82"],"1500 Freestyle":["18:15.26","18:42.64"],"50 Backstroke":["0:30.84","0:31.61"],"100 Backstroke":["1:06.66","1:08.33"],"200 Backstroke":["2:25.64","2:29.28"],"50 Breaststroke":["0:34.45","0:35.31"],"100 Breaststroke":["1:16.18","1:18.08"],"200 Breaststroke":["2:46.83","2:51.00"],"50 Butterfly":["0:28.63","0:29.35"],"100 Butterfly":["1:05.00","1:06.63"],"200 Butterfly":["2:30.52","2:34.28"],"200 Individual Medley":["2:26.25","2:29.91"],"400 Individual Medley":["5:11.82","5:19.41"]}}}};
+// ── SPLITS ──────────────────────────────────────────
+function getSplitCount(distance){
+  const map={"100m":2,"200m":4,"400m":8,"800m":16,"1500m":30};
+  return map[distance]||0;
+}
  
+function updateSplits(){
+  const distance=document.getElementById("distance").value;
+  const count=getSplitCount(distance);
+  const section=document.getElementById("splits-section");
+  const grid=document.getElementById("splits-grid");
+  if(count===0){section.classList.remove("visible");return;}
+  section.classList.add("visible");
+  grid.innerHTML="";
+  for(let i=0;i<count;i++){
+    const div=document.createElement("div");
+    div.className="split-row";
+    div.innerHTML=`<span class="split-label">${i*50+1}–${(i+1)*50}m</span><input class="split-input" type="text" id="split-${i}" placeholder="e.g. 16.42" oninput="checkSplits()">`;
+    grid.appendChild(div);
+  }
+  document.getElementById("split-total").style.display="block";
+}
+ 
+function checkSplits(){
+  const distance=document.getElementById("distance").value;
+  const count=getSplitCount(distance);
+  const finalTime=document.getElementById("time").value;
+  let total=0,allFilled=true;
+  for(let i=0;i<count;i++){
+    const v=document.getElementById("split-"+i)?.value;
+    if(!v){allFilled=false;break;}
+    total+=parseTime(v);
+  }
+  if(allFilled){
+    document.getElementById("split-total-val").textContent=formatSec(total);
+    const warning=document.getElementById("split-warning");
+    if(finalTime){
+      const diff=Math.abs(total-parseTime(finalTime));
+      warning.style.display=diff>0.5?"block":"none";
+    }
+  }
+}
+ 
+function getSplitsString(count){
+  const parts=[];
+  for(let i=0;i<count;i++){
+    const v=document.getElementById("split-"+i)?.value;
+    if(v)parts.push(v);
+  }
+  return parts.join(",");
+}
+ 
+function formatSec(s){const m=Math.floor(s/60),sec=(s%60).toFixed(2);return m>0?m+":"+sec.padStart(5,"0"):sec+"s";}
+ 
+// ── PARSE TIME ──────────────────────────────────────
 function parseTime(t){t=String(t).trim().replace(/^0:/,"");if(t.includes(":")){const p=t.split(":");return parseFloat(p[0])*60+parseFloat(p[1]);}return parseFloat(t);}
 function timeToSec(t){return parseTime(t);}
  
-if(times.length>0){const dates=times.map(t=>new Date(t.date));const earliest=new Date(Math.min(...dates));const today=new Date();today.setHours(0,0,0,0);earliest.setHours(0,0,0,0);document.getElementById("stat-days").textContent=Math.floor((today-earliest)/86400000)+1;}
+// ── TAB SWITCHING ──────────────────────────────────
+function showTab(name){
+  const names=["log","times","standards","plan"];
+  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",names[i]===name));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("tab-"+name).classList.add("active");
+  if(name==="times")renderDashboard();
+  if(name==="standards"){const dob=localStorage.getItem("swimedge_dob");if(dob){document.getElementById("std-dob").value=dob;handleDOB();}else renderStandards();}
+  if(name==="plan")restorePlanContext();
+}
+ 
+// ── LOG TIME ────────────────────────────────────────
+async function submitTime(){
+  const stroke=document.getElementById("stroke").value,distance=document.getElementById("distance").value,
+    pooltype=document.getElementById("pooltype").value,time=document.getElementById("time").value,
+    date=document.getElementById("date").value,notes=document.getElementById("notes").value;
+  if(!stroke||!distance||!pooltype||!time||!date){alert("Fill in all required fields.");return;}
+  const splitCount=getSplitCount(distance);
+  const splitsStr=splitCount>0?getSplitsString(splitCount):"";
+  const key=`${stroke} ${distance} (${pooltype})`;
+  const existing=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key);
+  const isPB=existing.length===0||timeToSec(time)<Math.min(...existing.map(t=>timeToSec(t.time)));
+  const btn=document.getElementById("log-btn");btn.disabled=true;btn.textContent="Saving...";
+  setSyncStatus("syncing","Saving...");
+  try{
+    const{data,error}=await db.from("swim_times").insert({user_id:USER_ID,stroke,distance,pooltype,time,date,notes:notes||null,is_pb:isPB,splits:splitsStr||null}).select().single();
+    if(error)throw error;
+    times.push({id:data.id,stroke,distance,pooltype,time,date,notes,isPB,splits:splitsStr});
+    setSyncStatus("synced","Saved ✓");
+    ["stroke","distance","pooltype","time","date","notes"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("splits-section").classList.remove("visible");
+    document.getElementById("splits-grid").innerHTML="";
+    if(isPB)alert("🎉 New personal best!");
+    showTab("times");
+  }catch(e){console.error(e);setSyncStatus("error","Save failed");alert("Failed to save. Try again.");}
+  finally{btn.disabled=false;btn.textContent="Log Time";}
+}
+ 
+// ── DASHBOARD ────────────────────────────────────────
+function formatEventName(key){const m=key.match(/^(.+?) (\d+m) \((Short Course \(25m\)|Long Course \(50m\))\)$/);if(!m)return key;return m[2]+" "+m[1]+" · "+(m[3].includes("Short")?"SC":"LC");}
+ 
+function renderDashboard(){
+  const bests={},events={};
+  times.forEach(t=>{const key=`${t.stroke} ${t.distance} (${t.pooltype})`;if(!events[key])events[key]=[];events[key].push(t);if(!bests[key]||timeToSec(t.time)<timeToSec(bests[key].time))bests[key]=t;});
+  document.getElementById("stat-total").textContent=times.length;
+  document.getElementById("stat-pbs").textContent=Object.keys(bests).length;
+  document.getElementById("stat-events").textContent=Object.keys(events).length;
+  if(times.length>0){
+    const dates=times.map(t=>new Date(t.date));
+    const earliest=new Date(Math.min(...dates));const today=new Date();
+    today.setHours(0,0,0,0);earliest.setHours(0,0,0,0);
+    document.getElementById("stat-days").textContent=Math.floor((today-earliest)/86400000)+1;
+  }else document.getElementById("stat-days").textContent="0";
+  const list=document.getElementById("event-list");
+  if(!Object.keys(events).length){list.innerHTML='<div class="empty-state"><div class="empty-icon">🏊</div><p>No times logged yet.<br>Head to Log Time to get started.</p></div>';return;}
+  list.innerHTML="";
+  Object.keys(events).forEach(key=>{
+    const pb=bests[key],count=events[key].length,card=document.createElement("div");
+    card.className="event-card";
+    card.innerHTML=`<div><div class="event-name">${formatEventName(key)}</div><div class="event-pb">PB: ${pb.time}</div><div class="event-meta">${count} time${count>1?"s":""} logged · Last: ${events[key][events[key].length-1].date}</div></div>`;
+    card.onclick=()=>openEvent(key);list.appendChild(card);
+  });
+}
+ 
+function openEvent(key){
+  document.getElementById("times-main").style.display="none";
+  document.getElementById("event-detail").style.display="block";
+  document.getElementById("event-detail-title").textContent=formatEventName(key);
+  const evtTimes=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(currentChart)currentChart.destroy();
+  const ctx=document.getElementById("progressChart").getContext("2d");
+  currentChart=new Chart(ctx,{type:"line",data:{labels:evtTimes.map(t=>t.date),datasets:[{label:formatEventName(key),data:evtTimes.map(t=>timeToSec(t.time)),borderColor:"#c8f65d",backgroundColor:"rgba(200,246,93,0.06)",pointBackgroundColor:evtTimes.map(t=>t.isPB?"#c8f65d":"#555"),pointRadius:6,tension:0.35,fill:true}]},options:{responsive:true,scales:{y:{reverse:true,ticks:{color:"#888",callback:v=>v.toFixed(2)+"s"},grid:{color:"rgba(255,255,255,0.04)"}},x:{ticks:{color:"#888"},grid:{color:"rgba(255,255,255,0.04)"}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const s=c.raw,m=Math.floor(s/60),sec=(s%60).toFixed(2);return m>0?m+":"+sec.padStart(5,"0"):sec+"s";}}}}}});
+  const notesDiv=document.getElementById("notes-insights"),withNotes=evtTimes.filter(t=>t.notes&&t.notes.trim());
+  if(withNotes.length>0){
+    const good=withNotes.filter(t=>{const n=t.notes.toLowerCase();return(n.includes("good")||n.includes("strong")||n.includes("fast")||n.includes("great"))&&!n.includes("bad")&&!n.includes("slow")&&!n.includes("flat");});
+    const bad=withNotes.filter(t=>{const n=t.notes.toLowerCase();return n.includes("bad")||n.includes("flat")||n.includes("tired")||n.includes("slow")||n.includes("poor")||n.includes("off");});
+    notesDiv.innerHTML=`<div class="insights-row"><div class="insight-box"><div class="insight-label">What's been working</div><div class="insight-text">${good.length?good.map(t=>`"${t.notes}" <span style="color:#444;font-size:11px;">(${t.date})</span>`).join("<br>"):'<span style="color:var(--gray-text)">Nothing flagged yet.</span>'}</div></div><div class="insight-box"><div class="insight-label">What to work on</div><div class="insight-text">${bad.length?bad.map(t=>`"${t.notes}" <span style="color:#444;font-size:11px;">(${t.date})</span>`).join("<br>"):'<span style="color:var(--gray-text)">Nothing flagged yet.</span>'}</div></div></div>`;
+  }else{notesDiv.innerHTML='<p style="color:var(--gray-text);font-size:14px;margin-bottom:24px;">Add notes when logging times to see insights here.</p>';}
+  const timesDiv=document.getElementById("event-times");timesDiv.innerHTML="";
+  [...evtTimes].reverse().forEach(t=>{
+    const d=document.createElement("div");d.className="entry";
+    const splitsHtml=t.splits?`<div class="entry-splits">Splits: ${t.splits.split(",").map((s,i)=>`${(i+1)*50}m: ${s}`).join(" · ")}</div>`:"";
+    d.innerHTML=`<div><span class="time-val">${t.time}</span>${t.isPB?'<span class="pb-tag">PB</span>':''}<div class="entry-meta">${t.date}</div>${splitsHtml}${t.notes?`<div class="entry-notes">${t.notes}</div>`:''}</div><button class="delete-btn" onclick="deleteTime('${t.id}')">✕</button>`;
+    timesDiv.appendChild(d);
+  });
+}
+ 
+function closeEvent(){document.getElementById("times-main").style.display="block";document.getElementById("event-detail").style.display="none";if(currentChart){currentChart.destroy();currentChart=null;}renderDashboard();}
+ 
+async function deleteTime(id){
+  if(!confirm("Delete this time?"))return;
+  setSyncStatus("syncing","Deleting...");
+  try{const{error}=await db.from("swim_times").delete().eq("id",id).eq("user_id",USER_ID);if(error)throw error;times=times.filter(t=>t.id!==id);setSyncStatus("synced","Synced");closeEvent();}
+  catch(e){console.error(e);setSyncStatus("error","Delete failed");alert("Failed to delete.");}
+}
+ 
+// ── STANDARDS ────────────────────────────────────────
+const S={M:{LC:{11:{"50 Freestyle":["0:32.07","0:32.87"],"100 Freestyle":["1:10.76","1:12.53"],"200 Freestyle":["2:36.16","2:40.06"],"400 Freestyle":["5:24.83","5:32.95"],"800 Freestyle":["11:11.68","11:28.47"],"50 Backstroke":["0:38.50","0:39.46"],"100 Backstroke":["1:22.25","1:24.31"],"200 Backstroke":["2:54.17","2:58.52"],"50 Breaststroke":["0:42.53","0:43.59"],"100 Breaststroke":["1:33.16","1:35.49"],"200 Breaststroke":["3:20.39","3:25.40"],"50 Butterfly":["0:35.90","0:36.80"],"100 Butterfly":["1:22.69","1:24.76"],"200 Butterfly":["3:08.52","3:13.23"],"200 Individual Medley":["2:56.51","3:00.92"],"400 Individual Medley":["6:03.90","6:13.00"]},12:{"50 Freestyle":["0:29.37","0:30.10"],"100 Freestyle":["1:04.25","1:05.88"],"200 Freestyle":["2:21.60","2:25.14"],"400 Freestyle":["4:57.66","5:05.10"],"800 Freestyle":["10:17.17","10:32.60"],"50 Backstroke":["0:34.90","0:35.77"],"100 Backstroke":["1:15.43","1:17.32"],"200 Backstroke":["2:43.64","2:47.73"],"50 Breaststroke":["0:39.55","0:40.54"],"100 Breaststroke":["1:25.33","1:27.46"],"200 Breaststroke":["3:04.69","3:09.31"],"50 Butterfly":["0:32.21","0:33.02"],"100 Butterfly":["1:13.41","1:15.25"],"200 Butterfly":["2:54.44","2:58.80"],"200 Individual Medley":["2:40.31","2:44.32"],"400 Individual Medley":["5:42.17","5:50.72"]},13:{"50 Freestyle":["0:27.50","0:28.19"],"100 Freestyle":["1:00.49","1:02.00"],"200 Freestyle":["2:12.95","2:16.27"],"400 Freestyle":["4:41.55","4:48.59"],"800 Freestyle":["9:44.74","9:59.36"],"1500 Freestyle":["18:46.76","19:14.93"],"50 Backstroke":["0:32.15","0:32.95"],"100 Backstroke":["1:09.33","1:11.06"],"200 Backstroke":["2:29.69","2:33.43"],"50 Breaststroke":["0:35.17","0:36.05"],"100 Breaststroke":["1:18.25","1:20.21"],"200 Breaststroke":["2:49.09","2:53.32"],"50 Butterfly":["0:29.71","0:30.45"],"100 Butterfly":["1:06.62","1:08.29"],"200 Butterfly":["2:30.04","2:33.79"],"200 Individual Medley":["2:29.19","2:32.92"],"400 Individual Medley":["5:16.96","5:24.88"]},14:{"50 Freestyle":["0:26.39","0:27.05"],"100 Freestyle":["0:57.97","0:59.42"],"200 Freestyle":["2:08.43","2:11.64"],"400 Freestyle":["4:33.15","4:39.98"],"800 Freestyle":["9:24.06","9:38.16"],"1500 Freestyle":["18:15.29","18:42.67"],"50 Backstroke":["0:30.61","0:31.38"],"100 Backstroke":["1:06.26","1:07.92"],"200 Backstroke":["2:26.11","2:29.76"],"50 Breaststroke":["0:33.95","0:34.80"],"100 Breaststroke":["1:15.18","1:17.06"],"200 Breaststroke":["2:45.58","2:49.72"],"50 Butterfly":["0:28.71","0:29.43"],"100 Butterfly":["1:04.68","1:06.30"],"200 Butterfly":["2:30.04","2:33.79"],"200 Individual Medley":["2:25.05","2:28.68"],"400 Individual Medley":["5:08.70","5:16.42"]},15:{"50 Freestyle":["0:25.69","0:26.33"],"100 Freestyle":["0:56.12","0:57.52"],"200 Freestyle":["2:04.34","2:07.45"],"400 Freestyle":["4:25.42","4:32.06"],"800 Freestyle":["9:11.29","9:25.07"],"1500 Freestyle":["17:53.51","18:20.35"],"50 Backstroke":["0:29.50","0:30.24"],"100 Backstroke":["1:04.15","1:05.75"],"200 Backstroke":["2:20.95","2:24.47"],"50 Breaststroke":["0:32.79","0:33.61"],"100 Breaststroke":["1:11.94","1:13.74"],"200 Breaststroke":["2:38.24","2:42.20"],"50 Butterfly":["0:27.38","0:28.06"],"100 Butterfly":["1:01.93","1:03.48"],"200 Butterfly":["2:24.10","2:27.70"],"200 Individual Medley":["2:21.10","2:24.63"],"400 Individual Medley":["5:00.14","5:07.64"]},16:{"50 Freestyle":["0:25.17","0:25.80"],"100 Freestyle":["0:55.05","0:56.43"],"200 Freestyle":["2:01.89","2:04.94"],"400 Freestyle":["4:20.69","4:27.21"],"800 Freestyle":["9:05.68","9:19.32"],"1500 Freestyle":["17:27.68","17:53.87"],"50 Backstroke":["0:28.90","0:29.62"],"100 Backstroke":["1:02.50","1:04.06"],"200 Backstroke":["2:18.68","2:22.15"],"50 Breaststroke":["0:31.76","0:32.55"],"100 Breaststroke":["1:10.83","1:12.60"],"200 Breaststroke":["2:36.45","2:40.36"],"50 Butterfly":["0:27.02","0:27.70"],"100 Butterfly":["1:00.14","1:01.64"],"200 Butterfly":["2:17.84","2:21.29"],"200 Individual Medley":["2:18.00","2:20.95"],"400 Individual Medley":["4:55.87","5:03.27"]},17:{"50 Freestyle":["0:24.92","0:25.54"],"100 Freestyle":["0:54.38","0:55.74"],"200 Freestyle":["2:00.24","2:03.25"],"400 Freestyle":["4:15.66","4:22.05"],"800 Freestyle":["9:00.22","9:13.73"],"1500 Freestyle":["17:17.20","17:43.13"],"50 Backstroke":["0:28.36","0:29.07"],"100 Backstroke":["1:01.87","1:03.42"],"200 Backstroke":["2:17.29","2:20.72"],"50 Breaststroke":["0:31.17","0:31.95"],"100 Breaststroke":["1:09.96","1:11.71"],"200 Breaststroke":["2:34.89","2:38.76"],"50 Butterfly":["0:26.57","0:27.23"],"100 Butterfly":["0:59.42","1:00.91"],"200 Butterfly":["2:15.93","2:19.33"],"200 Individual Medley":["2:14.95","2:18.32"],"400 Individual Medley":["4:51.65","4:58.94"]}},SC:{11:{"50 Freestyle":["0:31.44","0:32.23"],"100 Freestyle":["1:09.37","1:11.10"],"200 Freestyle":["2:33.10","2:36.93"],"400 Freestyle":["5:18.46","5:26.42"],"800 Freestyle":["10:58.05","11:14.97"],"50 Backstroke":["0:37.75","0:38.69"],"100 Backstroke":["1:20.64","1:22.66"],"200 Backstroke":["2:50.75","2:55.02"],"50 Breaststroke":["0:41.70","0:42.74"],"100 Breaststroke":["1:31.33","1:33.61"],"200 Breaststroke":["3:16.46","3:21.37"],"50 Butterfly":["0:35.20","0:36.08"],"100 Butterfly":["1:21.07","1:23.10"],"200 Butterfly":["3:04.82","3:09.44"],"200 Individual Medley":["2:53.05","2:57.38"],"400 Individual Medley":["5:56.76","6:05.68"]},12:{"50 Freestyle":["0:28.79","0:29.51"],"100 Freestyle":["1:02.99","1:04.56"],"200 Freestyle":["2:18.82","2:22.29"],"400 Freestyle":["4:51.82","4:59.12"],"800 Freestyle":["10:05.07","10:20.20"],"50 Backstroke":["0:34.22","0:35.08"],"100 Backstroke":["1:13.95","1:15.80"],"200 Backstroke":["2:40.43","2:44.44"],"50 Breaststroke":["0:38.77","0:39.74"],"100 Breaststroke":["1:23.66","1:25.75"],"200 Breaststroke":["3:01.07","3:05.60"],"50 Butterfly":["0:31.58","0:32.37"],"100 Butterfly":["1:11.97","1:13.77"],"200 Butterfly":["2:51.02","2:55.30"],"200 Individual Medley":["2:37.17","2:41.10"],"400 Individual Medley":["5:35.46","5:43.85"]},13:{"50 Freestyle":["0:26.96","0:27.63"],"100 Freestyle":["0:59.30","1:00.78"],"200 Freestyle":["2:10.34","2:13.60"],"400 Freestyle":["4:36.00","4:42.93"],"800 Freestyle":["9:33.27","9:47.60"],"1500 Freestyle":["18:24.67","18:52.29"],"50 Backstroke":["0:31.52","0:32.31"],"100 Backstroke":["1:07.97","1:09.67"],"200 Backstroke":["2:26.75","2:30.42"],"50 Breaststroke":["0:34.48","0:35.34"],"100 Breaststroke":["1:16.72","1:18.64"],"200 Breaststroke":["2:45.77","2:49.91"],"50 Butterfly":["0:29.13","0:29.86"],"100 Butterfly":["1:05.31","1:06.94"],"200 Butterfly":["2:27.10","2:30.78"],"200 Individual Medley":["2:22.21","2:25.77"],"400 Individual Medley":["5:10.75","5:18.52"]},14:{"50 Freestyle":["0:25.87","0:26.52"],"100 Freestyle":["0:56.83","0:58.25"],"200 Freestyle":["2:05.91","2:09.06"],"400 Freestyle":["4:27.79","4:34.48"],"800 Freestyle":["9:13.00","9:26.83"],"1500 Freestyle":["17:53.81","18:20.66"],"50 Backstroke":["0:30.01","0:30.76"],"100 Backstroke":["1:04.96","1:06.58"],"200 Backstroke":["2:23.25","2:26.83"],"50 Breaststroke":["0:33.28","0:34.11"],"100 Breaststroke":["1:13.71","1:15.55"],"200 Breaststroke":["2:42.33","2:46.39"],"50 Butterfly":["0:28.15","0:28.85"],"100 Butterfly":["1:03.41","1:05.00"],"200 Butterfly":["2:21.27","2:30.78"],"200 Individual Medley":["2:18.33","2:25.77"],"400 Individual Medley":["5:02.65","5:10.22"]},15:{"50 Freestyle":["0:25.19","0:25.82"],"100 Freestyle":["0:55.02","0:56.40"],"200 Freestyle":["2:01.90","2:04.95"],"400 Freestyle":["4:20.22","4:26.73"],"800 Freestyle":["9:00.48","9:13.99"],"1500 Freestyle":["17:32.46","17:58.77"],"50 Backstroke":["0:28.92","0:29.64"],"100 Backstroke":["1:02.89","1:04.46"],"200 Backstroke":["2:18.19","2:21.64"],"50 Breaststroke":["0:32.15","0:32.95"],"100 Breaststroke":["1:10.53","1:12.29"],"200 Breaststroke":["2:35.14","2:39.02"],"50 Butterfly":["0:26.84","0:27.51"],"100 Butterfly":["1:00.72","1:02.24"],"200 Butterfly":["2:21.27","2:24.80"],"200 Individual Medley":["2:14.81","2:21.79"],"400 Individual Medley":["4:54.25","5:01.61"]},16:{"50 Freestyle":["0:24.68","0:25.30"],"100 Freestyle":["0:53.97","0:55.32"],"200 Freestyle":["1:59.50","2:02.49"],"400 Freestyle":["4:15.58","4:21.97"],"800 Freestyle":["8:54.98","9:08.35"],"1500 Freestyle":["17:07.14","17:32.82"],"50 Backstroke":["0:28.33","0:29.04"],"100 Backstroke":["1:01.27","1:02.80"],"200 Backstroke":["2:15.96","2:19.36"],"50 Breaststroke":["0:31.14","0:31.92"],"100 Breaststroke":["1:09.44","1:11.18"],"200 Breaststroke":["2:33.38","2:37.21"],"50 Butterfly":["0:26.49","0:27.15"],"100 Butterfly":["0:58.96","1:00.43"],"200 Butterfly":["2:15.14","2:18.52"],"200 Individual Medley":["2:14.81","2:18.18"],"400 Individual Medley":["4:50.07","4:57.32"]},17:{"50 Freestyle":["0:24.43","0:25.04"],"100 Freestyle":["0:53.31","0:54.64"],"200 Freestyle":["1:57.88","2:00.83"],"400 Freestyle":["4:10.65","4:16.92"],"800 Freestyle":["8:49.63","9:02.87"],"1500 Freestyle":["16:56.86","17:22.28"],"50 Backstroke":["0:27.80","0:28.50"],"100 Backstroke":["1:00.66","1:02.18"],"200 Backstroke":["2:14.60","2:17.97"],"50 Breaststroke":["0:30.56","0:31.32"],"100 Breaststroke":["1:08.59","1:10.30"],"200 Breaststroke":["2:31.85","2:35.65"],"50 Butterfly":["0:26.05","0:26.70"],"100 Butterfly":["0:58.25","0:59.71"],"200 Butterfly":["2:13.26","2:16.59"],"200 Individual Medley":["2:12.30","2:15.61"],"400 Individual Medley":["4:45.93","4:53.08"]}}},F:{LC:{11:{"50 Freestyle":["0:32.01","0:32.81"],"100 Freestyle":["1:10.47","1:12.23"],"200 Freestyle":["2:32.55","2:36.36"],"400 Freestyle":["5:20.67","5:28.69"],"800 Freestyle":["11:03.25","11:19.83"],"50 Backstroke":["0:37.90","0:38.85"],"100 Backstroke":["1:20.67","1:22.69"],"200 Backstroke":["2:52.80","2:57.12"],"50 Breaststroke":["0:42.84","0:43.91"],"100 Breaststroke":["1:32.69","1:35.01"],"200 Breaststroke":["3:17.99","3:22.94"],"50 Butterfly":["0:35.56","0:36.45"],"100 Butterfly":["1:21.21","1:23.24"],"200 Butterfly":["3:17.65","3:22.59"],"200 Individual Medley":["2:53.60","2:57.94"],"400 Individual Medley":["6:07.64","6:16.83"]},12:{"50 Freestyle":["0:30.46","0:31.22"],"100 Freestyle":["1:06.89","1:08.56"],"200 Freestyle":["2:27.02","2:30.70"],"400 Freestyle":["5:09.00","5:16.73"],"800 Freestyle":["10:37.67","10:53.61"],"50 Backstroke":["0:35.93","0:36.83"],"100 Backstroke":["1:17.54","1:19.48"],"200 Backstroke":["2:47.09","2:51.27"],"50 Breaststroke":["0:40.26","0:41.27"],"100 Breaststroke":["1:28.15","1:30.35"],"200 Breaststroke":["3:08.97","3:13.69"],"50 Butterfly":["0:33.29","0:34.12"],"100 Butterfly":["1:16.49","1:18.40"],"200 Butterfly":["3:00.18","3:04.68"],"200 Individual Medley":["2:47.34","2:51.52"],"400 Individual Medley":["5:53.99","6:02.84"]},13:{"50 Freestyle":["0:28.92","0:29.64"],"100 Freestyle":["1:03.12","1:04.70"],"200 Freestyle":["2:16.24","2:19.65"],"400 Freestyle":["4:47.13","4:54.31"],"800 Freestyle":["9:59.63","10:14.62"],"1500 Freestyle":["19:22.99","19:52.06"],"50 Backstroke":["0:33.40","0:34.24"],"100 Backstroke":["1:11.98","1:13.78"],"200 Backstroke":["2:36.55","2:40.46"],"50 Breaststroke":["0:36.58","0:37.49"],"100 Breaststroke":["1:20.88","1:22.90"],"200 Breaststroke":["2:57.15","3:01.58"],"50 Butterfly":["0:30.79","0:31.56"],"100 Butterfly":["1:09.74","1:11.48"],"200 Butterfly":["2:38.62","2:42.59"],"200 Individual Medley":["2:36.69","2:40.61"],"400 Individual Medley":["5:30.89","5:39.16"]},14:{"50 Freestyle":["0:28.63","0:29.35"],"100 Freestyle":["1:02.31","1:03.87"],"200 Freestyle":["2:14.88","2:19.65"],"400 Freestyle":["4:44.26","4:51.37"],"800 Freestyle":["9:53.63","10:08.47"],"1500 Freestyle":["19:11.36","19:40.14"],"50 Backstroke":["0:32.76","0:33.58"],"100 Backstroke":["1:11.26","1:13.04"],"200 Backstroke":["2:34.43","2:38.29"],"50 Breaststroke":["0:36.21","0:37.12"],"100 Breaststroke":["1:20.07","1:22.07"],"200 Breaststroke":["2:55.38","2:59.76"],"50 Butterfly":["0:30.48","0:31.24"],"100 Butterfly":["1:09.04","1:10.77"],"200 Butterfly":["2:38.62","2:42.59"],"200 Individual Medley":["2:34.61","2:38.48"],"400 Individual Medley":["5:27.58","5:35.77"]},15:{"50 Freestyle":["0:28.25","0:28.96"],"100 Freestyle":["1:01.51","1:03.05"],"200 Freestyle":["2:14.88","2:18.25"],"400 Freestyle":["4:41.42","4:48.46"],"800 Freestyle":["9:47.69","10:02.36"],"1500 Freestyle":["18:59.85","19:23.35"],"50 Backstroke":["0:32.14","0:32.94"],"100 Backstroke":["1:10.22","1:11.98"],"200 Backstroke":["2:32.29","2:36.10"],"50 Breaststroke":["0:35.85","0:36.75"],"100 Breaststroke":["1:19.27","1:21.25"],"200 Breaststroke":["2:53.63","2:57.97"],"50 Butterfly":["0:29.86","0:30.61"],"100 Butterfly":["1:07.88","1:09.58"],"200 Butterfly":["2:37.03","2:40.96"],"200 Individual Medley":["2:33.06","2:36.89"],"400 Individual Medley":["5:24.30","5:32.41"]},16:{"50 Freestyle":["0:27.97","0:28.67"],"100 Freestyle":["1:00.49","1:02.00"],"200 Freestyle":["2:13.28","2:16.61"],"400 Freestyle":["4:38.61","4:45.58"],"800 Freestyle":["9:41.81","9:56.36"],"1500 Freestyle":["18:48.45","19:16.66"],"50 Backstroke":["0:31.78","0:32.57"],"100 Backstroke":["1:08.79","1:10.51"],"200 Backstroke":["2:30.05","2:33.80"],"50 Breaststroke":["0:35.49","0:36.38"],"100 Breaststroke":["1:18.48","1:20.44"],"200 Breaststroke":["2:51.89","2:56.19"],"50 Butterfly":["0:29.56","0:30.30"],"100 Butterfly":["1:06.73","1:08.43"],"200 Butterfly":["2:35.08","2:38.96"],"200 Individual Medley":["2:30.69","2:34.46"],"400 Individual Medley":["5:21.06","5:29.09"]},17:{"50 Freestyle":["0:27.69","0:28.38"],"100 Freestyle":["0:59.89","1:01.39"],"200 Freestyle":["2:11.95","2:15.25"],"400 Freestyle":["4:35.82","4:42.72"],"800 Freestyle":["9:35.99","9:50.39"],"1500 Freestyle":["18:37.17","19:05.10"],"50 Backstroke":["0:31.46","0:32.25"],"100 Backstroke":["1:07.99","1:09.69"],"200 Backstroke":["2:28.55","2:32.26"],"50 Breaststroke":["0:35.14","0:36.02"],"100 Breaststroke":["1:17.70","1:19.64"],"200 Breaststroke":["2:50.17","2:54.42"],"50 Butterfly":["0:29.20","0:29.93"],"100 Butterfly":["1:06.30","1:07.96"],"200 Butterfly":["2:33.53","2:37.37"],"200 Individual Medley":["2:29.13","2:32.91"],"400 Individual Medley":["5:17.85","5:25.80"]}},SC:{11:{"50 Freestyle":["0:31.38","0:32.16"],"100 Freestyle":["1:09.09","1:10.82"],"200 Freestyle":["2:29.56","2:33.30"],"400 Freestyle":["5:14.38","5:22.24"],"800 Freestyle":["10:50.25","11:06.51"],"50 Backstroke":["0:37.16","0:38.09"],"100 Backstroke":["1:19.09","1:21.07"],"200 Backstroke":["2:49.41","2:53.65"],"50 Breaststroke":["0:42.00","0:43.05"],"100 Breaststroke":["1:30.87","1:33.14"],"200 Breaststroke":["3:14.11","3:18.96"],"50 Butterfly":["0:34.86","0:35.73"],"100 Butterfly":["1:19.62","1:21.61"],"200 Butterfly":["3:13.77","3:18.61"],"200 Individual Medley":["2:50.20","2:54.46"],"400 Individual Medley":["6:00.43","6:09.44"]},12:{"50 Freestyle":["0:29.86","0:30.61"],"100 Freestyle":["1:05.58","1:07.22"],"200 Freestyle":["2:24.14","2:27.74"],"400 Freestyle":["5:02.94","5:10.51"],"800 Freestyle":["10:25.17","10:40.80"],"50 Backstroke":["0:35.23","0:36.11"],"100 Backstroke":["1:16.02","1:17.92"],"200 Backstroke":["2:43.81","2:47.91"],"50 Breaststroke":["0:39.47","0:40.46"],"100 Breaststroke":["1:26.42","1:28.58"],"200 Breaststroke":["3:05.26","3:09.89"],"50 Butterfly":["0:32.64","0:33.46"],"100 Butterfly":["1:14.99","1:16.86"],"200 Butterfly":["2:56.65","3:01.07"],"200 Individual Medley":["2:44.06","2:48.16"],"400 Individual Medley":["5:47.05","5:55.73"]},13:{"50 Freestyle":["0:28.35","0:29.06"],"100 Freestyle":["1:01.88","1:03.43"],"200 Freestyle":["2:13.57","2:18.29"],"400 Freestyle":["4:41.50","4:48.54"],"800 Freestyle":["9:47.87","10:02.57"],"1500 Freestyle":["19:00.19","19:28.69"],"50 Backstroke":["0:32.75","0:33.57"],"100 Backstroke":["1:10.57","1:12.33"],"200 Backstroke":["2:33.48","2:37.32"],"50 Breaststroke":["0:35.86","0:36.76"],"100 Breaststroke":["1:19.29","1:21.27"],"200 Breaststroke":["2:53.68","2:58.02"],"50 Butterfly":["0:30.19","0:30.94"],"100 Butterfly":["1:08.37","1:10.08"],"200 Butterfly":["2:37.08","2:41.01"],"200 Individual Medley":["2:31.58","2:35.37"],"400 Individual Medley":["5:24.40","5:32.51"]},14:{"50 Freestyle":["0:28.07","0:28.77"],"100 Freestyle":["1:01.09","1:02.62"],"200 Freestyle":["2:13.57","2:16.91"],"400 Freestyle":["4:38.69","4:45.66"],"800 Freestyle":["9:41.99","9:56.54"],"1500 Freestyle":["18:48.78","19:17.00"],"50 Backstroke":["0:32.12","0:32.92"],"100 Backstroke":["1:09.86","1:11.61"],"200 Backstroke":["2:31.40","2:35.19"],"50 Breaststroke":["0:35.50","0:36.39"],"100 Breaststroke":["1:18.50","1:20.46"],"200 Breaststroke":["2:51.94","2:56.24"],"50 Butterfly":["0:29.88","0:30.63"],"100 Butterfly":["1:07.69","1:09.38"],"200 Butterfly":["2:35.51","2:39.40"],"200 Individual Medley":["2:21.16","2:35.37"],"400 Individual Medley":["5:21.16","5:29.19"]},15:{"50 Freestyle":["0:27.70","0:28.39"],"100 Freestyle":["1:00.30","1:01.81"],"200 Freestyle":["2:12.24","2:15.55"],"400 Freestyle":["4:35.90","4:42.80"],"800 Freestyle":["9:36.17","9:50.57"],"1500 Freestyle":["18:37.50","19:05.44"],"50 Backstroke":["0:31.51","0:32.30"],"100 Backstroke":["1:08.84","1:10.56"],"200 Backstroke":["2:29.30","2:33.03"],"50 Breaststroke":["0:35.15","0:36.03"],"100 Breaststroke":["1:17.72","1:19.66"],"200 Breaststroke":["2:50.23","2:54.49"],"50 Butterfly":["0:29.27","0:30.00"],"100 Butterfly":["1:06.55","1:08.21"],"200 Butterfly":["2:33.95","2:37.80"],"200 Individual Medley":["2:27.74","2:33.81"],"400 Individual Medley":["5:17.94","5:25.89"]},16:{"50 Freestyle":["0:27.42","0:28.11"],"100 Freestyle":["0:59.30","1:00.78"],"200 Freestyle":["2:10.67","2:13.94"],"400 Freestyle":["4:33.15","4:39.98"],"800 Freestyle":["9:30.40","9:44.66"],"1500 Freestyle":["18:26.32","18:53.98"],"50 Backstroke":["0:31.16","0:31.94"],"100 Backstroke":["1:07.44","1:09.13"],"200 Backstroke":["2:27.11","2:30.79"],"50 Breaststroke":["0:34.79","0:35.66"],"100 Breaststroke":["1:16.94","1:18.85"],"200 Breaststroke":["2:48.52","2:52.73"],"50 Butterfly":["0:28.98","0:29.70"],"100 Butterfly":["1:05.74","1:07.38"],"200 Butterfly":["2:32.04","2:35.84"],"200 Individual Medley":["2:27.74","2:31.43"],"400 Individual Medley":["5:14.76","5:22.63"]},17:{"50 Freestyle":["0:27.15","0:27.83"],"100 Freestyle":["0:58.72","1:00.19"],"200 Freestyle":["2:09.36","2:12.59"],"400 Freestyle":["4:30.41","4:37.17"],"800 Freestyle":["9:24.70","9:38.82"],"1500 Freestyle":["18:15.26","18:42.64"],"50 Backstroke":["0:30.84","0:31.61"],"100 Backstroke":["1:06.66","1:08.33"],"200 Backstroke":["2:25.64","2:29.28"],"50 Breaststroke":["0:34.45","0:35.31"],"100 Breaststroke":["1:16.18","1:18.08"],"200 Breaststroke":["2:46.83","2:51.00"],"50 Butterfly":["0:28.63","0:29.35"],"100 Butterfly":["1:05.00","1:06.63"],"200 Butterfly":["2:30.52","2:34.28"],"200 Individual Medley":["2:26.25","2:29.91"],"400 Individual Medley":["5:11.82","5:19.41"]}}}};
+ 
+function daysUntilJune1(){const now=new Date();let j=new Date(now.getFullYear(),5,1);if(now>=j)j=new Date(now.getFullYear()+1,5,1);return Math.ceil((j-now)/86400000);}
 function getOntarioAge(dob){const birth=new Date(dob),now=new Date(),j=new Date(now.getFullYear(),5,1);let age=j.getFullYear()-birth.getFullYear();if(j<new Date(j.getFullYear(),birth.getMonth(),birth.getDate()))age--;return age;}
 function ageToKey(age){if(age<=11)return 11;if(age===12)return 12;if(age<=13)return 13;if(age===14)return 14;if(age===15)return 15;if(age===16)return 16;return 17;}
  
@@ -331,8 +599,7 @@ function handleDOB(){
 }
  
 function getBestSec(eventName,course){
-  const parts=eventName.split(" ");
-  let dist,stroke;
+  const parts=eventName.split(" ");let dist,stroke;
   if(parts[1]==="Individual"){dist=parts[0]+"m";stroke="Individual Medley";}
   else{dist=parts[0]+"m";stroke=parts.slice(1).join(" ");}
   const pool=course==="SC"?"Short Course (25m)":"Long Course (50m)";
@@ -362,92 +629,313 @@ function renderStandards(){
   });
 }
  
-function formatEventName(key){const m=key.match(/^(.+?) (\d+m) \((Short Course \(25m\)|Long Course \(50m\))\)$/);if(!m)return key;return m[2]+" "+m[1]+" · "+(m[3].includes("Short")?"SC":"LC");}
- 
-function showTab(name){
-  const names=["dashboard","log","standards","plan"];
-  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",names[i]===name));
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById("tab-"+name).classList.add("active");
-  if(name==="dashboard")renderDashboard();
-  if(name==="standards"){const dob=localStorage.getItem("swimedge_dob");if(dob){document.getElementById("std-dob").value=dob;handleDOB();}else renderStandards();}
-}
- 
-async function submitTime(){
-  const stroke=document.getElementById("stroke").value,distance=document.getElementById("distance").value,pooltype=document.getElementById("pooltype").value,time=document.getElementById("time").value,date=document.getElementById("date").value,notes=document.getElementById("notes").value;
-  if(!stroke||!distance||!pooltype||!time||!date){alert("Fill in all required fields.");return;}
-  const key=`${stroke} ${distance} (${pooltype})`,existing=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key);
-  const isPB=existing.length===0||timeToSec(time)<Math.min(...existing.map(t=>timeToSec(t.time)));
-  const btn=document.getElementById("log-btn");btn.disabled=true;btn.textContent="Saving...";
-  setSyncStatus("syncing","Saving...");
-  try{
-    const{data,error}=await db.from("swim_times").insert({user_id:USER_ID,stroke,distance,pooltype,time,date,notes:notes||null,is_pb:isPB}).select().single();
-    if(error)throw error;
-    times.push({id:data.id,stroke,distance,pooltype,time,date,notes,isPB});
-    setSyncStatus("synced","Saved ✓");
-    ["stroke","distance","pooltype","time","date","notes"].forEach(id=>document.getElementById(id).value="");
-    if(isPB)alert("🎉 New personal best!");
-    showTab("dashboard");
-  }catch(e){console.error(e);setSyncStatus("error","Save failed");alert("Failed to save. Try again.");}
-  finally{btn.disabled=false;btn.textContent="Log Time";}
-}
- 
-function renderDashboard(){
-  const bests={},events={};
-  times.forEach(t=>{const key=`${t.stroke} ${t.distance} (${t.pooltype})`;if(!events[key])events[key]=[];events[key].push(t);if(!bests[key]||timeToSec(t.time)<timeToSec(bests[key].time))bests[key]=t;});
-  document.getElementById("stat-total").textContent=times.length;
-  document.getElementById("stat-pbs").textContent=Object.keys(bests).length;
-  document.getElementById("stat-events").textContent=Object.keys(events).length;
-  if(times.length>0){const dates=times.map(t=>new Date(t.date));document.getElementById("stat-days").textContent=Math.ceil((new Date()-new Date(Math.min(...dates)))/86400000);}
-  else document.getElementById("stat-days").textContent="0";
-  const list=document.getElementById("event-list");
-  if(!Object.keys(events).length){list.innerHTML='<div class="empty-state"><div class="empty-icon">🏊</div><p>No times logged yet.<br>Head to Log Time to get started.</p></div>';return;}
-  list.innerHTML="";
-  Object.keys(events).forEach(key=>{
-    const pb=bests[key],count=events[key].length,card=document.createElement("div");
-    card.className="event-card";
-    card.innerHTML=`<div><div class="event-name">${formatEventName(key)}</div><div class="event-pb">PB: ${pb.time}</div><div class="event-meta">${count} time${count>1?"s":""} logged · Last: ${events[key][events[key].length-1].date}</div></div>`;
-    card.onclick=()=>openEvent(key);list.appendChild(card);
+// ── TRAINING PLAN ────────────────────────────────────
+function setMode(mode){
+  selectedMode=mode;
+  ['splits','technique','dryland','rehab','race'].forEach(m=>{
+    document.getElementById("mode-"+m).classList.toggle("active",m===mode);
   });
 }
  
-function openEvent(key){
-  document.getElementById("dashboard-main").style.display="none";
-  document.getElementById("event-detail").style.display="block";
-  document.getElementById("event-detail-title").textContent=formatEventName(key);
-  const evtTimes=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(currentChart)currentChart.destroy();
-  const ctx=document.getElementById("progressChart").getContext("2d");
-  currentChart=new Chart(ctx,{type:"line",data:{labels:evtTimes.map(t=>t.date),datasets:[{label:formatEventName(key),data:evtTimes.map(t=>timeToSec(t.time)),borderColor:"#c8f65d",backgroundColor:"rgba(200,246,93,0.06)",pointBackgroundColor:evtTimes.map(t=>t.isPB?"#c8f65d":"#555"),pointRadius:6,tension:0.35,fill:true}]},options:{responsive:true,scales:{y:{reverse:true,ticks:{color:"#888",callback:v=>v.toFixed(2)+"s"},grid:{color:"rgba(255,255,255,0.04)"}},x:{ticks:{color:"#888"},grid:{color:"rgba(255,255,255,0.04)"}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const s=c.raw,m=Math.floor(s/60),sec=(s%60).toFixed(2);return m>0?m+":"+sec.padStart(5,"0"):sec+"s";}}}}}});
-  const notesDiv=document.getElementById("notes-insights"),withNotes=evtTimes.filter(t=>t.notes&&t.notes.trim());
-  if(withNotes.length>0){
-    const good=withNotes.filter(t=>{const n=t.notes.toLowerCase();return(n.includes("good")||n.includes("strong")||n.includes("fast")||n.includes("great"))&&!n.includes("bad")&&!n.includes("slow")&&!n.includes("flat");});
-    const bad=withNotes.filter(t=>{const n=t.notes.toLowerCase();return n.includes("bad")||n.includes("flat")||n.includes("tired")||n.includes("slow")||n.includes("poor")||n.includes("off");});
-    notesDiv.innerHTML=`<div class="insights-row"><div class="insight-box"><div class="insight-label">What's been working</div><div class="insight-text">${good.length?good.map(t=>`"${t.notes}" <span style="color:#444;font-size:11px;">(${t.date})</span>`).join("<br>"):'<span style="color:var(--gray-text)">Nothing flagged yet.</span>'}</div></div><div class="insight-box"><div class="insight-label">What to work on</div><div class="insight-text">${bad.length?bad.map(t=>`"${t.notes}" <span style="color:#444;font-size:11px;">(${t.date})</span>`).join("<br>"):'<span style="color:var(--gray-text)">Nothing flagged yet.</span>'}</div></div></div>`;
-  }else{notesDiv.innerHTML='<p style="color:var(--gray-text);font-size:14px;margin-bottom:24px;">Add notes when logging times to see insights here.</p>';}
-  const timesDiv=document.getElementById("event-times");timesDiv.innerHTML="";
-  [...evtTimes].reverse().forEach(t=>{const d=document.createElement("div");d.className="entry";d.innerHTML=`<div><span class="time-val">${t.time}</span>${t.isPB?'<span class="pb-tag">PB</span>':''}<div class="entry-meta">${t.date}</div>${t.notes?`<div class="entry-notes">${t.notes}</div>`:''}</div><button class="delete-btn" onclick="deleteTime('${t.id}')">✕</button>`;timesDiv.appendChild(d);});
+function restorePlanContext(){
+  const saved=JSON.parse(localStorage.getItem("swimedge_plan_ctx")||"{}");
+  if(saved.event)document.getElementById("plan-event").value=saved.event;
+  if(saved.goal)document.getElementById("plan-goal").value=saved.goal;
+  if(saved.meet)document.getElementById("plan-meet").value=saved.meet;
+  if(saved.load)document.getElementById("plan-load").value=saved.load;
 }
  
-function closeEvent(){document.getElementById("dashboard-main").style.display="block";document.getElementById("event-detail").style.display="none";if(currentChart){currentChart.destroy();currentChart=null;}renderDashboard();}
- 
-async function deleteTime(id){
-  if(!confirm("Delete this time?"))return;
-  setSyncStatus("syncing","Deleting...");
-  try{const{error}=await db.from("swim_times").delete().eq("id",id).eq("user_id",USER_ID);if(error)throw error;times=times.filter(t=>t.id!==id);setSyncStatus("synced","Synced");closeEvent();}
-  catch(e){console.error(e);setSyncStatus("error","Delete failed");alert("Failed to delete. Try again.");}
+function savePlanContext(){
+  const ctx={
+    event:document.getElementById("plan-event").value,
+    goal:document.getElementById("plan-goal").value,
+    meet:document.getElementById("plan-meet").value,
+    load:document.getElementById("plan-load").value
+  };
+  localStorage.setItem("swimedge_plan_ctx",JSON.stringify(ctx));
 }
  
-async function getPlan(){
-  if(!times.length){alert("Log at least one time before generating a plan.");return;}
-  document.getElementById("loading").style.display="block";
-  const planEl=document.getElementById("plan");planEl.classList.remove("visible");
-  await new Promise(r=>setTimeout(r,1400));
-  const fakePlan=`PERFORMANCE ANALYSIS\nYour logged times show a swimmer with strong sprint capability. Your breaststroke is your primary event and your SC times reflect good turn execution.\n\nTECHNIQUE CUES\n1. During the glide phase, keep your hips high and core tight.\n2. Time your breath so your head returns to neutral before your hands begin the outsweep.\n3. On your kick, bring your heels toward your seat rather than dropping your knees.\n\nRACE STRATEGY\nFor your 50m breaststroke — execute a clean dive and maximize your underwater. The race is decided in the first 15m and the final 10m.\n\nSTRENGTHS & WEAKNESSES\nStrength: Turn and pushoff execution above average based on SC vs LC performance.\nWeakness: SC-to-LC gap suggests over-reliance on walls.\n\nNEXT MEET TARGET\nAim for 0.1–0.2 second improvement. Achievable with consistent technique focus over 3–4 weeks.`;
-  document.getElementById("loading").style.display="none";planEl.textContent=fakePlan;planEl.classList.add("visible");
+function getPlanData(){
+  const event=document.getElementById("plan-event").value;
+  const goal=document.getElementById("plan-goal").value;
+  const meetDate=document.getElementById("plan-meet").value;
+  const load=document.getElementById("plan-load").value;
+  let daysOut=null;
+  if(meetDate){const today=new Date();today.setHours(0,0,0,0);const meet=new Date(meetDate);meet.setHours(0,0,0,0);daysOut=Math.round((meet-today)/86400000);}
+ 
+  // Get PB and splits for this event
+  let pb=null,lastSplits=null;
+  if(event){
+    const parts=event.split(" ");
+    const course=parts[parts.length-1];
+    const dist=parts[0];
+    const stroke=parts.slice(1,parts.length-1).join(" ");
+    const pool=course==="SC"?"Short Course (25m)":"Long Course (50m)";
+    const key=`${stroke} ${dist} (${pool})`;
+    const evtTimes=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key).sort((a,b)=>timeToSec(a.time)-timeToSec(b.time));
+    if(evtTimes.length>0){pb=evtTimes[0].time;}
+    const withSplits=times.filter(t=>`${t.stroke} ${t.distance} (${t.pooltype})`===key&&t.splits).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    if(withSplits.length>0)lastSplits=withSplits[0].splits;
+  }
+  return{event,goal,meetDate,load,daysOut,pb,lastSplits};
 }
  
+async function generatePlan(){
+  if(!selectedMode){alert("Select a focus area first.");return;}
+  const{event,goal,daysOut,pb,lastSplits,load}=getPlanData();
+  if(!event){alert("Select your primary event.");return;}
+  savePlanContext();
+  const btn=document.getElementById("plan-gen-btn");
+  btn.disabled=true;
+  document.getElementById("plan-loading").style.display="block";
+  document.getElementById("plan-output").classList.remove("visible");
+  await new Promise(r=>setTimeout(r,1600));
+  document.getElementById("plan-loading").style.display="none";
+  btn.disabled=false;
+  renderPlanOutput(selectedMode,{event,goal,daysOut,pb,lastSplits,load});
+}
+ 
+function renderPlanOutput(mode,{event,goal,daysOut,pb,lastSplits,load}){
+  const modeLabels={splits:"Splits Analysis",technique:"Swim Technique",dryland:"Dryland",rehab:"Rehab & Recovery",race:"Pre-Race Plan"};
+  const pbLine=pb?`Your current PB is <strong>${pb}</strong>.`:"No PB logged yet for this event.";
+  const goalLine=goal?`Your goal is <strong>${goal}</strong>.`:"";
+  const meetLine=daysOut!==null?`You have <strong>${daysOut} days</strong> until your next meet.`:"";
+  const gapLine=(pb&&goal)?`That's a drop of <strong>${(timeToSec(pb)-timeToSec(goal)).toFixed(2)}s</strong> from your current PB.`:"";
+ 
+  let sections="";
+ 
+  if(mode==="splits"){
+    const hasSplits=!!lastSplits;
+    const splitArr=hasSplits?lastSplits.split(","):[];
+    let splitAnalysis="";
+    if(hasSplits&&splitArr.length>=2){
+      const first=parseFloat(splitArr[0]),last=parseFloat(splitArr[splitArr.length-1]);
+      const diff=(last-first).toFixed(2);
+      if(last>first)splitAnalysis=`Your most recent splits show you going out in <strong>${first}s</strong> and coming back in <strong>${last}s</strong> — that's a <strong>+${diff}s</strong> back half. You're fading. The goal is even splits or a slight negative — your back half should match or beat your front.`;
+      else splitAnalysis=`Your most recent splits show <strong>${first}s</strong> out and <strong>${last}s</strong> back — a <strong>${Math.abs(diff)}s</strong> negative split. That's solid pacing. The question is whether you're leaving time on the table by going out too conservatively.`;
+    }else{
+      splitAnalysis="No split data logged yet for this event. Next time you race, log your 50m splits — even rough estimates will unlock detailed pacing analysis.";
+    }
+ 
+    const goalSplits=goal&&event.includes("100")?`To hit ${goal}, you need to average <strong>${(timeToSec(goal)/2).toFixed(2)}s per 50m</strong>. If you're currently fading, your front half needs to come down and your back half needs to hold.`:"";
+ 
+    sections=`
+      <div class="plan-section">
+        <div class="plan-section-title">Your pacing picture</div>
+        <p>${pbLine} ${goalLine} ${gapLine}</p>
+        <p style="margin-top:12px;">${splitAnalysis}</p>
+        ${goalSplits?`<p style="margin-top:12px;">${goalSplits}</p>`:""}
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">What to focus on in practice</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Back half conditioning:</strong> The back half of your race is where times are won or lost. When your coach gives you descending sets or best average, the back half execution is what he's watching for.</div>
+          <div class="plan-item"><strong>Race pace feels:</strong> You need to know exactly what your goal pace feels like so you can execute it under pressure. Ask your coach for a timed 50 in practice when you're fresh.</div>
+          <div class="plan-item"><strong>Controlled front half:</strong> Going out too hard means you'll fade. If your splits show a positive split pattern, consciously hold back in the first 15m of your race.</div>
+        </div>
+      </div>`;
+  }
+ 
+  else if(mode==="technique"){
+    const stroke=event.toLowerCase();
+    let cues=[];
+    if(stroke.includes("breaststroke")){
+      cues=[
+        {t:"Kick mechanics",b:"Heels to your seat, not knees forward. Knee drop creates drag — your knees should stay inside hip width. Think of pulling your heels up, not dropping your knees down."},
+        {t:"Breathing timing",b:"Your head should be back in neutral before your hands begin the outsweep. If you're breathing late, your pull timing is off and you lose distance per stroke."},
+        {t:"Glide position",b:"After the kick, hold your streamline for a full beat. Hips high, core tight, head neutral. Any hip drop here costs you distance per stroke."},
+        {t:"Pull width",b:"Your hands should pull to your hips, not past them. A wide pull wastes energy. Think of drawing a heart shape — in and then down."}
+      ];
+    }else if(stroke.includes("freestyle")){
+      cues=[
+        {t:"High elbow catch",b:"Fingertips should point down before you begin the pull. If your elbow drops first, you're pushing water instead of pulling it."},
+        {t:"Hip rotation",b:"Power comes from your hips, not just your arms. Full rotation on every stroke — your shoulder should clear the water on the recovery side."},
+        {t:"Breathing mechanics",b:"Exhale fully underwater so your inhale is quick and doesn't disrupt your stroke. Keep one goggle in the water when you breathe."},
+        {t:"Finish the stroke",b:"Pull all the way through to your hip before the recovery. An early exit kills your propulsion in the back half of each stroke."}
+      ];
+    }else if(stroke.includes("backstroke")){
+      cues=[
+        {t:"High elbow catch",b:"Set your catch with a bent elbow, not a straight arm sweep. Straight arm pulls are weak — bend it early and engage your lats."},
+        {t:"Head position",b:"Keep your head still and chin slightly tucked. Any head movement disrupts your body position and adds drag."},
+        {t:"Hip-driven kick",b:"Drive the kick from your hips, not just your knees. A flat kick creates drag — stay on your side through the full stroke cycle."},
+        {t:"Stroke rate",b:"Backstroke slows most in the back half when stroke rate drops. Focus on maintaining turnover in your last 15m."}
+      ];
+    }else if(stroke.includes("butterfly")){
+      cues=[
+        {t:"Two-kick timing",b:"Big kick on entry (when hands enter water), small kick on exit (when hands finish the pull). Missing the second kick kills your momentum."},
+        {t:"Breathing position",b:"Lead with your chest, not your head. Your chin should skim the water on the breath — if you're lifting your head, you're dropping your hips."},
+        {t:"Arm recovery",b:"Arms recover low and wide, skimming the surface. A high recovery wastes energy and is slower."},
+        {t:"Undulation",b:"The wave should flow chest to toes. If your butterfly feels like two separate movements, your timing is off — the kick and pull need to connect."}
+      ];
+    }else{
+      cues=[
+        {t:"Transitions",b:"In IM, the transitions between strokes are where time is lost. Smooth, controlled changes with no wasted movement."},
+        {t:"Fly to back",b:"The fly-to-back wall is critical. A clean turn with full power off the wall on backstroke sets up your back half."},
+        {t:"Back to breast",b:"The back-to-breast turn requires precise timing on the touch. Practice it specifically — it's a legal disqualification risk."},
+        {t:"Breast to free",b:"Don't die on the breaststroke leg. Most IM swimmers fade here. Control your pacing in breast so you have something left for the free finish."}
+      ];
+    }
+    sections=`
+      <div class="plan-section">
+        <div class="plan-section-title">Event context</div>
+        <p>${pbLine} ${goalLine} ${meetLine}</p>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Technical cues for ${event}</div>
+        <div class="plan-items">
+          ${cues.map(c=>`<div class="plan-item"><strong>${c.t}:</strong> ${c.b}</div>`).join("")}
+        </div>
+      </div>`;
+  }
+ 
+  else if(mode==="dryland"){
+    const stroke=event.toLowerCase();
+    let exercises=[];
+    if(stroke.includes("breaststroke")){
+      exercises=[
+        {t:"Hip flexor mobility",b:"Breaststroke kick requires extreme hip flexion. Couch stretch: 2 min each side, daily. This is the single most important dryland exercise for breaststrokers."},
+        {t:"Ankle flexibility",b:"Your kick needs plantar flexion (toes pointed) on the streamline and dorsiflexion (toes up) on the recovery. Sit on your heels for 2 min daily to improve this."},
+        {t:"Banded kickbacks",b:"Attach a band to your ankle and kick back against resistance — mimics the propulsive phase of the kick without water. 3×15 each leg."},
+        {t:"Core stability",b:"Plank variations: front plank 60s, side plank 30s each side. A stable core keeps your hips high in the water and maintains your streamline."},
+        {t:"Lat pulldowns",b:"Breaststroke pull is a lat-dominant movement. Lat pulldowns or pull-ups 3×10. A stronger pull = more distance per stroke."}
+      ];
+    }else if(stroke.includes("freestyle")||stroke.includes("backstroke")){
+      exercises=[
+        {t:"Shoulder external rotation",b:"Most freestyle/backstroke injuries are from internal rotation overload. Band external rotation: 3×15 each arm, light resistance. Do this before every practice."},
+        {t:"Lat activation",b:"Pull-ups or lat pulldowns 3×8-10. The catch and pull phases are lat-dominant — weakness here means a weak pull."},
+        {t:"Core rotation",b:"Medicine ball rotational throws or cable woodchops. Hip rotation power translates directly to stroke power."},
+        {t:"Hip flexor work",b:"Freestyle kick comes from the hip, not the knee. Hip flexor strengthening: resistance band kicks forward, 3×20 each leg."},
+        {t:"Thoracic mobility",b:"Foam roll your mid-back for 2 min before practice. Restricted thoracic spine limits shoulder rotation and catch depth."}
+      ];
+    }else if(stroke.includes("butterfly")){
+      exercises=[
+        {t:"Lat strength",b:"Butterfly pull is the most lat-demanding stroke. Pull-ups 3×8, or lat pulldowns heavy. This is non-negotiable for fly."},
+        {t:"Core undulation",b:"Dolphin kicks on land: lie face down and practice the body wave. Understand the chest-down, hip-up pattern before transferring to water."},
+        {t:"Hip flexor flexibility",b:"The undulation requires hip extension and flexion range. Couch stretch 2 min each side. Tight hip flexors kill the fly kick."},
+        {t:"Tricep strength",b:"The end of the fly pull relies on tricep push. Tricep pushdowns or skull crushers 3×12."},
+        {t:"Shoulder prehab",b:"Fly is hard on shoulders. Band Y-T-W exercises (3×10 each) to strengthen the rotator cuff and prevent impingement."}
+      ];
+    }else{
+      exercises=[
+        {t:"Full body mobility",b:"IM demands all four strokes — your limiting factor is usually hip flexors or shoulder mobility. Spend 10 min on mobility before each practice."},
+        {t:"Breast kick specificity",b:"Breaststroke is often the weakest IM leg. Couch stretch and ankle flexibility work daily."},
+        {t:"Core strength",b:"Plank 60s, side plank 30s, hollow body 30s. Every stroke in IM requires core stability."},
+        {t:"Lat and shoulder work",b:"Pull-ups 3×8, band external rotation 3×15. Fly and back both demand strong lats and healthy shoulders."},
+        {t:"Aerobic base",b:"IM rewards aerobic capacity. If your 400 IM fades, it's often a conditioning issue, not technique."}
+      ];
+    }
+    sections=`
+      <div class="plan-section">
+        <div class="plan-section-title">Dryland for ${event}</div>
+        <p>These exercises are specific to the demands of your event. Do them consistently — 3x per week minimum.</p>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Your exercises</div>
+        <div class="plan-items">
+          ${exercises.map(e=>`<div class="plan-item"><strong>${e.t}:</strong> ${e.b}</div>`).join("")}
+        </div>
+      </div>`;
+  }
+ 
+  else if(mode==="rehab"){
+    sections=`
+      <div class="plan-section">
+        <div class="plan-section-title">Recovery protocol</div>
+        <p>Swimming 10 sessions a week puts serious load on your shoulders, hips, and knees. These are the highest-yield recovery habits for competitive swimmers.</p>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Daily non-negotiables</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Sleep:</strong> 9+ hours. At your training volume, sleep is when adaptation happens. Cutting sleep cuts gains.</div>
+          <div class="plan-item"><strong>Hydration:</strong> You lose more fluid in the water than you think — your sweat evaporates immediately. Drink 500ml before practice, sip during, 500ml after.</div>
+          <div class="plan-item"><strong>Post-practice nutrition:</strong> Eat within 30 minutes of finishing. Protein + carbs. Delaying this delays recovery.</div>
+        </div>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Shoulder health (highest injury risk for swimmers)</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Doorway stretch:</strong> Hold for 30s each side. Opens the anterior shoulder capsule tightened by constant forward pulling.</div>
+          <div class="plan-item"><strong>Cross-body stretch:</strong> Pull your arm across your chest, hold 30s. Targets the posterior capsule — tight in most swimmers.</div>
+          <div class="plan-item"><strong>Thread-the-needle:</strong> On hands and knees, rotate your arm under your body. 10 reps each side. Improves thoracic rotation.</div>
+          <div class="plan-item"><strong>Band external rotation:</strong> 3×15, light band. Non-negotiable if you're training 10 sessions/week. Prevents impingement.</div>
+        </div>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Hip and knee (critical for breaststroke)</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Couch stretch:</strong> 2 min each side. Hip flexors are chronically tight in breaststrokers from the kick recovery position.</div>
+          <div class="plan-item"><strong>Figure-4 stretch:</strong> Lie on your back, cross one ankle over the opposite knee, press gently. 60s each side. Targets the piriformis — loaded heavily in breast kick.</div>
+          <div class="plan-item"><strong>Knee tracking check:</strong> Breaststroke knee pain is usually from the knee caving inward on kick recovery. Consciously keep knees in line with your hips, not splayed wide.</div>
+        </div>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Active recovery between sessions</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Cold water exposure:</strong> Cold shower for 2 min after hard sessions. Reduces inflammation and muscle soreness.</div>
+          <div class="plan-item"><strong>Walk, don't sit:</strong> Light movement between practices keeps blood flowing and clears lactate faster than lying down.</div>
+          <div class="plan-item"><strong>Legs up the wall:</strong> 10 min before bed. Drains fluid from your legs, reduces soreness in the lower body. Simple and highly effective.</div>
+        </div>
+      </div>`;
+  }
+ 
+  else if(mode==="race"){
+    const daysLine=daysOut!==null?`You have ${daysOut} days until your meet.`:"";
+    const splitTarget=goal&&event.includes("100")?`Your 50m split target for ${goal} is ${(timeToSec(goal)/2).toFixed(2)}s.`:"";
+    const splitTarget200=goal&&event.includes("200")?`Your 50m split target for ${goal} is ${(timeToSec(goal)/4).toFixed(2)}s per 50.`:"";
+    sections=`
+      <div class="plan-section">
+        <div class="plan-section-title">Race overview</div>
+        <p>${pbLine} ${goalLine} ${gapLine} ${daysLine}</p>
+        ${splitTarget?`<div class="highlight-box"><div class="h-label">50m split target</div><div class="h-val">${(timeToSec(goal)/2).toFixed(2)}s</div></div>`:""}
+        ${splitTarget200?`<div class="highlight-box"><div class="h-label">50m split target</div><div class="h-val">${(timeToSec(goal)/4).toFixed(2)}s</div></div>`:""}
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Night before</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Eat a full dinner, early:</strong> Carb-heavy, familiar food. Nothing new. Finish eating at least 2 hours before bed.</div>
+          <div class="plan-item"><strong>Pack your bag tonight:</strong> Suit, goggles (and backup pair), cap, towel, snacks, water. Do not leave this to the morning.</div>
+          <div class="plan-item"><strong>Visualize your race:</strong> 5 minutes eyes closed — from the block, through the water, to the finish. Your nervous system doesn't know the difference between imagined and real repetitions.</div>
+          <div class="plan-item"><strong>9+ hours sleep:</strong> Non-negotiable. Your reaction time and feel for the water both depend on it.</div>
+        </div>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">Race morning</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Eat 2-3 hours before warm-up:</strong> Oatmeal, banana, toast. Easy to digest carbs. Avoid heavy protein or fat the morning of.</div>
+          <div class="plan-item"><strong>Arrive early:</strong> Get in the water early enough to actually warm up properly — not 10 minutes before your race.</div>
+          <div class="plan-item"><strong>Warm-up structure:</strong> Easy 400-600m to loosen up, some drill work, then 2-3 race-pace 25s with full rest. Your last warm-up rep should be at race speed.</div>
+        </div>
+      </div>
+      <div class="plan-section">
+        <div class="plan-section-title">On the block</div>
+        <div class="plan-items">
+          <div class="plan-item"><strong>Controlled breathing:</strong> Three slow deep breaths before stepping up. Lower your heart rate intentionally — don't let adrenaline run the race for you.</div>
+          <div class="plan-item"><strong>Race plan:</strong> You should know exactly how you're going to split this race before you step up. ${splitTarget||splitTarget200||"Front half controlled, back half everything you have."}</div>
+          <div class="plan-item"><strong>Focus on your race, not your competitors:</strong> You cannot control what anyone else does. Execute your plan.</div>
+        </div>
+      </div>`;
+  }
+ 
+  const html=`
+    <div class="plan-output-card">
+      <div class="plan-output-header">
+        <div>
+          <div class="plan-output-title">${event}</div>
+          <div class="plan-output-meta">${new Date().toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'})}</div>
+        </div>
+        <div class="plan-mode-tag">${modeLabels[mode]}</div>
+      </div>
+      ${sections}
+    </div>`;
+ 
+  const output=document.getElementById("plan-output");
+  output.innerHTML=html;
+  output.classList.add("visible");
+}
+ 
+// ── INIT ─────────────────────────────────────────────
 (async()=>{await loadTimes();renderDashboard();})();
 </script>
 </body>
 </html>
+ 
