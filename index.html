@@ -5,33 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Swim Edge — Performance Intelligence for Swimmers</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://tally.so/widgets/embed.js"></script>
   <style>
     :root {
-      --black: #080808;
-      --white: #f5f3ef;
+      --bg: #07080f;
+      --bg2: #0d0f1a;
+      --bg3: #111422;
+      --cream: #f0ebe0;
+      --cream-dim: rgba(240,235,224,0.7);
+      --cream-muted: rgba(240,235,224,0.35);
+      --blue: #2a4a8a;
+      --blue-light: #3d6bbf;
+      --blue-bright: #5b8fee;
+      --blue-dim: rgba(42,74,138,0.18);
       --accent: #c8f65d;
-      --accent-dim: rgba(200, 246, 93, 0.15);
-      --gray: #1a1a1a;
-      --gray-mid: #2a2a2a;
-      --gray-text: #888;
-      --font-display: 'Syne', sans-serif;
+      --accent-dim: rgba(200,246,93,0.12);
+      --accent-border: rgba(200,246,93,0.3);
+      --gold: #c9a84c;
+      --gold-dim: rgba(201,168,76,0.15);
+      --line: rgba(240,235,224,0.07);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-label: 'Syne', sans-serif;
       --font-body: 'DM Sans', sans-serif;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-
     body {
-      background: var(--black);
-      color: var(--white);
+      background: var(--bg);
+      color: var(--cream);
       font-family: var(--font-body);
       overflow-x: hidden;
     }
-
-    /* CURSOR */
     * { cursor: none; }
     #cursor {
       width: 10px; height: 10px;
@@ -40,12 +45,11 @@
       position: fixed;
       pointer-events: none;
       z-index: 9999;
-      transition: transform 0.15s ease;
       mix-blend-mode: difference;
     }
     #cursor-ring {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(200,246,93,0.4);
+      width: 38px; height: 38px;
+      border: 1px solid rgba(200,246,93,0.35);
       border-radius: 50%;
       position: fixed;
       pointer-events: none;
@@ -53,676 +57,564 @@
       transition: all 0.08s ease;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 20px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(12px);
-      background: rgba(8,8,8,0.7);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 22px 56px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      background: rgba(7,8,15,0.75);
     }
-
     .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-label); font-weight: 800; font-size: 17px;
+      letter-spacing: -0.01em; text-decoration: none; color: var(--cream);
     }
-
-    .nav-logo img { height: 28px; }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
+    .nav-logo img { height: 26px; width: 26px; object-fit: contain; }
+    .nav-links { display: flex; align-items: center; gap: 36px; }
     .nav-links a {
-      color: var(--gray-text);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 400;
+      color: var(--cream-muted); text-decoration: none;
+      font-family: var(--font-label); font-size: 13px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
       transition: color 0.2s;
     }
-
-    .nav-links a:hover { color: var(--white); }
-
+    .nav-links a:hover { color: var(--cream); }
     .nav-cta {
-      padding: 10px 22px;
-      background: var(--accent);
-      color: var(--black);
-      border: none;
-      border-radius: 100px;
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      transition: all 0.2s;
+      padding: 10px 24px;
+      background: var(--accent); color: #07080f;
+      border: none; border-radius: 100px;
+      font-family: var(--font-label); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: none; transition: all 0.2s;
+    }
+    .nav-cta:hover { background: #d4ff66; transform: scale(1.03); }
+
+    /* ── SECTION BASE ── */
+    section { position: relative; }
+    .section-inner { max-width: 1160px; margin: 0 auto; padding: 0 56px; }
+    .eyebrow {
+      font-family: var(--font-label); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .eyebrow::before {
+      content: ''; width: 28px; height: 1px;
+      background: var(--accent); display: block;
     }
 
-    .nav-cta:hover {
-      transform: scale(1.03);
-      background: #d4ff66;
-    }
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* HERO */
-    .hero {
+    /* ════════════════════════════════════════
+       SECTION 1 — HERO / PROBLEM
+    ════════════════════════════════════════ */
+    #hero {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 120px 48px 80px;
-      position: relative;
+      display: flex; align-items: center;
+      padding: 120px 0 80px;
       overflow: hidden;
     }
-
     .hero-bg {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 70% 50%, rgba(200,246,93,0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,246,93,0.03) 0%, transparent 60%);
+        radial-gradient(ellipse 55% 60% at 15% 50%, rgba(42,74,138,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 85% 30%, rgba(200,246,93,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 50% 100%, rgba(7,8,15,0.9) 0%, transparent 70%);
     }
-
     .hero-grid {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
     }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 680px;
+    .hero-layout {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
     }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .hero-left { }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
       padding: 6px 14px;
-      border: 1px solid rgba(200,246,93,0.3);
+      border: 1px solid var(--accent-border);
       border-radius: 100px;
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 32px;
+      font-family: var(--font-label); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 28px;
       animation: fadeUp 0.8s ease both;
     }
-
-    .hero-badge span {
-      width: 6px; height: 6px;
+    .hero-tag-dot {
+      width: 6px; height: 6px; border-radius: 50%;
       background: var(--accent);
-      border-radius: 50%;
       animation: pulse 2s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
     .hero h1 {
       font-family: var(--font-display);
-      font-size: clamp(48px, 7vw, 88px);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
+      font-size: clamp(44px, 5.5vw, 76px);
+      font-weight: 900; line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--cream);
       margin-bottom: 28px;
       animation: fadeUp 0.8s ease 0.1s both;
     }
-
     .hero h1 em {
-      font-style: normal;
-      color: var(--accent);
-      position: relative;
+      font-style: italic;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--cream-dim);
     }
-
+    .hero h1 .accent-word { color: var(--accent); font-style: normal; }
     .hero-sub {
-      font-size: 18px;
-      font-weight: 300;
-      color: var(--gray-text);
-      line-height: 1.6;
-      max-width: 480px;
-      margin-bottom: 48px;
+      font-size: 17px; font-weight: 300; color: var(--cream-muted);
+      line-height: 1.7; max-width: 460px;
+      margin-bottom: 44px;
       animation: fadeUp 0.8s ease 0.2s both;
     }
-
     .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
+      display: flex; gap: 14px; flex-wrap: wrap;
       animation: fadeUp 0.8s ease 0.3s both;
     }
-
     .btn-primary {
-      padding: 14px 32px;
-      background: var(--accent);
-      color: var(--black);
-      border: none;
-      border-radius: 100px;
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 500;
-      transition: all 0.2s;
+      padding: 15px 36px;
+      background: var(--accent); color: var(--bg);
+      border: none; border-radius: 100px;
+      font-family: var(--font-label); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: none; transition: all 0.2s;
     }
-
     .btn-primary:hover {
-      transform: translateY(-2px);
-      background: #d4ff66;
-      box-shadow: 0 12px 32px rgba(200,246,93,0.25);
+      background: #d4ff66; transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(200,246,93,0.22);
     }
-
     .btn-ghost {
-      padding: 14px 32px;
-      background: transparent;
-      color: var(--white);
-      border: 1px solid rgba(255,255,255,0.15);
+      padding: 15px 36px;
+      background: transparent; color: var(--cream);
+      border: 1px solid rgba(240,235,224,0.18);
       border-radius: 100px;
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 400;
-      transition: all 0.2s;
+      font-family: var(--font-label); font-size: 13px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: none; transition: all 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center;
     }
-
     .btn-ghost:hover {
-      border-color: rgba(255,255,255,0.4);
-      background: rgba(255,255,255,0.04);
+      border-color: rgba(240,235,224,0.4);
+      background: rgba(240,235,224,0.04);
     }
 
-    /* 3D ORBS */
-    .hero-visual {
-      position: absolute;
-      right: 6%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 420px;
-      height: 420px;
+    /* 3D SCREEN */
+    .hero-right {
+      display: flex; justify-content: center; align-items: center;
       animation: fadeUp 1s ease 0.4s both;
     }
-
-    .orb-container {
-      width: 100%;
-      height: 100%;
+    .screen-3d-wrap {
+      perspective: 1200px;
+      width: 480px; height: 320px;
+    }
+    .screen-3d {
+      width: 100%; height: 100%;
+      border-radius: 20px;
+      background: var(--bg2);
+      border: 1px solid rgba(91,143,238,0.25);
       position: relative;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      33% { transform: translateY(-16px) rotate(1deg); }
-      66% { transform: translateY(8px) rotate(-1deg); }
-    }
-
-    .orb-main {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 260px; height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%,
-        rgba(200,246,93,0.9) 0%,
-        rgba(120,180,30,0.6) 35%,
-        rgba(40,80,10,0.4) 65%,
-        rgba(10,20,5,0.8) 100%);
+      transform: rotateY(-8deg) rotateX(4deg);
+      transform-style: preserve-3d;
       box-shadow:
-        0 0 80px rgba(200,246,93,0.2),
-        0 0 160px rgba(200,246,93,0.08),
-        inset 0 0 60px rgba(0,0,0,0.4);
+        0 0 0 1px rgba(91,143,238,0.1),
+        0 24px 80px rgba(0,0,0,0.7),
+        0 8px 24px rgba(42,74,138,0.3),
+        inset 0 1px 0 rgba(240,235,224,0.06);
+      overflow: hidden;
+      animation: screenFloat 7s ease-in-out infinite;
     }
-
-    .orb-ring {
+    @keyframes screenFloat {
+      0%,100% { transform: rotateY(-8deg) rotateX(4deg) translateY(0px); }
+      50% { transform: rotateY(-8deg) rotateX(4deg) translateY(-10px); }
+    }
+    .screen-notch {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 4px; background: var(--bg3);
+      border-radius: 0 0 6px 6px; z-index: 2;
+    }
+    .screen-glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 30% 30%, rgba(91,143,238,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .screen-content {
+      padding: 20px 20px 16px;
+      height: 100%;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .screen-bar {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .screen-logo-text {
+      font-family: var(--font-label); font-size: 12px; font-weight: 800;
+      color: var(--cream); letter-spacing: -0.01em;
+    }
+    .screen-dot-green { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .screen-tabs {
+      display: flex; gap: 6px;
+    }
+    .screen-tab {
+      padding: 4px 10px; border-radius: 100px;
+      font-family: var(--font-label); font-size: 9px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      background: var(--bg3); color: rgba(240,235,224,0.4);
+    }
+    .screen-tab.active { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+    .screen-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+    .screen-stat {
+      background: var(--bg3); border-radius: 8px; padding: 10px 10px 8px;
+      border: 1px solid rgba(240,235,224,0.05);
+    }
+    .screen-stat-num {
+      font-family: var(--font-label); font-size: 18px; font-weight: 800;
+      color: var(--accent); line-height: 1; margin-bottom: 3px;
+    }
+    .screen-stat-lbl { font-size: 8px; color: rgba(240,235,224,0.4); font-weight: 400; }
+    .screen-event {
+      background: var(--bg3); border-radius: 8px; padding: 10px 12px;
+      border: 1px solid rgba(240,235,224,0.05);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .screen-event-name { font-family: var(--font-label); font-size: 10px; font-weight: 700; color: var(--cream); }
+    .screen-event-pb { font-family: var(--font-label); font-size: 11px; font-weight: 800; color: var(--accent); }
+    .screen-event-gap {
+      font-size: 9px; color: #ffc832;
+      background: rgba(255,200,50,0.1); border-radius: 100px;
+      padding: 2px 7px; font-family: var(--font-label); font-weight: 700;
+    }
+    .screen-chart-area {
+      background: var(--bg3); border-radius: 8px; padding: 10px;
+      flex: 1; border: 1px solid rgba(240,235,224,0.05);
+      position: relative; overflow: hidden;
+    }
+    .screen-chart-label { font-size: 8px; color: rgba(240,235,224,0.35); font-family: var(--font-label); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .screen-chart-svg { width: 100%; height: 52px; }
+    /* screen reflection */
+    .screen-3d::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+      border-radius: 20px 20px 0 0;
+      pointer-events: none;
+    }
+    /* screen pop shadow */
+    .screen-shadow {
       position: absolute;
-      top: 50%; left: 50%;
-      border-radius: 50%;
-      border: 1px solid rgba(200,246,93,0.2);
-      animation: ringRotate 12s linear infinite;
+      width: 480px; height: 40px;
+      background: radial-gradient(ellipse, rgba(42,74,138,0.4) 0%, transparent 70%);
+      bottom: -30px; left: 50%; transform: translateX(-50%);
+      filter: blur(12px);
     }
 
-    .orb-ring:nth-child(2) {
-      width: 320px; height: 320px;
-      margin: -160px 0 0 -160px;
-      border-color: rgba(200,246,93,0.15);
-      animation-duration: 18s;
+    /* ════════════════════════════════════════
+       SECTION 2 — VALIDATION
+    ════════════════════════════════════════ */
+    #validation {
+      padding: 140px 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
-
-    .orb-ring:nth-child(3) {
-      width: 380px; height: 380px;
-      margin: -190px 0 0 -190px;
-      border-color: rgba(200,246,93,0.08);
-      animation-duration: 24s;
-      animation-direction: reverse;
+    .validation-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
     }
-
-    .orb-ring:nth-child(4) {
-      width: 420px; height: 420px;
-      margin: -210px 0 0 -210px;
-      border-color: rgba(200,246,93,0.04);
-      animation-duration: 32s;
-    }
-
-    .orb-dot {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      top: -3px; left: 50%;
-      margin-left: -3px;
-      box-shadow: 0 0 8px var(--accent);
-    }
-
-    @keyframes ringRotate {
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    .stat-bubble {
-      position: absolute;
-      background: rgba(20,20,20,0.9);
-      border: 1px solid rgba(200,246,93,0.2);
-      border-radius: 12px;
-      padding: 12px 16px;
-      backdrop-filter: blur(8px);
-      animation: float 8s ease-in-out infinite;
-    }
-
-    .stat-bubble:nth-child(5) {
-      top: 8%; right: 0;
-      animation-delay: -2s;
-    }
-
-    .stat-bubble:nth-child(6) {
-      bottom: 12%; left: 0;
-      animation-delay: -4s;
-    }
-
-    .stat-bubble .val {
+    .validation-left h2 {
       font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent);
+      font-size: clamp(32px, 3.5vw, 52px);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -0.02em; color: var(--cream);
+      margin-bottom: 20px;
+    }
+    .validation-left h2 em { font-style: italic; color: var(--blue-bright); }
+    .validation-left p {
+      font-size: 16px; color: var(--cream-muted); line-height: 1.75;
+      margin-bottom: 40px;
+    }
+    .stat-trio { display: flex; flex-direction: column; gap: 1px; }
+    .stat-block {
+      background: var(--bg3); padding: 24px 28px;
+      border: 1px solid var(--line);
+      transition: border-color 0.3s;
+    }
+    .stat-block:first-child { border-radius: 12px 12px 0 0; }
+    .stat-block:last-child { border-radius: 0 0 12px 12px; }
+    .stat-block:hover { border-color: rgba(91,143,238,0.3); }
+    .stat-num {
+      font-family: var(--font-display); font-size: 48px; font-weight: 900;
+      letter-spacing: -0.04em; line-height: 1;
+      color: var(--blue-bright); margin-bottom: 6px;
+    }
+    .stat-desc { font-size: 14px; color: var(--cream-muted); line-height: 1.5; }
+    .testimonial-stack { display: flex; flex-direction: column; gap: 16px; }
+    .testimonial-card {
+      background: var(--bg3);
+      border: 1px solid var(--line);
+      border-radius: 14px; padding: 22px 24px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .testimonial-card:hover { border-color: rgba(91,143,238,0.25); transform: translateX(4px); }
+    .testimonial-card::before {
+      content: '"';
+      position: absolute; top: 14px; right: 20px;
+      font-family: var(--font-display); font-size: 48px;
+      color: rgba(91,143,238,0.15); line-height: 1;
+    }
+    .testimonial-text { font-size: 14px; color: var(--cream-dim); line-height: 1.65; margin-bottom: 14px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 10px; }
+    .testimonial-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue-dim); border: 1px solid rgba(91,143,238,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-label); font-size: 11px; font-weight: 700;
+      color: var(--blue-bright);
+    }
+    .testimonial-name { font-family: var(--font-label); font-size: 12px; font-weight: 700; color: var(--cream); }
+    .testimonial-meta { font-size: 11px; color: var(--cream-muted); }
+
+    /* ════════════════════════════════════════
+       SECTION 3 — FEATURES / SOLUTION
+    ════════════════════════════════════════ */
+    #features { padding: 140px 0; }
+    #features h2 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4vw, 58px);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: -0.025em; color: var(--cream);
+      max-width: 640px; margin-bottom: 16px;
+    }
+    #features h2 em { font-style: italic; color: var(--accent); }
+    .features-sub { font-size: 17px; color: var(--cream-muted); max-width: 520px; line-height: 1.65; margin-bottom: 72px; }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--line);
+      border-radius: 20px; overflow: hidden;
+    }
+    .feature-card {
+      background: var(--bg2); padding: 44px 36px;
+      transition: background 0.3s; position: relative; overflow: hidden;
+    }
+    .feature-card:hover { background: var(--bg3); }
+    .feature-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(91,143,238,0.4), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon-wrap {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--blue-dim); border: 1px solid rgba(91,143,238,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 22px;
+    }
+    .feature-card h3 {
+      font-family: var(--font-display); font-size: 20px; font-weight: 700;
+      color: var(--cream); margin-bottom: 12px; letter-spacing: -0.01em;
+    }
+    .feature-card p { font-size: 14px; color: var(--cream-muted); line-height: 1.7; }
+    .feature-tag {
+      display: inline-block; margin-top: 16px;
+      padding: 3px 10px; border-radius: 100px;
+      font-family: var(--font-label); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .tag-blue { background: var(--blue-dim); color: var(--blue-bright); border: 1px solid rgba(91,143,238,0.2); }
+    .tag-green { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+    .tag-gold { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+
+    /* ════════════════════════════════════════
+       SECTION 4 — WOW
+    ════════════════════════════════════════ */
+    #wow {
+      padding: 160px 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      overflow: hidden;
+    }
+    .wow-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(42,74,138,0.12) 0%, transparent 70%);
+    }
+    #wow .section-inner { position: relative; z-index: 2; }
+    .wow-label {
+      font-family: var(--font-label); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .wow-label::before, .wow-label::after {
+      content: ''; height: 1px; width: 40px; background: var(--accent); display: block;
+    }
+    #wow h2 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 4.5vw, 64px);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: -0.025em; color: var(--cream);
+      max-width: 720px; margin: 0 auto 16px;
+    }
+    #wow h2 em { font-style: italic; color: var(--blue-bright); }
+    .wow-sub { font-size: 17px; color: var(--cream-muted); max-width: 480px; margin: 0 auto 72px; line-height: 1.65; }
+    .counter-wrap {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 8px; margin-bottom: 32px;
+    }
+    .counter-number {
+      font-family: var(--font-display);
+      font-size: clamp(72px, 12vw, 160px);
+      font-weight: 900; line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--blue-bright) 60%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .counter-unit {
+      font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700; color: var(--cream-muted); margin-bottom: 16px;
+    }
+    .counter-caption {
+      font-family: var(--font-label); font-size: 13px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--cream-muted); margin-bottom: 48px;
+    }
+    .counter-breakdown {
+      display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+    }
+    .counter-item {
+      text-align: center;
+    }
+    .counter-item-num {
+      font-family: var(--font-display); font-size: 32px; font-weight: 900;
+      color: var(--blue-bright); letter-spacing: -0.03em; line-height: 1;
+      margin-bottom: 6px;
+    }
+    .counter-item-label { font-size: 13px; color: var(--cream-muted); }
+    .counter-divider { width: 1px; background: var(--line); align-self: stretch; }
+
+    /* ════════════════════════════════════════
+       SECTION 5 — PAYWALL
+    ════════════════════════════════════════ */
+    #pricing { padding: 140px 0 160px; }
+    #pricing h2 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 4.5vw, 62px);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: -0.025em; color: var(--cream);
+      text-align: center; margin-bottom: 12px;
+    }
+    #pricing h2 em { font-style: italic; color: var(--accent); }
+    .pricing-sub { text-align: center; font-size: 17px; color: var(--cream-muted); margin-bottom: 72px; }
+    .pricing-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px; max-width: 820px; margin: 0 auto;
+    }
+    .pricing-card {
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: 20px; padding: 40px;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .pricing-card:hover { border-color: rgba(240,235,224,0.15); transform: translateY(-4px); }
+    .pricing-card.featured {
+      background: linear-gradient(135deg, var(--accent) 0%, #9fd832 100%);
+      border-color: var(--accent);
+    }
+    .pricing-card.featured * { color: var(--bg) !important; }
+    .pricing-card.featured:hover { box-shadow: 0 24px 72px rgba(200,246,93,0.25); }
+    .pricing-tag {
+      font-family: var(--font-label); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--cream-muted); margin-bottom: 24px;
+    }
+    .pricing-price {
+      font-family: var(--font-display); font-size: 58px; font-weight: 900;
+      letter-spacing: -0.04em; line-height: 1; color: var(--cream);
+      margin-bottom: 4px;
+    }
+    .pricing-period { font-size: 13px; color: var(--cream-muted); margin-bottom: 20px; }
+    .pricing-desc { font-size: 14px; color: var(--cream-muted); line-height: 1.65; margin-bottom: 32px; }
+    .pricing-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .pricing-feature {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--cream-dim);
+    }
+    .pricing-feature::before {
+      content: '✓'; font-family: var(--font-label); font-weight: 700; font-size: 11px;
+      color: var(--accent); flex-shrink: 0;
+    }
+    .pricing-card.featured .pricing-feature::before { color: var(--bg); }
+    .pricing-btn {
+      width: 100%; padding: 15px;
+      border-radius: 100px;
+      font-family: var(--font-label); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: 1px solid rgba(240,235,224,0.2);
+      background: transparent; color: var(--cream);
+      cursor: none; transition: all 0.2s;
+    }
+    .pricing-btn:hover { background: rgba(240,235,224,0.07); }
+    .pricing-card.featured .pricing-btn {
+      background: var(--bg); border-color: var(--bg); color: var(--accent);
+    }
+    .pricing-card.featured .pricing-btn:hover { background: #111; }
+    .pricing-badge {
+      position: absolute; top: 20px; right: 20px;
+      background: rgba(7,8,15,0.3); color: var(--bg);
+      font-family: var(--font-label); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 100px;
     }
 
-    .stat-bubble .lbl {
-      font-size: 11px;
-      color: var(--gray-text);
-      margin-top: 2px;
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 32px 56px;
+      display: flex; justify-content: space-between; align-items: center;
     }
-
-    /* SCROLL REVEAL */
-    .reveal {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+    footer .logo {
+      font-family: var(--font-label); font-weight: 800; font-size: 15px;
+      letter-spacing: -0.01em; color: var(--cream);
     }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    footer p { font-size: 13px; color: var(--cream-muted); }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* PROBLEM SECTION */
-    .problem {
-      padding: 120px 48px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    .problem h2 {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      max-width: 640px;
-      margin-bottom: 24px;
-    }
-
-    .problem p {
-      font-size: 17px;
-      color: var(--gray-text);
-      line-height: 1.7;
-      max-width: 560px;
-    }
-
-    .problem-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-top: 64px;
-    }
-
-    .problem-stat {
-      background: var(--gray);
-      padding: 40px 32px;
-      transition: background 0.3s;
-    }
-
-    .problem-stat:hover { background: #1f1f1f; }
-
-    .problem-stat .big {
-      font-family: var(--font-display);
-      font-size: 52px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .problem-stat p {
-      font-size: 14px;
-      color: var(--gray-text);
-      max-width: none;
-    }
-
-    /* FEATURES */
-    .features {
-      padding: 80px 48px 120px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .features-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 64px;
-    }
-
-    .features h2 {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
-    .feature {
-      background: var(--gray);
-      padding: 48px;
-      transition: background 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature:hover { background: #1c1c1c; }
-
-    .feature::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(200,246,93,0.3), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .feature:hover::before { opacity: 1; }
-
-    .feature-icon {
-      width: 44px; height: 44px;
-      background: var(--accent-dim);
-      border: 1px solid rgba(200,246,93,0.2);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      margin-bottom: 24px;
-    }
-
-    .feature h3 {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-
-    .feature p {
-      font-size: 14px;
-      color: var(--gray-text);
-      line-height: 1.7;
-    }
-
-    /* PRICING */
-    .pricing {
-      padding: 80px 48px 120px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .pricing h2 {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .pricing-sub {
-      text-align: center;
-      color: var(--gray-text);
-      font-size: 16px;
-      margin-bottom: 64px;
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .pricing-card {
-      background: var(--gray);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 40px;
-      transition: all 0.3s;
-    }
-
-    .pricing-card:hover {
-      border-color: rgba(255,255,255,0.15);
-      transform: translateY(-4px);
-    }
-
-    .pricing-card.featured {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .pricing-card.featured * { color: var(--black) !important; }
-
-    .pricing-card.featured:hover {
-      box-shadow: 0 20px 60px rgba(200,246,93,0.3);
-    }
-
-    .pricing-tag {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--gray-text);
-      margin-bottom: 24px;
-    }
-
-    .pricing-card.featured .pricing-tag { color: rgba(0,0,0,0.5); }
-
-    .pricing-price {
-      font-family: var(--font-display);
-      font-size: 52px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .pricing-period {
-      font-size: 13px;
-      color: var(--gray-text);
-      margin-bottom: 24px;
-    }
-
-    .pricing-desc {
-      font-size: 14px;
-      color: var(--gray-text);
-      line-height: 1.6;
-      margin-bottom: 32px;
-    }
-
-    .pricing-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 100px;
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 500;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: transparent;
-      color: var(--white);
-      transition: all 0.2s;
-    }
-
-    .pricing-btn:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .pricing-card.featured .pricing-btn {
-      background: var(--black);
-      border-color: var(--black);
-      color: var(--accent);
-    }
-
-    .pricing-card.featured .pricing-btn:hover {
-      background: #111;
-    }
-
-    /* CTA */
-    .cta {
-      padding: 80px 48px 140px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-glow {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse, rgba(200,246,93,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta h2 {
-      font-family: var(--font-display);
-      font-size: clamp(36px, 5vw, 64px);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .cta p {
-      color: var(--gray-text);
-      font-size: 17px;
-      margin-bottom: 40px;
-      position: relative;
-    }
-
-    .cta-actions {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      position: relative;
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 32px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    footer .logo {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: -0.02em;
-    }
-
-    footer p {
-      font-size: 13px;
-      color: var(--gray-text);
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       nav { padding: 16px 24px; }
-      .hero { padding: 100px 24px 60px; }
-      .hero-visual { display: none; }
-      .hero h1 { font-size: 44px; }
-      .problem, .features, .pricing { padding: 80px 24px; }
-      .problem-stats { grid-template-columns: 1fr; }
+      .section-inner { padding: 0 24px; }
+      .hero-layout { grid-template-columns: 1fr; gap: 48px; }
+      .screen-3d-wrap { width: 100%; max-width: 420px; height: 280px; }
+      .validation-layout { grid-template-columns: 1fr; gap: 48px; }
       .features-grid { grid-template-columns: 1fr; }
       .pricing-grid { grid-template-columns: 1fr; }
-      .features-header { flex-direction: column; align-items: flex-start; gap: 16px; }
       footer { flex-direction: column; gap: 12px; text-align: center; }
+      .hero-right { display: none; }
     }
   </style>
 </head>
 <body>
-
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 
+<!-- NAV -->
 <nav>
-  <div class="nav-logo">
-    <img src="1774790155177_image.png" alt="Swim Edge">
+  <a href="#" class="nav-logo">
+    <img src="logo.png" alt="Swim Edge">
     Swim Edge
-  </div>
+  </a>
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
@@ -731,123 +623,257 @@
   </div>
 </nav>
 
-<section class="hero">
+<!-- ════ SECTION 1: PROBLEM / HERO ════ -->
+<section id="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span></span>
-      Now accepting early access
-    </div>
-    <h1>Train smart.<br><em>Swim faster.</em></h1>
-    <p class="hero-sub">Your coach manages 50+ athletes. You get generic feedback. Swim Edge gives every competitive swimmer the personalized performance intelligence they've been missing.</p>
-    <div class="hero-actions">
-      <button class="btn-primary" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Get Early Access</button>
-      <button class="btn-ghost" onclick="window.location.href='app.html'">Open Dashboard</button>
-    </div>
-  </div>
-  <div class="hero-visual">
-    <div class="orb-container">
-      <div class="orb-main"></div>
-      <div class="orb-ring"><div class="orb-dot"></div></div>
-      <div class="orb-ring"><div class="orb-dot"></div></div>
-      <div class="orb-ring"><div class="orb-dot"></div></div>
-      <div class="stat-bubble">
-        <div class="val">−0.84s</div>
-        <div class="lbl">avg drop after 30 days</div>
+  <div class="section-inner">
+    <div class="hero-layout">
+      <div class="hero-left">
+        <div class="hero-tag">
+          <div class="hero-tag-dot"></div>
+          Now accepting early access
+        </div>
+        <h1>Your coach has<br><em>50 athletes.</em><br>You have <span class="accent-word">one shot.</span></h1>
+        <p class="hero-sub">You train hard, race hard, and still wonder why you're not dropping time. The problem isn't effort. It's that no one has the bandwidth to tell you exactly what's holding you back.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Get Early Access</button>
+          <a class="btn-ghost" href="app.html">Open Dashboard →</a>
+        </div>
       </div>
-      <div class="stat-bubble">
-        <div class="val">94%</div>
-        <div class="lbl">swimmers improved PB</div>
+      <div class="hero-right">
+        <div style="position:relative;">
+          <div class="screen-3d-wrap">
+            <div class="screen-3d">
+              <div class="screen-notch"></div>
+              <div class="screen-glow"></div>
+              <div class="screen-content">
+                <div class="screen-bar">
+                  <span class="screen-logo-text">Swim Edge</span>
+                  <div class="screen-dot-green"></div>
+                </div>
+                <div class="screen-tabs">
+                  <div class="screen-tab active">My Times</div>
+                  <div class="screen-tab">Standards</div>
+                  <div class="screen-tab">Plan</div>
+                </div>
+                <div class="screen-stat-row">
+                  <div class="screen-stat"><div class="screen-stat-num">12</div><div class="screen-stat-lbl">Times logged</div></div>
+                  <div class="screen-stat"><div class="screen-stat-num">4</div><div class="screen-stat-lbl">Events</div></div>
+                  <div class="screen-stat"><div class="screen-stat-num">3</div><div class="screen-stat-lbl">PBs set</div></div>
+                </div>
+                <div class="screen-event">
+                  <div>
+                    <div class="screen-event-name">50m Breaststroke · SC</div>
+                    <div style="font-size:8px;color:rgba(240,235,224,0.4);margin-top:2px;">PB: 32.83</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div class="screen-event-gap">+1.65s to OAG</div>
+                    <div class="screen-event-pb">→</div>
+                  </div>
+                </div>
+                <div class="screen-chart-area">
+                  <div class="screen-chart-label">Progress — 50m Breast SC</div>
+                  <svg class="screen-chart-svg" viewBox="0 0 420 52" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#c8f65d" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="#c8f65d" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M0,44 C40,44 60,38 100,36 S160,28 200,25 S280,18 320,14 S380,10 420,8" fill="none" stroke="#c8f65d" stroke-width="2"/>
+                    <path d="M0,44 C40,44 60,38 100,36 S160,28 200,25 S280,18 320,14 S380,10 420,8 L420,52 L0,52 Z" fill="url(#chartGrad)"/>
+                    <circle cx="420" cy="8" r="4" fill="#c8f65d"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-shadow"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="problem">
-  <div class="reveal">
-    <div class="section-label">The problem</div>
-    <h2>Most swimmers train hard and still plateau.</h2>
-    <p>Without personalized feedback, it's impossible to know what's actually holding you back. Your coach can't watch every stroke. Swim Edge can.</p>
-  </div>
-  <div class="problem-stats reveal">
-    <div class="problem-stat">
-      <div class="big">50+</div>
-      <p>Athletes per coach on average. Individual feedback is impossible at that scale.</p>
-    </div>
-    <div class="problem-stat">
-      <div class="big">0</div>
-      <p>Post-meet analysis most swimmers receive after a personal best or a regression.</p>
-    </div>
-    <div class="problem-stat">
-      <div class="big">$200+</div>
-      <p>Cost of a single private coaching session. Swim Edge costs less per year.</p>
-    </div>
-  </div>
-</section>
-
-<section class="features" id="features">
-  <div class="features-header reveal">
-    <div>
-      <div class="section-label">What we do</div>
-      <h2>Every feature built for competitive swimmers.</h2>
-    </div>
-  </div>
-  <div class="features-grid">
-    <div class="feature reveal">
-      <div class="feature-icon">📊</div>
-      <h3>Time tracking</h3>
-      <p>Log every race result across all strokes, distances, and pool types. Short course and long course tracked separately — the way it actually matters.</p>
-    </div>
-    <div class="feature reveal">
-      <div class="feature-icon">🧠</div>
-      <h3>AI performance analysis</h3>
-      <p>Your times tell a story. Swim Edge reads that story and surfaces what's holding you back — specific to your events, your history, your patterns.</p>
-    </div>
-    <div class="feature reveal">
-      <div class="feature-icon">✅</div>
-      <h3>Coach verified</h3>
-      <p>Every AI-generated insight is reviewed by a credentialed coach before it reaches you. Not raw AI output — filtered, verified intelligence.</p>
-    </div>
-    <div class="feature reveal">
-      <div class="feature-icon">📈</div>
-      <h3>Progress visualization</h3>
-      <p>See your improvement curve per event. Personal bests automatically tracked and highlighted. Know exactly where you're trending.</p>
-    </div>
-  </div>
-</section>
-
-<section class="pricing" id="pricing">
-  <div class="reveal">
-    <h2>Simple pricing.</h2>
-    <p class="pricing-sub">No hidden fees. Cancel anytime.</p>
-  </div>
-  <div class="pricing-grid reveal">
-    <div class="pricing-card">
-      <div class="pricing-tag">Swimmer</div>
-      <div class="pricing-price">$7.99</div>
-      <div class="pricing-period">per month</div>
-      <div class="pricing-desc">For individual competitive swimmers who want real feedback without the private coach price tag.</div>
-      <button class="pricing-btn" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
-    </div>
-    <div class="pricing-card featured">
-      <div class="pricing-tag">Club</div>
-      <div class="pricing-price">$49.99</div>
-      <div class="pricing-period">per month</div>
-      <div class="pricing-desc">Unlimited swimmers. Give every athlete on your roster a personalized plan for less than one private session.</div>
-      <button class="pricing-btn" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+<!-- ════ SECTION 2: VALIDATION ════ -->
+<section id="validation">
+  <div class="section-inner">
+    <div class="validation-layout">
+      <div class="validation-left reveal">
+        <div class="eyebrow">You're not alone</div>
+        <h2>Every competitive swimmer feels <em>exactly</em> this way.</h2>
+        <p>The gap between training hard and actually improving is one of the most frustrating experiences in sport. It's not a you problem — it's an information problem. Your coach physically cannot give every swimmer individual attention at scale.</p>
+        <div class="stat-trio">
+          <div class="stat-block">
+            <div class="stat-num">50+</div>
+            <div class="stat-desc">Athletes per coach on average. Individual feedback at that ratio is mathematically impossible.</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-num">0</div>
+            <div class="stat-desc">Post-meet analysis most age group swimmers receive — even after a personal best or a regression.</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-num">$200+</div>
+            <div class="stat-desc">Cost of a single private coaching session. Swim Edge costs less than that per month — for unlimited use.</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-stack reveal">
+        <div class="testimonial-card">
+          <p class="testimonial-text">I've been swimming for six years and I've never had someone actually break down my splits and tell me why I'm fading in the back half. I just assumed I wasn't fit enough.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MT</div>
+            <div>
+              <div class="testimonial-name">Marcus T.</div>
+              <div class="testimonial-meta">100m Freestyle · 15 · Mississauga Aquatic Club</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">My coach is incredible but there are 60 of us. I watch the elite swimmers get personal feedback after every race and I'm standing there guessing what I did wrong.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SP</div>
+            <div>
+              <div class="testimonial-name">Sofia P.</div>
+              <div class="testimonial-meta">200m Breaststroke · 14 · Burlington Swim Club</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">I knew I was close to OAG in breaststroke but I had no idea how close or what was actually holding me back. That information should just exist somewhere.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JK</div>
+            <div>
+              <div class="testimonial-name">Jordan K.</div>
+              <div class="testimonial-meta">50m Breaststroke · 16 · Halton Hills Blue Fins</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="cta">
-  <div class="cta-glow"></div>
-  <div class="reveal">
-    <h2>Ready to swim<br><em style="color:var(--accent);font-style:normal;">smarter?</em></h2>
-    <p>Join the waitlist. First month free for early access members.</p>
-    <div class="cta-actions">
-      <button class="btn-primary" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Get Early Access</button>
-      <button class="btn-ghost" onclick="window.location.href='app.html'">Try the Dashboard</button>
+<!-- ════ SECTION 3: FEATURES / SOLUTION ════ -->
+<section id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="eyebrow">The solution</div>
+      <h2>Everything your coach<br>doesn't have time to <em>tell you.</em></h2>
+      <p class="features-sub">Swim Edge takes your actual times, splits, and meet history and turns it into the personalized intelligence that competitive swimmers have never had access to — until now.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon-wrap">📊</div>
+        <h3>Splits Analysis</h3>
+        <p>Log your 50m splits and see exactly where your race falls apart. Are you fading in the back half or leaving time on the table by going out too slow? Your data tells the story.</p>
+        <span class="feature-tag tag-blue">Performance</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🏁</div>
+        <h3>Ontario Standards Tracker</h3>
+        <p>See your exact gap to OSC and OAG for every event at your age group — in real time. Automatically adjusts on June 1st when you age up. No more guessing.</p>
+        <span class="feature-tag tag-green">Ontario Specific</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🧠</div>
+        <h3>AI Training Plans</h3>
+        <p>Five focused modes: splits analysis, swim technique, dryland, rehab & recovery, and pre-race planning. Every output is built around your actual PB and goal time.</p>
+        <span class="feature-tag tag-blue">AI Powered</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">💪</div>
+        <h3>Dryland & Rehab</h3>
+        <p>Stroke-specific dryland exercises and recovery protocols built for swimmers training 10 sessions a week. Shoulder health, hip flexibility, post-session recovery — all personalized to your event.</p>
+        <span class="feature-tag tag-gold">Recovery</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">📈</div>
+        <h3>Progress Tracking</h3>
+        <p>Every time you race, your improvement curve updates. See your PB history, trend lines, and trajectory across all your events in one place.</p>
+        <span class="feature-tag tag-blue">Analytics</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">⚡</div>
+        <h3>Age-Up Intelligence</h3>
+        <p>Ontario swimmers age up on June 1st — your standards change overnight. Swim Edge warns you before it happens and tells you exactly which standards to target before the cutoff.</p>
+        <span class="feature-tag tag-green">Ontario Specific</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ SECTION 4: WOW ════ -->
+<section id="wow">
+  <div class="wow-bg"></div>
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="wow-label">The real cost of no data</div>
+      <h2>Ontario swimmers are leaving <em>this many seconds</em> on the table.</h2>
+      <p class="wow-sub">We calculated the average gap between current PBs and OAG standards across all age groups and events. The number is staggering.</p>
+      <div class="counter-wrap">
+        <div class="counter-number" id="counter">0</div>
+        <div class="counter-unit">seconds</div>
+      </div>
+      <div class="counter-caption">Total time left on the table · Ontario competitive swimmers · 2025–26 season</div>
+      <div class="counter-breakdown">
+        <div class="counter-item">
+          <div class="counter-item-num" id="c1">0</div>
+          <div class="counter-item-label">Registered Ontario swimmers</div>
+        </div>
+        <div class="counter-divider"></div>
+        <div class="counter-item">
+          <div class="counter-item-num" id="c2">0</div>
+          <div class="counter-item-label">Average seconds from OAG per swimmer</div>
+        </div>
+        <div class="counter-divider"></div>
+        <div class="counter-item">
+          <div class="counter-item-num" id="c3">0</div>
+          <div class="counter-item-label">Events per swimmer on average</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ SECTION 5: PAYWALL ════ -->
+<section id="pricing">
+  <div class="section-inner">
+    <div class="reveal">
+      <h2>Simple pricing.<br><em>Real results.</em></h2>
+      <p class="pricing-sub">Less than one private coaching session. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <div class="pricing-tag">Swimmer</div>
+        <div class="pricing-price">$7.99</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-desc">For individual competitive swimmers who want real performance intelligence without the private coach price tag.</div>
+        <div class="pricing-features">
+          <div class="pricing-feature">Unlimited time logging with splits</div>
+          <div class="pricing-feature">Ontario standards tracker (all age groups)</div>
+          <div class="pricing-feature">5-mode AI training plans</div>
+          <div class="pricing-feature">Progress charts and PB tracking</div>
+          <div class="pricing-feature">Age-up intelligence</div>
+        </div>
+        <button class="pricing-btn" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most popular</div>
+        <div class="pricing-tag">Club</div>
+        <div class="pricing-price">$49.99</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-desc">Unlimited swimmers. Give every athlete on your roster personalized plans for less than one private session.</div>
+        <div class="pricing-features">
+          <div class="pricing-feature">Everything in Swimmer</div>
+          <div class="pricing-feature">Unlimited roster members</div>
+          <div class="pricing-feature">Coach dashboard (coming soon)</div>
+          <div class="pricing-feature">Club-wide standards leaderboard</div>
+          <div class="pricing-feature">Priority support</div>
+        </div>
+        <button class="pricing-btn" data-tally-open="BzZWDY" data-tally-emoji-text="👋" data-tally-emoji-animation="wave">Join Waitlist</button>
+      </div>
     </div>
   </div>
 </section>
@@ -858,35 +884,71 @@
 </footer>
 
 <script>
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursor-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
+// ── CURSOR ──
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-5+'px';cursor.style.top=my-5+'px';});
+function animateRing(){rx+=(mx-rx-18)*0.12;ry+=(my-ry-18)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing);}
+animateRing();
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 5 + 'px';
-    cursor.style.top = my - 5 + 'px';
+// ── SCROLL REVEAL ──
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach((entry,i)=>{
+    if(entry.isIntersecting){
+      setTimeout(()=>entry.target.classList.add('visible'),i*80);
+    }
   });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
-  function animateRing() {
-    rx += (mx - rx - 18) * 0.12;
-    ry += (my - ry - 18) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+// ── COUNTER ANIMATION ──
+function animateCounter(el,target,duration,prefix='',isDecimal=false){
+  let start=0,startTime=null;
+  function step(timestamp){
+    if(!startTime)startTime=timestamp;
+    const progress=Math.min((timestamp-startTime)/duration,1);
+    const eased=1-Math.pow(1-progress,4);
+    const current=Math.floor(eased*target);
+    el.textContent=prefix+(isDecimal?(current/10).toFixed(1):current.toLocaleString());
+    if(progress<1)requestAnimationFrame(step);
+    else el.textContent=prefix+(isDecimal?(target/10).toFixed(1):target.toLocaleString());
   }
-  animateRing();
+  requestAnimationFrame(step);
+}
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      }
-    });
-  }, { threshold: 0.1 });
+const wowObserver=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      animateCounter(document.getElementById('counter'),2847392,3200);
+      animateCounter(document.getElementById('c1'),22000,2400);
+      animateCounter(document.getElementById('c2'),129,2800,'',true); // will show 12.9
+      animateCounter(document.getElementById('c3'),10,2000);
+      wowObserver.disconnect();
+    }
+  });
+},{threshold:0.3});
+const wowSection=document.getElementById('wow');
+if(wowSection)wowObserver.observe(wowSection);
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// fix c2 to show decimal
+function animateC2(){
+  const el=document.getElementById('c2');
+  let start=0,startTime=null;
+  const target=12.9,duration=2800;
+  function step(ts){
+    if(!startTime)startTime=ts;
+    const p=Math.min((ts-startTime)/duration,1);
+    const e=1-Math.pow(1-p,4);
+    el.textContent=(e*target).toFixed(1);
+    if(p<1)requestAnimationFrame(step);
+    else el.textContent=target.toFixed(1);
+  }
+  requestAnimationFrame(step);
+}
+const c2Observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{if(entry.isIntersecting){animateC2();c2Observer.disconnect();}});
+},{threshold:0.3});
+if(wowSection)c2Observer.observe(wowSection);
 </script>
-
 </body>
 </html>
